@@ -1,0 +1,5 @@
+WINNER GYM Login standalone fix
+
+This patch replaces only the Fortify login Blade view and the login hero image.
+It intentionally does not depend on Vite, Tailwind, Flux, Livewire layouts, or auth layout components.
+No database, .env, migration, route, model, or service files are changed.

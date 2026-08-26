@@ -1,0 +1,59 @@
+diff --git a/app/Livewire/Inventory/SalesIndex.php b/app/Livewire/Inventory/SalesIndex.php
+--- a/app/Livewire/Inventory/SalesIndex.php
++++ b/app/Livewire/Inventory/SalesIndex.php
+@@ -4,12 +4,12 @@ namespace App\Livewire\Inventory;
+ use App\Models\Member;
+ use App\Models\Product;
+ use App\Models\Sale;
+-use App\Models\SaleItem;
+ use App\Services\InventoryService;
+ use App\Services\PermissionService;
+ use Carbon\CarbonImmutable;
++use Illuminate\Support\Facades\Cache;
+ use Illuminate\Support\Facades\DB;
+ use Illuminate\Validation\Rule;
+@@ -29,6 +29,7 @@ class SalesIndex extends Component
+     public ?int $member_id = null;
+     public string $customer_name = '';
+     public string $payment_method = 'cash';
++    public string $transfer_service = '';
+     public string $transfer_reference = '';
+     public string $discount_value = '0';
+@@ -75,6 +76,7 @@ class SalesIndex extends Component
+     {
+         if ($value === 'cash') {
++            $this->transfer_service = '';
+             $this->transfer_reference = '';
+         }
+@@ -160,9 +162,15 @@ class SalesIndex extends Component
+             'customer_name' => ['nullable', 'string', 'max:255'],
+             'payment_method' => ['required', Rule::in(['cash', 'transfer'])],
++            'transfer_service' => ['nullable', Rule::requiredIf($this->payment_method === 'transfer'), Rule::in(['العمقي', 'الكريمي', 'البسيري'])],
+             'transfer_reference' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->payment_method === 'transfer')],
+             'discount_value' => ['required', 'numeric', 'min:0'],
+-        ], ['transfer_reference.required' => 'أدخل مرجع التحويل قبل إتمام البيع.']);
++        ], [
++            'transfer_service.required' => 'اختر جهة التحويل قبل إتمام البيع.',
++            'transfer_service.in' => 'جهة التحويل المختارة غير صحيحة.',
++            'transfer_reference.required' => 'أدخل رقم الحوالة قبل إتمام البيع.',
++        ]);
+@@ -180,6 +188,7 @@ class SalesIndex extends Component
+             'currency' => $currency,
+             'payment_method' => $this->payment_method,
++            'transfer_service' => $this->payment_method === 'transfer' ? $this->transfer_service : null,
+             'transfer_reference' => $this->payment_method === 'transfer' ? trim($this->transfer_reference) : null,
+@@ -196,6 +205,7 @@ class SalesIndex extends Component
+ 
+         $this->lastCompletedSaleId = $sale->id;
++        $this->forgetSalesStats();
+         $this->resetSaleForm();
+@@ -224,6 +234,7 @@ class SalesIndex extends Component
+ 
+         $service->cancelSale(Sale::findOrFail($this->cancelSaleId), $this->cancellation_reason, auth()->user());
++        $this->forgetSalesStats();
+         $this->reset(['cancelSaleId', 'cancellation_reason']);
+@@ -244,6 +255,7 @@ class SalesIndex extends Component
+         $this->customer_name = '';
+         $this->payment_method = 'cash';
++        $this->transfer_service = '';
+         $this->transfer_reference = '';

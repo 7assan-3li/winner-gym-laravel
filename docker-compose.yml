@@ -1,0 +1,115 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: winner-gym-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - winner-gym-network
+
+  web:
+    image: nginx:alpine
+    container_name: winner-gym-web
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8090}:80"
+    volumes:
+      - ./:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - winner-gym-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: winner-gym-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-winner_gym}
+      POSTGRES_USER: ${DB_USERNAME:-winner_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-winner_secret}
+    ports:
+      - "${FORWARD_DB_PORT:-5432}:5432"
+    volumes:
+      - winner_gym_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-winner_user} -d ${DB_DATABASE:-winner_gym}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - winner-gym-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: winner-gym-redis
+    restart: unless-stopped
+    ports:
+      - "${FORWARD_REDIS_PORT:-6379}:6379"
+    volumes:
+      - winner_gym_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - winner-gym-network
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: winner-gym-queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    env_file:
+      - .env.docker
+    command: php artisan queue:work --sleep=1 --tries=3 --timeout=120
+    depends_on:
+      - app
+      - redis
+    networks:
+      - winner-gym-network
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: winner-gym-scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    env_file:
+      - .env.docker
+    command: php artisan schedule:work
+    depends_on:
+      - app
+      - db
+    networks:
+      - winner-gym-network
+
+volumes:
+  winner_gym_pgdata:
+    driver: local
+  winner_gym_redisdata:
+    driver: local
+
+networks:
+  winner-gym-network:
+    driver: bridge

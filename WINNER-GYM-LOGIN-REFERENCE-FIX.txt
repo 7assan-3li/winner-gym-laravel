@@ -1,0 +1,14 @@
+WINNER GYM LOGIN REFERENCE FIX
+
+Files changed:
+- resources/views/layouts/auth/simple.blade.php
+- resources/views/livewire/auth/login.blade.php
+- resources/css/app.css
+- public/winner-gym/login-hero-reference.png
+
+After extracting over the Laravel project:
+1) npm run build
+2) php artisan optimize:clear
+3) reload /login (Ctrl+F5)
+
+No migration or database change is required.

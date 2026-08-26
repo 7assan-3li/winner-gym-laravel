@@ -1,0 +1,4 @@
+WINNER GYM Login Hotfix
+- Critical login CSS is inline in the auth layout, so the page no longer depends on the Vite CSS build for layout.
+- SVG icon sizes are forced inline to prevent giant icons if app.css is stale or missing.
+- No database, migration, .env, route, auth logic, or password changes.

@@ -1,0 +1,33 @@
+/* WINNER GYM — Light Mode Hardening V3 (loaded last) */
+html.wg-light .wg-logo-dark,html[data-wg-theme="light"] .wg-logo-dark{display:none!important}
+html.wg-light .wg-logo-light,html[data-wg-theme="light"] .wg-logo-light{display:block!important}
+html:not(.wg-light) .wg-logo-light,html[data-wg-theme="dark"] .wg-logo-light{display:none!important}
+html.wg-light .wg-brand,html[data-wg-theme="light"] .wg-brand{background:transparent!important}
+html.wg-light .wg-sidebar-art,html[data-wg-theme="light"] .wg-sidebar-art{background:transparent!important}
+html.wg-light .wg-sidebar-art::before,html[data-wg-theme="light"] .wg-sidebar-art::before{
+  background-image:url('/winner-gym/sidebar-athlete.png')!important;
+  filter:invert(.82) grayscale(.85) contrast(1.12)!important;
+  opacity:.72!important;background-color:transparent!important;
+}
+html.wg-light .wg-sidebar-art::after,html[data-wg-theme="light"] .wg-sidebar-art::after{
+  content:""!important;position:absolute!important;inset:0!important;pointer-events:none!important;
+  background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.2) 18%,rgba(255,255,255,.08) 82%,#fff 100%),linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,0) 50%,rgba(247,250,254,.58) 100%)!important;
+}
+/* Exact dashboard issue shown in screenshot */
+html.wg-light body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn,
+html[data-wg-theme="light"] body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn{
+  background:#fff!important;background-image:none!important;border-color:#d8e4ef!important;color:#40566f!important;box-shadow:none!important;
+}
+html.wg-light body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn:hover,
+html[data-wg-theme="light"] body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn:hover{background:#f2f8ff!important;border-color:#bfd6ed!important;color:#0e69dc!important}
+/* Shared controls: no dark islands in light mode */
+html.wg-light body.wg-body :is(.wg-btn,.fin-reset,.fin-icon-btn,.fin-quick-link,.fin-due-action,.wg-inv-btn,.wg-inv-modal-cancel,.wg-nut-btn):not(.wg-btn-primary):not(.fin-btn.primary):not(.wg-inv-btn-primary):not(.wg-nut-btn-primary),
+html[data-wg-theme="light"] body.wg-body :is(.wg-btn,.fin-reset,.fin-icon-btn,.fin-quick-link,.fin-due-action,.wg-inv-btn,.wg-inv-modal-cancel,.wg-nut-btn):not(.wg-btn-primary):not(.fin-btn.primary):not(.wg-inv-btn-primary):not(.wg-nut-btn-primary){background:#fff!important;background-image:none!important;border-color:#d8e4ef!important;color:#40566f!important;box-shadow:none!important}
+/* Runtime safety class catches legacy dark surfaces and dynamically opened dialogs */
+html.wg-light body.wg-body .wg-light-auto-surface,html[data-wg-theme="light"] body.wg-body .wg-light-auto-surface{
+  background:#fff!important;background-image:none!important;border-color:#dce6f0!important;color:#314760!important;box-shadow:none!important;
+}
+html.wg-light body.wg-body .wg-light-auto-surface:hover,html[data-wg-theme="light"] body.wg-body .wg-light-auto-surface:hover{background:#f5f9fe!important}
+/* Keep semantic filled controls intact */
+html.wg-light body.wg-body :is(.wg-btn-primary,.fin-btn.primary,.wg-inv-btn-primary,.wg-inv-modal-save,.wg-inv-open-pos,.wg-nut-btn-primary,.wg-nav a.is-active),
+html[data-wg-theme="light"] body.wg-body :is(.wg-btn-primary,.fin-btn.primary,.wg-inv-btn-primary,.wg-inv-modal-save,.wg-inv-open-pos,.wg-nut-btn-primary,.wg-nav a.is-active){color:#fff!important}

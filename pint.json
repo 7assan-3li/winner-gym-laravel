@@ -1,0 +1,8 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "PATCHES",
+        "RECOVERY",
+        "winner-gym-role-ui-consistency-hotfix"
+    ]
+}

@@ -1,0 +1,8 @@
+At the END of routes/web.php add this line only once:
+
+require __DIR__.'/winner-gym-operations.php';
+
+Keep:
+require __DIR__.'/winner-gym-core.php';
+
+Do not delete the existing starter-kit routes.

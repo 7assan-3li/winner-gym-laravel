@@ -1,0 +1,17 @@
+<div class="wg-page" dir="rtl">
+    <div class="wg-page-head"><div><h1 class="wg-title">النسخ الاحتياطي</h1><div class="wg-subtitle">إنشاء وتنزيل وإدارة نسخ بيانات النظام</div></div><button wire:click="create" wire:confirm="إنشاء نسخة احتياطية الآن؟" class="wg-btn wg-btn-primary">إنشاء نسخة الآن</button></div>
+    @include('livewire.admin._tabs')
+    @if(session('success'))<div class="wg-flash">{{ session('success') }}</div>@endif
+    @error('backup')<div class="wg-errors">{{ $message }}</div>@enderror
+
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px"><div class="wg-card wg-stat"><small>إجمالي النسخ</small><strong class="wg-purple">{{ $stats['total'] }}</strong></div><div class="wg-card wg-stat"><small>ناجحة</small><strong class="wg-green">{{ $stats['completed'] }}</strong></div><div class="wg-card wg-stat"><small>فاشلة</small><strong class="wg-red">{{ $stats['failed'] }}</strong></div><div class="wg-card wg-stat"><small>الحجم الكلي</small><strong class="wg-blue" style="font-size:18px">{{ number_format($stats['size']/1024/1024,2) }} MB</strong></div></div>
+
+    <div class="wg-three">
+        <div class="wg-card wg-card-pad"><small class="wg-muted">آخر نسخة</small><strong style="display:block;font-size:16px;margin-top:8px">{{ $latest?->filename ?: 'لا توجد نسخة' }}</strong><div class="wg-muted" style="font-size:10px;margin-top:7px">{{ $latest?->created_at ?: '—' }}</div></div>
+        <div class="wg-card wg-card-pad"><small class="wg-muted">سياسة الاستعادة</small><strong class="wg-orange" style="display:block;font-size:13px;margin-top:8px">استعادة يدوية آمنة</strong><div class="wg-muted" style="font-size:10px;margin-top:7px">لا ننفذ استعادة تلقائية على قاعدة الإنتاج.</div></div>
+        <div class="wg-card wg-card-pad"><small class="wg-muted">ما الذي يتم نسخه؟</small><strong class="wg-green" style="display:block;font-size:13px;margin-top:8px">البيانات + المرفقات الخاصة</strong><div class="wg-muted" style="font-size:10px;margin-top:7px">بما فيها إثباتات الدفع والإيصالات وصور الأعضاء.</div></div>
+    </div>
+
+    <div class="wg-card"><div class="wg-card-pad"><h2 class="wg-section-title">سجل النسخ</h2></div><div class="wg-table-wrap" style="border:0;border-top:1px solid var(--wg-border);border-radius:0"><table class="wg-table"><thead><tr><th>اسم النسخة</th><th>الحجم</th><th>الحالة</th><th>الإنشاء</th><th>الإجراءات</th></tr></thead><tbody>@forelse($backups as $b)<tr><td dir="ltr">{{ $b->filename }}</td><td>{{ $b->size_bytes ? number_format($b->size_bytes/1024,1).' KB' : '—' }}</td><td><span class="wg-badge {{ $b->status==='completed' ? 'wg-badge-green' : 'wg-badge-red' }}">{{ $b->status==='completed' ? 'ناجحة' : $b->status }}</span></td><td>{{ $b->created_at }}</td><td><div style="display:flex;gap:5px">@if($b->status==='completed')<a href="{{ route('backups.download',['backup'=>$b->id]) }}" class="wg-btn wg-btn-sm">تنزيل</a>@endif<button wire:click="delete({{ $b->id }})" wire:confirm="حذف ملف النسخة وسجلها نهائيًا؟" class="wg-btn wg-btn-sm wg-btn-danger">حذف</button></div></td></tr>@empty<tr><td colspan="5" class="wg-muted">لا توجد نسخ حتى الآن.</td></tr>@endforelse</tbody></table></div></div>
+    <div class="wg-card wg-card-pad"><h2 class="wg-section-title">ملاحظة مهمة</h2><p class="wg-muted" style="font-size:10px;line-height:1.9;margin:8px 0 0">الاستعادة التلقائية من داخل الواجهة غير مفعلة عمدًا لحماية قاعدة الإنتاج. يمكن اختبار الاستعادة على قاعدة منفصلة أولًا ثم تفعيلها لاحقًا.</p></div>
+</div>

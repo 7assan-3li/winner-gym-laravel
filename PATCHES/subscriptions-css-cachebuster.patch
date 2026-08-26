@@ -1,0 +1,12 @@
+diff --git a/resources/views/layouts/app/sidebar.blade.php b/resources/views/layouts/app/sidebar.blade.php
+--- a/resources/views/layouts/app/sidebar.blade.php
++++ b/resources/views/layouts/app/sidebar.blade.php
+@@ -17,7 +17,7 @@
+          This prevents Livewire/browser-cache differences between owner and newly-created staff accounts. --}}
+     <link rel="stylesheet" href="{{ asset('winner-gym/dashboard-final-polish.css') }}">
+     <link rel="stylesheet" href="{{ asset('winner-gym/members-final.css') }}?v=20260812-3">
+-    <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}">
++    <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20260813-2">
+     <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}">
+     <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}">
+     <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}">

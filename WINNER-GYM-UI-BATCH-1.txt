@@ -1,0 +1,36 @@
+WINNER GYM — UI IMPLEMENTATION BATCH 1
+======================================
+
+This package updates the existing Laravel/Livewire project without touching .env,
+vendor, node_modules, or the Supabase database.
+
+Implemented in this batch:
+- WINNER GYM dark navy / electric-blue application shell.
+- Real sidebar/navigation and top bar.
+- Arabic internal login screen using username/password only.
+- Login redirects to /gym-dashboard.
+- Dashboard redesigned around live database values.
+- Members main page redesigned.
+- Member create/edit/suspend/archive/reactivate flows.
+- Member status separated from subscription status.
+- Packages main page + centered add-package modal.
+- Subscriptions main page redesigned.
+- Three-step new-subscription modal using the existing business rules.
+- Existing-subscription details modal with installments and payment history.
+- Existing functional pages inherit the same dark WINNER visual system.
+- Extracted WINNER GYM logo/sidebar artwork from the supplied reference screen.
+
+No database migration is required for this batch.
+DO NOT run migrate:fresh.
+
+Apply on Windows PowerShell:
+1) Extract the patch over:
+   C:\Users\Omer AL-Kaff\Herd\winner-gym-laravel
+2) Then run:
+   cd "C:\Users\Omer AL-Kaff\Herd\winner-gym-laravel"
+   npm run build
+   php artisan optimize:clear
+3) Open:
+   http://winner-gym-laravel.test/login
+
+If Vite is being used in development instead of a build, run npm run dev.

@@ -1,0 +1,126 @@
+diff --git a/app/Livewire/Inventory/ProductsIndex.php b/app/Livewire/Inventory/ProductsIndex.php
+--- a/app/Livewire/Inventory/ProductsIndex.php
++++ b/app/Livewire/Inventory/ProductsIndex.php
+@@ -2,15 +2,11 @@
+ 
+ namespace App\Livewire\Inventory;
+ 
+-use App\Models\InventoryMovement;
+ use App\Models\Product;
+ use App\Models\ProductCategory;
+-use App\Models\Purchase;
+-use App\Models\Sale;
+ use App\Services\AuditService;
+ use App\Services\InventoryService;
+ use App\Services\PermissionService;
+-use Carbon\CarbonImmutable;
+ use Illuminate\Support\Facades\DB;
+ use Illuminate\Validation\Rule;
+@@ -470,8 +466,6 @@ public function render()
+         $totalProducts = Product::count();
+         $totalUnits = (int) Product::sum('current_quantity');
+         $lowStockCount = Product::query()->where('status', 'active')->whereColumn('current_quantity', '<=', 'minimum_quantity')->count();
+-        $inactiveCount = Product::query()->where('status', 'inactive')->count();
+-        $pendingPurchases = Purchase::query()->where('status', 'pending')->count();
+ 
+         $inventoryValue = Product::query()
+@@ -486,31 +480,6 @@ public function render()
+             ->limit(5)
+             ->get();
+ 
+-        $now = CarbonImmutable::now('Asia/Aden');
+-        $monthStarts = collect(range(5, 0))->map(fn ($back) => $now->startOfMonth()->subMonths($back));
+-        $movementStart = $monthStarts->first()->startOfDay()->utc();
+-
+-        $movements = InventoryMovement::query()
+-            ->where('created_at', '>=', $movementStart)
+-            ->whereIn('movement_type', ['purchase', 'sale'])
+-            ->selectRaw("to_char(created_at AT TIME ZONE 'Asia/Aden', 'YYYY-MM') as month_key")
+-            ->selectRaw("SUM(CASE WHEN movement_type = 'purchase' THEN ABS(quantity_delta) ELSE 0 END) as purchases_qty")
+-            ->selectRaw("SUM(CASE WHEN movement_type = 'sale' THEN ABS(quantity_delta) ELSE 0 END) as sales_qty")
+-            ->groupBy('month_key')
+-            ->get()
+-            ->keyBy('month_key');
+-
+-        $purchaseSeries = [];
+-        $saleSeries = [];
+-        $movementLabels = [];
+-        foreach ($monthStarts as $month) {
+-            $key = $month->format('Y-m');
+-            $row = $movements->get($key);
+-            $purchaseSeries[] = (int) ($row->purchases_qty ?? 0);
+-            $saleSeries[] = (int) ($row->sales_qty ?? 0);
+-            $movementLabels[] = $month->locale('ar')->translatedFormat('M');
+-        }
+-
+         $categoryIds = $categories->pluck('id');
+@@ -536,40 +505,6 @@ public function render()
+         }
+         $categoryGradient = $gradientParts ? 'conic-gradient('.implode(',', $gradientParts).')' : 'conic-gradient(#132235 0 100%)';
+ 
+-        $todayStartUtc = $now->startOfDay()->utc();
+-        $todayEndUtc = $now->endOfDay()->utc();
+-        $todaySales = Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$todayStartUtc, $todayEndUtc]);
+-        $todaySalesCount = (clone $todaySales)->count();
+-        $todaySalesAmounts = (clone $todaySales)
+-            ->select('currency', DB::raw('COALESCE(SUM(total_amount), 0) as total'))
+-            ->groupBy('currency')
+-            ->pluck('total', 'currency');
+-
+-        $quickProducts = Product::query()
+-            ->where('status', 'active')
+-            ->where('current_quantity', '>', 0)
+-            ->orderByDesc('updated_at')
+-            ->limit(6)
+-            ->get();
+-
+-        $saleSearchResults = collect();
+-        if ($this->showQuickSaleModal) {
+-            $saleSearchResults = Product::query()
+-                ->where('status', 'active')
+-                ->where('current_quantity', '>', 0)
+-                ->when(trim($this->saleProductSearch) !== '', function ($query) {
+-                    $term = '%'.trim($this->saleProductSearch).'%';
+-                    $query->where(fn ($q) => $q->where('name', 'ilike', $term)->orWhere('barcode', 'ilike', $term));
+-                })
+-                ->orderByDesc('updated_at')
+-                ->limit(10)
+-                ->get();
+-        }
+-
+-        $saleSubtotal = collect($this->saleCart)->sum(fn ($row) => ((float) $row['price']) * ((int) $row['quantity']));
+-        $saleDiscountValue = min(max(0, (float) $this->saleDiscount), $saleSubtotal);
+-        $saleTotal = max(0, $saleSubtotal - $saleDiscountValue);
+-        $saleCurrency = collect($this->saleCart)->first()['currency'] ?? 'YER';
+-
+         return view('livewire.inventory.products-index', [
+@@ -577,28 +512,10 @@ public function render()
+             'totalProducts' => $totalProducts,
+             'totalUnits' => $totalUnits,
+             'lowStockCount' => $lowStockCount,
+-            'inactiveCount' => $inactiveCount,
+-            'pendingPurchases' => $pendingPurchases,
+             'inventoryValueYER' => (float) ($inventoryValue['YER'] ?? 0),
+             'inventoryValueSAR' => (float) ($inventoryValue['SAR'] ?? 0),
+             'lowStockAlerts' => $lowStockAlerts,
+-            'movementLabels' => $movementLabels,
+-            'purchaseSeries' => $purchaseSeries,
+-            'saleSeries' => $saleSeries,
+-            'purchasePoints' => $this->chartPoints($purchaseSeries),
+-            'salePoints' => $this->chartPoints($saleSeries),
+             'distribution' => $distribution,
+             'categoryGradient' => $categoryGradient,
+-            'approvedPurchasesThisMonth' => Purchase::query()->where('status', 'approved')->whereBetween('approved_at', [$now->startOfMonth()->utc(), $now->endOfMonth()->utc()])->count(),
+-            'salesThisMonth' => Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$now->startOfMonth()->utc(), $now->endOfMonth()->utc()])->count(),
+-            'cancelledSalesThisMonth' => Sale::query()->where('status', 'cancelled')->whereBetween('cancelled_at', [$now->startOfMonth()->utc(), $now->endOfMonth()->utc()])->count(),
+-            'todaySalesCount' => $todaySalesCount,
+-            'todaySalesYER' => (float) ($todaySalesAmounts['YER'] ?? 0),
+-            'todaySalesSAR' => (float) ($todaySalesAmounts['SAR'] ?? 0),
+-            'quickProducts' => $quickProducts,
+-            'saleSearchResults' => $saleSearchResults,
+-            'saleSubtotal' => $saleSubtotal,
+-            'saleDiscountValue' => $saleDiscountValue,
+-            'saleTotal' => $saleTotal,
+-            'saleCurrency' => $saleCurrency,
+         ]);
+     }

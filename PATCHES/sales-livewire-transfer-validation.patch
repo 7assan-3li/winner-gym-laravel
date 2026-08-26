@@ -1,0 +1,8 @@
+diff --git a/app/Livewire/Inventory/SalesIndex.php b/app/Livewire/Inventory/SalesIndex.php
+--- a/app/Livewire/Inventory/SalesIndex.php
++++ b/app/Livewire/Inventory/SalesIndex.php
+@@ -170,3 +170,4 @@
+             'customer_name' => ['nullable', 'string', 'max:255'],
+             'payment_method' => ['required', Rule::in(['cash', 'transfer'])],
++            'transfer_service' => ['nullable', Rule::requiredIf($this->payment_method === 'transfer'), Rule::in(['العمقي', 'الكريمي', 'البسيري'])],
+             'transfer_reference' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->payment_method === 'transfer')],

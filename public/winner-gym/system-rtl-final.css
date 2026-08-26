@@ -1,0 +1,193 @@
+/* WINNER GYM — SYSTEM RTL FINAL OVERRIDE
+   One source of truth for authenticated shell placement.
+   Loaded LAST so old per-page left-sidebar declarations can never reappear. */
+
+:root{--wg-shell-sidebar:184px}
+html[dir="rtl"],html[dir="rtl"] body{direction:rtl}
+.wg-body{overflow-x:hidden!important}
+.wg-body .wg-app{width:100%!important;max-width:100vw!important;min-height:100vh!important;overflow-x:hidden!important}
+
+/* 1) Arabic shell: sidebar/logo/navigation permanently on the RIGHT. */
+.wg-body .wg-sidebar{
+  position:fixed!important;inset-block:0!important;
+  right:0!important;left:auto!important;
+  width:var(--wg-shell-sidebar)!important;max-width:var(--wg-shell-sidebar)!important;min-width:var(--wg-shell-sidebar)!important;
+  border-left:1px solid #16273d!important;border-right:0!important;
+  box-shadow:-18px 0 50px rgba(0,0,0,.18)!important;
+  direction:rtl!important;z-index:60!important;flex-shrink:0!important;
+}
+.wg-body .wg-main{
+  margin-right:var(--wg-shell-sidebar)!important;margin-left:0!important;
+  width:calc(100vw - var(--wg-shell-sidebar))!important;
+  max-width:calc(100vw - var(--wg-shell-sidebar))!important;
+  min-width:0!important;overflow-x:hidden!important;
+}
+.wg-body .wg-brand{direction:ltr!important;text-align:center!important}
+.wg-body .wg-nav{direction:rtl!important}
+.wg-body .wg-nav a{direction:rtl!important;text-align:right!important;justify-content:flex-start!important}
+.wg-body .wg-nav a .wg-nav-icon{order:0!important;flex:0 0 auto!important}
+.wg-body .wg-nav a span{order:1!important;min-width:0!important}
+.wg-body .wg-sidebar-art strong,.wg-body .wg-sidebar-art span{direction:ltr!important;text-align:left!important}
+
+/* 2) ONE topbar for every route: page title left, search center, account/tools on RIGHT.
+      The account remains the right-most topbar item; theme and notifications sit immediately to its left. */
+.wg-body .wg-topbar-unified{
+  width:100%!important;height:86px!important;min-height:86px!important;
+  display:grid!important;
+  grid-template-columns:minmax(220px,1fr) minmax(320px,420px) auto!important;
+  grid-template-areas:"page search tools"!important;
+  align-items:center!important;gap:24px!important;
+  padding:0 28px!important;direction:ltr!important;
+  position:sticky!important;top:0!important;z-index:55!important;overflow:visible!important;
+  background:#030914!important;border-bottom:1px solid #162438!important;backdrop-filter:none!important;
+}
+.wg-unified-page{grid-area:page!important;justify-self:start!important;direction:rtl!important;text-align:left!important;min-width:190px!important}
+.wg-unified-page h1{margin:0!important;color:#f8fafc!important;font-size:23px!important;line-height:1.1!important;font-weight:850!important;letter-spacing:0!important}
+.wg-unified-crumb{margin-top:7px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;color:#8495aa!important;font-size:11.5px!important;white-space:nowrap!important}
+.wg-unified-crumb i{font-style:normal!important;color:#1680ff!important}
+.wg-body .wg-unified-search{grid-area:search!important;justify-self:center!important;width:100%!important;max-width:420px!important;height:44px!important;margin:0!important;padding:0 14px!important;border:1px solid #1a2a40!important;border-radius:9px!important;background:#050d18!important;color:#718199!important;cursor:pointer!important;display:flex!important;align-items:center!important;gap:10px!important;direction:rtl!important}
+.wg-body .wg-unified-search span{flex:1!important;text-align:right!important;font-size:12px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.wg-body .wg-unified-search svg{flex:0 0 19px!important;color:#c9d3df!important}
+.wg-body .wg-unified-tools{grid-area:tools!important;justify-self:end!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;direction:ltr!important;min-width:max-content!important;height:100%!important}
+.wg-body .wg-unified-tools .wg-top-icon{position:relative!important;width:43px!important;height:43px!important;border-radius:9px!important;cursor:pointer!important;display:grid!important;place-items:center!important;color:#d2dbe6!important}
+.wg-body .wg-unified-tools .wg-user{margin:0!important;position:relative!important;direction:rtl!important}
+.wg-body .wg-unified-tools .wg-user summary{min-width:184px!important;gap:10px!important;white-space:nowrap!important}
+.wg-body .wg-unified-tools .wg-user-menu{top:62px!important;right:0!important;left:auto!important;z-index:100!important}
+.wg-body .wg-unified-tools .wg-avatar{width:42px!important;height:42px!important;flex:0 0 42px!important}
+.wg-body .wg-unified-tools .wg-user-name{font-size:13.5px!important;color:#fff!important;font-weight:800!important}
+.wg-body .wg-unified-tools .wg-user-role{font-size:10.5px!important;color:#8292a7!important}
+.wg-body .wg-top-separator{width:1px!important;height:27px!important;background:#17283d!important;display:block!important;margin:0 4px!important}
+.wg-body .wg-notification-icon{position:relative!important}
+.wg-body .wg-notification-count{position:absolute!important;top:2px!important;right:0!important;min-width:17px!important;height:17px!important;padding:0 4px!important;border-radius:999px!important;background:#0d72f3!important;color:#fff!important;font-size:9px!important;display:grid!important;place-items:center!important;border:2px solid #030914!important}
+
+/* Theme icon visibility cannot depend on stale Livewire head state. */
+html[data-wg-theme="dark"] .wg-theme-moon,html:not(.wg-light) .wg-theme-moon{display:none!important}
+html[data-wg-theme="light"] .wg-theme-sun,html.wg-light .wg-theme-sun{display:none!important}
+html[data-wg-theme="light"] .wg-theme-moon,html.wg-light .wg-theme-moon{display:block!important}
+
+/* 3) Canvas consistency: every screen receives the same full usable width. */
+.wg-body .wg-content{width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;overflow-x:hidden!important}
+.wg-body-system .wg-content,.wg-body-system .wg-system-content{padding:20px 24px 38px!important}
+.wg-body-system .wg-content>*,.wg-body-system .wg-system-content>*{max-width:none!important;min-width:0!important;box-sizing:border-box!important}
+.wg-body-system .wg-content>[dir="rtl"].mx-auto,.wg-body-system .wg-content>[dir="rtl"].p-6{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+
+/* Bring older functional/system pages into the current dark visual language instead of looking unstyled. */
+.wg-body-system .rounded-2xl.border,.wg-body-system .rounded-xl.border,.wg-body-system .rounded-lg.border,
+.wg-body-system [class*="rounded-"][class*="border"]{border-color:#172b43!important}
+.wg-body-system .bg-white,.wg-body-system .dark\:bg-zinc-900,.wg-body-system form.rounded-2xl{
+  background:linear-gradient(180deg,#091625,#07121f)!important;color:#eaf1f9!important;box-shadow:none!important
+}
+.wg-body-system input,.wg-body-system select,.wg-body-system textarea{
+  color:#e9eef7!important;background:#07101b!important;border-color:#1a2b42!important;box-shadow:none!important
+}
+.wg-body-system input:focus,.wg-body-system select:focus,.wg-body-system textarea:focus{
+  border-color:#197ff7!important;outline:none!important;box-shadow:0 0 0 2px rgba(25,127,247,.10)!important
+}
+
+/* Old topbars that remain inside cached Livewire snapshots are neutralized.
+   The new shared header is authoritative after a full or Livewire navigation. */
+.wg-body .wg-topbar:not(.wg-topbar-unified){direction:ltr!important}
+.wg-body .wg-topbar:not(.wg-topbar-unified) .wg-topbar-tools{direction:ltr!important;margin-left:auto!important;margin-right:0!important}
+.wg-body .wg-topbar:not(.wg-topbar-unified) .wg-user{margin:0!important}
+
+/* Light mode parity */
+html.wg-light .wg-topbar-unified,html[data-wg-theme="light"] .wg-topbar-unified{background:#fff!important;border-bottom-color:#d8e3ef!important}
+html.wg-light .wg-unified-page h1,html[data-wg-theme="light"] .wg-unified-page h1{color:#14263e!important}
+html.wg-light .wg-unified-crumb,html[data-wg-theme="light"] .wg-unified-crumb{color:#71839a!important}
+html.wg-light .wg-unified-search,html[data-wg-theme="light"] .wg-unified-search{background:#f7fbff!important;border-color:#cfdff0!important;color:#71839a!important}
+html.wg-light .wg-unified-tools .wg-user-name,html[data-wg-theme="light"] .wg-unified-tools .wg-user-name{color:#14263e!important}
+html.wg-light .wg-unified-tools .wg-user-role,html[data-wg-theme="light"] .wg-unified-tools .wg-user-role{color:#70839a!important}
+
+@media(max-width:1180px){
+  :root{--wg-shell-sidebar:172px}
+  .wg-body .wg-topbar-unified{grid-template-columns:minmax(190px,1fr) minmax(280px,380px) auto!important;gap:16px!important;padding:0 20px!important}
+  .wg-body .wg-unified-tools .wg-user summary{min-width:160px!important}
+}
+@media(max-width:900px){
+  :root{--wg-shell-sidebar:78px}
+  .wg-body .wg-sidebar .wg-nav span{display:none!important}
+  .wg-body .wg-sidebar .wg-brand img{width:58px!important}
+  .wg-body .wg-sidebar-art{display:none!important}
+  .wg-body .wg-nav a{justify-content:center!important;padding:0!important}
+  .wg-body .wg-topbar-unified{grid-template-columns:minmax(150px,1fr) minmax(235px,320px) auto!important;gap:10px!important;padding:0 14px!important}
+  .wg-body .wg-unified-tools .wg-user-copy{display:none!important}
+  .wg-body .wg-unified-tools .wg-user summary{min-width:auto!important}
+  .wg-unified-crumb{display:none!important}
+}
+@media(max-width:680px){
+  :root{--wg-shell-sidebar:0px}
+  .wg-body .wg-sidebar{display:none!important}
+  .wg-body .wg-main{margin-right:0!important;margin-left:0!important;width:100vw!important;max-width:100vw!important}
+  .wg-body .wg-topbar-unified{position:relative!important;height:auto!important;min-height:0!important;grid-template-columns:1fr auto!important;grid-template-areas:"page tools" "search search"!important;padding:12px 14px!important;gap:10px!important}
+  .wg-unified-page{text-align:right!important;justify-self:stretch!important}
+  .wg-body .wg-unified-search{max-width:none!important}
+  .wg-body .wg-unified-tools .wg-user{display:none!important}
+  .wg-body .wg-content{padding-left:12px!important;padding-right:12px!important}
+}
+
+/* ================================================================
+   WINNER GYM — Shell v3 final direction map
+   RIGHT: page/module title + breadcrumb
+   CENTER: search
+   LEFT: signed-in account + notifications + appearance
+   Sidebar remains permanently RIGHT for the Arabic application.
+   This block is intentionally last and authoritative on every route.
+   ================================================================ */
+html body.wg-body .wg-topbar-unified{
+  grid-template-columns:auto minmax(320px,420px) minmax(220px,1fr)!important;
+  grid-template-areas:"tools search page"!important;
+  direction:ltr!important;
+}
+html body.wg-body .wg-unified-page{
+  grid-area:page!important;
+  justify-self:end!important;
+  text-align:right!important;
+  direction:rtl!important;
+  min-width:210px!important;
+}
+html body.wg-body .wg-unified-page h1{text-align:right!important}
+html body.wg-body .wg-unified-crumb{
+  justify-content:flex-start!important;
+  direction:rtl!important;
+  text-align:right!important;
+}
+html body.wg-body .wg-unified-search{grid-area:search!important;justify-self:center!important}
+html body.wg-body .wg-unified-tools{
+  grid-area:tools!important;
+  justify-self:start!important;
+  justify-content:flex-start!important;
+  direction:ltr!important;
+}
+/* Account is the outer-most item on the left, then bell, then appearance. */
+html body.wg-body .wg-unified-tools .wg-unified-user{order:0!important}
+html body.wg-body .wg-unified-tools .wg-top-separator{order:1!important}
+html body.wg-body .wg-unified-tools .wg-notification-icon{order:2!important}
+html body.wg-body .wg-unified-tools .wg-theme-toggle{order:3!important}
+html body.wg-body .wg-unified-tools .wg-user-menu{
+  left:0!important;right:auto!important;
+}
+/* Kill any module CSS that still tries to send the shell back to the left. */
+html body.wg-body .wg-sidebar{
+  right:0!important;left:auto!important;
+  border-left:1px solid #16273d!important;border-right:0!important;
+}
+html body.wg-body .wg-main{
+  margin-right:var(--wg-shell-sidebar)!important;margin-left:0!important;
+  width:calc(100vw - var(--wg-shell-sidebar))!important;
+  max-width:calc(100vw - var(--wg-shell-sidebar))!important;
+}
+@media(max-width:1180px){
+  html body.wg-body .wg-topbar-unified{grid-template-columns:auto minmax(280px,380px) minmax(190px,1fr)!important}
+}
+@media(max-width:900px){
+  html body.wg-body .wg-topbar-unified{grid-template-columns:auto minmax(230px,320px) minmax(150px,1fr)!important}
+}
+@media(max-width:680px){
+  html body.wg-body .wg-main{margin-right:0!important;margin-left:0!important;width:100vw!important;max-width:100vw!important}
+  html body.wg-body .wg-topbar-unified{
+    grid-template-columns:auto 1fr!important;
+    grid-template-areas:"tools page" "search search"!important;
+  }
+  html body.wg-body .wg-unified-page{justify-self:end!important;text-align:right!important}
+  html body.wg-body .wg-unified-tools{justify-self:start!important}
+}

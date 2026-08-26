@@ -1,0 +1,484 @@
+/* ======================================================================
+   WINNER GYM — FINAL DUAL THEME SYSTEM
+   Light mode is color-only: layout, spacing, typography and sizing stay
+   identical to the accepted dark UI. Loaded LAST by the shared app shell.
+   ====================================================================== */
+
+:is(html.wg-light,html[data-wg-theme="light"]){
+  color-scheme:light!important;
+  --wg-bg:#f7faff;
+  --wg-bg-2:#f1f6fc;
+  --wg-panel:#ffffff;
+  --wg-panel-2:#f8fbff;
+  --wg-border:#dbe6f2;
+  --wg-border-2:#cbd9e8;
+  --wg-text:#12233d;
+  --wg-muted:#71839a;
+  --wg-blue:#1478f2;
+  --wg-blue-2:#0865e7;
+  --wg-green:#08a95e;
+  --wg-red:#ef3349;
+  --wg-orange:#ef8d00;
+  --wg-purple:#7654ec;
+  background:#f7faff!important;
+}
+
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body{
+  background:
+    radial-gradient(circle at 72% -12%,rgba(39,132,255,.055),transparent 32rem),
+    linear-gradient(180deg,#fbfdff 0%,#f5f9fe 48%,#f7faff 100%)!important;
+  color:var(--wg-text)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-app,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-main,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content{color:var(--wg-text)!important}
+
+/* ---------- Shared shell ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-sidebar{
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 56%,#f4f8fd 100%)!important;
+  border-left-color:#dce7f2!important;
+  border-right:0!important;
+  box-shadow:-14px 0 38px rgba(48,83,124,.055)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-brand{background:transparent!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-nav a{color:#53667f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-nav a:hover{
+  color:#0c62d5!important;background:#eef6ff!important;border-color:#d6e6f7!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-nav a.is-active{
+  color:#fff!important;background:linear-gradient(135deg,#2185ff,#0965e8)!important;
+  border-color:#2d8dff!important;box-shadow:0 9px 22px rgba(26,117,232,.18)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-nav-icon{color:currentColor!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-sidebar-art::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 34%,rgba(245,249,254,.18) 100%);
+}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-topbar-unified{
+  background:rgba(255,255,255,.97)!important;border-bottom-color:#e0e9f3!important;
+  box-shadow:0 4px 18px rgba(46,77,112,.035)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-unified-page h1{color:#101f37!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-unified-crumb{color:#8696aa!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-unified-crumb i{color:#1678ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-unified-search{
+  background:#fff!important;border-color:#d6e2ef!important;color:#7d8fa6!important;
+  box-shadow:0 2px 8px rgba(40,75,116,.025)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-unified-search:hover{border-color:#bfd5ee!important}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-unified-search svg{color:#536a84!important}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-top-icon{color:#435d79!important}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-top-icon:hover{
+  color:#0c70ed!important;background:#eef6ff!important;border-color:#d6e5f5!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-top-separator{background:#dfe8f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-notification-count{border-color:#fff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-user-name{color:#12233d!important}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-user-role,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-user-chevron{color:#74879d!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-user-menu{
+  background:#fff!important;border-color:#d9e4ef!important;color:#15273f!important;
+  box-shadow:0 22px 58px rgba(37,68,103,.14)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-user-menu strong{color:#15273f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-user-menu span,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-user-menu-row{color:#71849b!important;border-color:#e7eef5!important}
+
+/* ---------- Generic component language ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-title,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-section-title,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-card h1,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-card h2,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-card h3{color:#12233d!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-subtitle,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-muted{color:#74879e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-card{
+  background:#fff!important;border-color:#dce6f0!important;
+  box-shadow:0 5px 18px rgba(45,77,113,.035),inset 0 1px rgba(255,255,255,.95)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-stat small{color:#667b93!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-stat strong{color:#10213a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-stat .wg-stat-icon{background:#eef6ff!important;border-color:#d7e8fb!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-field,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-select,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-textarea{
+  background:#fff!important;border-color:#d5e1ed!important;color:#1a2d47!important;box-shadow:none!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-field::placeholder,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-textarea::placeholder{color:#98a8ba!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-field:focus,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-select:focus,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-textarea:focus{
+  border-color:#2587f5!important;box-shadow:0 0 0 3px rgba(37,135,245,.09)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-label{color:#3e526a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-btn{
+  background:#fff!important;border-color:#d5e2ef!important;color:#354c66!important;box-shadow:none!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-btn:hover{background:#f2f8ff!important;border-color:#bdd4ec!important;color:#0d64d4!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-btn-primary{background:linear-gradient(135deg,#2185ff,#0965e8)!important;border-color:#2589ff!important;color:#fff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-btn-danger{background:#fff5f6!important;border-color:#f2c9cf!important;color:#e43b50!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-btn-success{background:#f0fbf5!important;border-color:#bfe8d1!important;color:#079c59!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-table-wrap{background:#fff!important;border-color:#dde7f1!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-table th{background:#f8fbfe!important;color:#71849b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-table td{border-top-color:#e7eef5!important;color:#32475f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-table tr:hover td{background:#f8fbff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-badge-green{color:#078e51!important;background:#eaf9f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-badge-red{color:#df354a!important;background:#fff0f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-badge-orange{color:#d97c00!important;background:#fff5e5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-badge-blue{color:#106fdc!important;background:#edf5ff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-badge-purple{color:#6849d8!important;background:#f1edff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-flash{background:#effaf5!important;border-color:#bce8d1!important;color:#07894e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-errors{background:#fff4f5!important;border-color:#efc8cd!important;color:#d93c4e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-alert{border-color:#e5edf5!important;color:#425872!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-divider{background:#e4ecf4!important;border-color:#e4ecf4!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-finance-box{background:#fbfdff!important;border-color:#dde8f2!important;color:#213650!important}
+
+/* Form native controls + autofill */
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body input,
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body select,
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body textarea{color-scheme:light}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body input:-webkit-autofill,
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body input:-webkit-autofill:hover,
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body input:-webkit-autofill:focus{
+  -webkit-text-fill-color:#1a2d47!important;-webkit-box-shadow:0 0 0 1000px #fff inset!important;
+  transition:background-color 9999s ease-out 0s!important;
+}
+
+/* ---------- Older/system/Tailwind/Flux pages ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system .rounded-2xl.border,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system .rounded-xl.border,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system .rounded-lg.border,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system [class*="rounded-"][class*="border"]{border-color:#dce6f0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system .bg-white,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system .dark\:bg-zinc-900,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system form.rounded-2xl{
+  background:#fff!important;color:#172a43!important;box-shadow:0 5px 16px rgba(43,76,114,.035)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system input,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system select,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system textarea,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content input.border,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content select.border,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content textarea.border,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content input.rounded-xl,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content select.rounded-xl,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content textarea.rounded-xl{
+  background:#fff!important;border-color:#d4e0ec!important;color:#20344e!important;box-shadow:none!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content input::placeholder,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content textarea::placeholder{color:#99a9bb!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content table.w-full th{color:#71849a!important;background:#f8fbfe!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content table.w-full td{color:#344a62!important;border-color:#e7eef5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content .text-zinc-500{color:#75879c!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content nav[role="navigation"] span,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content nav[role="navigation"] a{background:#fff!important;border-color:#dbe5ef!important;color:#52667e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content .bg-green-50{background:#effaf5!important;border-color:#bee7d1!important;color:#078d51!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content .bg-red-50{background:#fff3f5!important;border-color:#efcbd0!important;color:#d83c4f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-content > [dir="rtl"] > div > h1{color:#14253d!important}
+
+/* ---------- Attendance ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance{
+  --att-border:#dbe6f1;--att-panel:#fff;--att-panel-2:#f8fbfe;--att-muted:#74869c;
+  background:#f7faff!important;color:#172a43!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-attendance-page{color:#172a43!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance :is(.wg-att-scan-card,.wg-att-ready-card,.wg-att-table-card,.wg-att-side-card,.wg-att-success-card){
+  background:#fff!important;border-color:#dce6f0!important;box-shadow:0 5px 18px rgba(45,77,113,.035)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance :is(.wg-att-card-title h2,.wg-att-table-title,.wg-att-side-card h3,.wg-att-mini-stats strong,.wg-att-camera-head strong){color:#14263e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance :is(.wg-att-card-title p,.wg-att-or,.wg-att-side-empty,.wg-att-camera-dialog p){color:#7a8ca2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-scan-input-wrap input,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance :is(.wg-att-table-filters select,.wg-att-date-input){background:#fff!important;color:#22374f!important;border-color:#cfdeed!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-camera-inline,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-camera-button{background:#f7fbff!important;border-color:#cee0f2!important;color:#1478ec!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-table th{background:#f8fbfe!important;color:#71849a!important;border-color:#e6edf5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-table td{background:#fff!important;color:#30465f!important;border-color:#e7eef5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-table tr:hover td{background:#f8fbff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-actions-card :is(a,button){background:#fff!important;border-color:#dbe6f0!important;color:#40566f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-mini-stats>div{background:#fbfdff!important;border-color:#e0e9f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-mini-stats span{color:#75879c!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-mini-stats i.is-blue{background:#edf5ff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-mini-stats i.is-orange{background:#fff5e7!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-mini-stats i.is-purple{background:#f2efff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-mini-stats i.is-red{background:#fff0f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-success-card{background:#f0fbf5!important;border-color:#bfe6d1!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-success-card.is-muted{background:#f7fbff!important;border-color:#d9e6f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-success-card strong{color:#17623f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-camera-modal{background:rgba(41,58,78,.34)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-camera-dialog{background:#fff!important;border-color:#d1deec!important;box-shadow:0 28px 80px rgba(42,70,103,.22)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-camera-head button{background:#f7faff!important;color:#3c526a!important;border-color:#d7e3ef!important}
+
+/* ---------- Finance: payments + expenses ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance{
+  --fin-bg:#f7faff;--fin-panel:#fff;--fin-panel2:#f8fbfe;--fin-line:#dbe6f0;--fin-line2:#c9daea;
+  --fin-muted:#74869c;--fin-text:#14263e;background:#f7faff!important;color:#14263e!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-card,.fin-kpi,.fin-section,.fin-table-card,.fin-side-card,.payment-summary-card,.payment-trend-card,.expense-summary-card,.expense-trend-card){
+  background:#fff!important;border-color:#dce6f0!important;box-shadow:0 5px 18px rgba(45,77,113,.035)!important;color:#17304a!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-section-title,.fin-modal-title,.fin-kpi-value,.fin-recent-title,.fin-due-name,.fin-summary-row strong,.fin-selector-member){color:#15273f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-muted,.fin-kpi-label,.fin-kpi-sub,.fin-section-sub,.fin-recent-meta,.fin-due-meta,.fin-selector-meta,.fin-label){color:#74879c!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-field,.fin-select,.fin-textarea,.fin-file,.fin-search-wrap input){background:#fff!important;border-color:#d4e0ec!important;color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-toolbar,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-module-strip{background:#fbfdff!important;border-color:#e2eaf3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-tab{background:#fff!important;border-color:#d7e3ef!important;color:#52677f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-tab.active{background:#edf5ff!important;border-color:#bcd7f4!important;color:#0e69db!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-table th{background:#f8fbfe!important;color:#71849a!important;border-color:#e5edf5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-table td{background:#fff!important;color:#32475f!important;border-color:#e7eef5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-table tr:hover td{background:#f8fbff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-recent-item,.fin-due-item,.fin-summary-row,.fin-legend-row){border-color:#e6edf5!important;color:#415871!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-modal-backdrop{background:rgba(37,53,72,.34)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-modal{background:#fff!important;border-color:#cddbea!important;box-shadow:0 28px 88px rgba(40,71,107,.22)!important;color:#17304a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-modal-head,.fin-modal-foot){border-color:#e1e9f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-btn{background:#fff!important;border-color:#d6e2ee!important;color:#3b526c!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-btn.primary{background:linear-gradient(135deg,#2185ff,#0965e8)!important;color:#fff!important;border-color:#2589ff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-btn.danger{background:#fff3f5!important;border-color:#f0c9ce!important;color:#db3b4e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-chart-grid line{stroke:#e1eaf3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-chart-labels{color:#788ba0!important}
+
+/* ---------- Inventory: products + purchases + POS/sales ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory{background:#f7faff!important;color:#14263e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-card,.wg-inv-kpi,.wg-inv-products-card,.wg-inv-chart-card,.wg-inv-alert-card,.wg-inv-distribution-card,.wg-inv-summary-card,.wg-inv-quick-strip,.wg-pos-modal,.wg-purchase-card,.wg-sales-card){
+  background:#fff!important;border-color:#dce6f0!important;box-shadow:0 5px 18px rgba(45,77,113,.035)!important;color:#17304a!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-card-head h2,.wg-inv-kpi strong,.wg-inv-products-head h2,.wg-inv-quick-strip-head h2,.wg-pos-head h2,.wg-pos-cart-head h3,.wg-purchase-title,.wg-sales-title){color:#14263e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-eyebrow,.wg-inv-kpi span,.wg-inv-legend,.wg-inv-table-footer,.wg-inv-empty,.wg-pos-cart-empty,.wg-inv-notes){color:#75889e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-commandbar,.wg-inv-filters,.wg-inv-ledger-filters,.wg-pos-workspace,.wg-pos-cart,.wg-pos-checkout,.wg-purchase-bottom){background:#fbfdff!important;border-color:#e0e9f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-search-field,.wg-inv-search-small,.wg-pos-search,.wg-pos-field,.wg-pos-money-input,.wg-inv-modal input,.wg-inv-modal select,.wg-inv-modal textarea,.wg-purchase-item-row input,.wg-purchase-item-row select){background:#fff!important;border-color:#d4e0ec!important;color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-table th{background:#f8fbfe!important;color:#71849a!important;border-color:#e5edf5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-table td{background:#fff!important;color:#32475f!important;border-color:#e7eef5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-table tr:hover td{background:#f8fbff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-quick-product,.wg-pos-product-results>*,.wg-pos-cart-item,.wg-inv-alert-item,.wg-inv-summary-list>*){background:#fff!important;border-color:#e1e9f2!important;color:#344a62!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-quick-product:hover{background:#f6faff!important;border-color:#bdd6ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-product-icon,.wg-inv-quick-product-icon,.wg-pos-product-icon){background:#eef6ff!important;border-color:#d9e8f8!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-chart-y,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-chart-labels{color:#788ba0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-chart{background-image:linear-gradient(#e7eef6 1px,transparent 1px)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-modal-backdrop{background:rgba(37,53,72,.34)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-modal,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-confirm-modal{background:#fff!important;border-color:#cfdeec!important;box-shadow:0 28px 88px rgba(40,71,107,.22)!important;color:#17304a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-modal-head,.wg-inv-modal-foot,.wg-pos-head,.wg-pos-foot){border-color:#e2eaf3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-btn,.wg-inv-modal-cancel){background:#fff!important;border-color:#d6e2ee!important;color:#3d536c!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-btn-primary,.wg-inv-modal-save,.wg-inv-open-pos){background:linear-gradient(135deg,#2185ff,#0965e8)!important;color:#fff!important;border-color:#2589ff!important}
+
+/* ---------- Nutrition ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition{background:#f7faff!important;color:#14263e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition :is(.wg-nut-card,.wg-nut-kpi,.wg-nut-table-card,.wg-nut-history-card,.wg-nut-measure-hero,.wg-nut-side){
+  background:#fff!important;border-color:#dce6f0!important;box-shadow:0 5px 18px rgba(45,77,113,.035)!important;color:#17304a!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition :is(.wg-nut-card-head h2,.wg-nut-kpi strong,.wg-nut-table-top h2,.wg-nut-measurement-head h2){color:#14263e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition :is(.wg-nut-kpi span,.wg-nut-empty,.wg-nut-select-hint,.wg-nut-notes-cell,.wg-nut-side-empty){color:#75889e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition :is(.wg-nut-commandbar,.wg-nut-table-filters,.wg-nut-selected-summary,.wg-nut-measurements-preview,.wg-nut-upcoming-list){background:#fbfdff!important;border-color:#e0e9f2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition :is(input,select,textarea){background-color:#fff!important;border-color:#d4e0ec!important;color:#20344e!important;box-shadow:none!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-table th,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-table th{background:#f8fbfe!important;color:#71849a!important;border-color:#e5edf5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-table td,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-table td{background:#fff!important;color:#32475f!important;border-color:#e7eef5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition :is(.wg-nut-slots>*,.wg-nut-upcoming-list>*,.wg-nut-action-grid>*,.wg-nut-quick-actions>* ){background:#fff!important;border-color:#e1e9f2!important;color:#3b526b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-modal-backdrop{background:rgba(37,53,72,.34)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-modal{background:#fff!important;border-color:#cfdeec!important;box-shadow:0 28px 88px rgba(40,71,107,.22)!important;color:#17304a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-modal-x{background:#f6faff!important;border-color:#d8e4ef!important;color:#425970!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-btn{background:#fff!important;border-color:#d6e2ee!important;color:#3c526b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-btn-primary{background:linear-gradient(135deg,#2185ff,#0965e8)!important;color:#fff!important;border-color:#2589ff!important}
+
+/* ---------- Members / subscriptions: final consistency layer ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions{background:#f7faff!important;color:#14263e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members :is(.wg-members-stat,.wg-members-filter-panel,.wg-members-table-shell,.wg-members-modal,.wg-members-subscription-card,.wg-members-info-strip),
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions :is(.wg-sub-summary-card,.wg-sub-filter-panel,.wg-sub-table-card,.wg-sub-aside-card,.wg-sub-distribution-card,.wg-modal){
+  background:#fff!important;border-color:#dce6f0!important;box-shadow:0 5px 18px rgba(45,77,113,.035)!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members :is(.wg-members-stat-label,.wg-members-primary,.wg-members-person strong,.wg-members-modal-head h2),
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions :is(.wg-sub-summary-card strong,.wg-sub-table-card h2,.wg-sub-aside-head h3){color:#15273f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members :is(.wg-members-search-control input,.wg-members-select-control select),
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions :is(.wg-sub-filter-search input,.wg-sub-filter-panel select,.wg-sub-date-field input){background:#fff!important;border-color:#d4e0ec!important;color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members .wg-members-table th,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions .wg-sub-table th{background:#f8fbfe!important;color:#71849a!important;border-color:#e5edf5!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members .wg-members-table td,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions .wg-sub-table td{background:#fff!important;color:#32475f!important;border-color:#e7eef5!important}
+
+/* ---------- Dialogs / backdrops / generic overlays ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) :is(.wg-modal-backdrop,.wg-action-backdrop){background:rgba(38,53,72,.34)!important;backdrop-filter:blur(4px)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) :is(.wg-modal,.wg-action-modal){background:#fff!important;border-color:#cfdeec!important;color:#17304a!important;box-shadow:0 28px 88px rgba(40,71,107,.22)!important}
+
+/* ---------- Inline dark text left by legacy templates ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="color:#fff"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="color: #fff"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="color:#f8fafc"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="color:#e8eef7"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="color:#eaf1f9"]{color:#172a43!important}
+/* Keep text on blue/semantic filled controls white. */
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body :is(.wg-btn-primary,.fin-btn.primary,.wg-inv-btn-primary,.wg-inv-modal-save,.wg-inv-open-pos,.wg-nut-btn-primary,.wg-nav a.is-active)[style]{color:#fff!important}
+
+/* ---------- Scrollbars ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body *{scrollbar-color:#c5d5e6 #f4f8fc}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body *::-webkit-scrollbar-thumb{background:#c5d5e6;border:3px solid #f4f8fc}
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body *::-webkit-scrollbar-track{background:#f4f8fc}
+
+/* Smooth only color surfaces, never dimensions/position. */
+@media (prefers-reduced-motion:no-preference){
+  body.wg-body,
+  body.wg-body .wg-sidebar,
+  body.wg-body .wg-topbar-unified,
+  body.wg-body .wg-card,
+  body.wg-body button,
+  body.wg-body input,
+  body.wg-body select,
+  body.wg-body textarea{transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease!important}
+}
+
+/* ======================================================================
+   WINNER GYM — LIGHT THEME COMPLETENESS AUDIT v2
+   Purpose: eliminate legacy dark islands left by module-specific CSS.
+   This block is intentionally LAST and changes colors only.
+   ====================================================================== */
+
+/* ---------- Dashboard legacy blocks / old quick action markup ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-dashboard :is(.wg-quick .wg-btn,.wg-quick a,.wg-alert,.wg-finance-box,.wg-toolbar){
+  background:#fff!important;border-color:#dce6f0!important;color:#40566f!important;box-shadow:none!important;
+}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-dashboard .wg-alert:hover,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-dashboard .wg-quick a:hover{background:#f4f9ff!important;border-color:#c6d9ed!important;color:#0e68dc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-dashboard .wg-modal-x:hover{background:#eef5fc!important;color:#1b5f9f!important}
+
+/* ---------- Attendance remaining dark controls ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-attendance-final{background:#fff!important;border-bottom-color:#e0e9f3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-attendance-final .wg-att-final-search{background:#fff!important;border-color:#d6e2ef!important;color:#71849b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-export,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-row-action,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-pagination button{background:#fff!important;border-color:#d7e3ef!important;color:#4b6179!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance :is(.wg-att-export,.wg-att-row-action):hover{background:#edf6ff!important;border-color:#b9d5f0!important;color:#0f70e8!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-table tr.is-selected td{background:#f1f7ff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-fingerprint{background:#eef6ff!important;border-color:#b8d7f7!important;color:#167cf2!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-status,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-member-head em.is-green{background:#eaf9f2!important;color:#078e51!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-member-head em.is-orange{background:#fff5e5!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-flash-success{background:#effaf5!important;border-color:#bce8d1!important;color:#07894e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-flash-error{background:#fff4f5!important;border-color:#efc8cd!important;color:#d93c4e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-attendance .wg-att-success-card.is-muted .wg-att-success-icon{background:#edf5ff!important;color:#1478ec!important}
+
+/* ---------- Members remaining menus ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-members-final{background:#fff!important;border-bottom-color:#e0e9f3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-members-final .wg-members-final-search{background:#fff!important;border-color:#d6e2ef!important;color:#71849b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members .wg-members-more-menu{background:#fff!important;border-color:#d7e3ef!important;box-shadow:0 16px 40px rgba(42,71,105,.13)!important;color:#344a62!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members .wg-members-more-menu :is(button,a){color:#40566f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-members .wg-members-more-menu :is(button,a):hover{background:#edf6ff!important;color:#0d66d8!important}
+
+/* ---------- Subscriptions remaining dark range/search shell ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-subscriptions-final{background:#fff!important;border-bottom-color:#e0e9f3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-subscriptions-final .wg-sub-final-search{background:#fff!important;border-color:#d6e2ef!important;color:#71849b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions .wg-sub-date-range{background:#fff!important;border-color:#d4e0ec!important;color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-subscriptions .wg-sub-donut>div{background:#fff!important;border-color:#e1e9f2!important;color:#20344e!important}
+
+/* ---------- Finance: remove dark islands ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-finance-final{background:#fff!important;border-bottom-color:#e0e9f3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-finance-final .wg-finance-final-search{background:#fff!important;border-color:#d6e2ef!important;color:#71849b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-tabs,.fin-reset,.fin-currency-pill,.fin-icon-btn,.fin-quick-link,.fin-due-action,.fin-method,.fin-selector-item){background:#fff!important;border-color:#d6e2ee!important;color:#40566f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.fin-reset,.fin-icon-btn,.fin-quick-link,.fin-due-action):hover{background:#edf6ff!important;border-color:#bdd5ee!important;color:#0e69dc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-flash{background:#effaf5!important;border-color:#bce8d1!important;color:#07894e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-errors{background:#fff3f5!important;border-color:#efcbd0!important;color:#d83c4f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-method.active{background:#edf6ff!important;border-color:#8fc2f5!important;color:#0e69dc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-method-icon{background:#eef6ff!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-donut::after{background:#fff!important;border-color:#dbe6f0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .fin-badge.green{background:#eaf9f2!important;color:#078e51!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance :is(.expense-strip,.payment-strip){background:#fbfdff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .expense-strip{border-color:#f3cbd1!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-finance .payment-strip{border-color:#c9def6!important}
+
+/* ---------- Inventory: products / purchases / sales / POS ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-inventory-final{background:#fff!important;border-bottom-color:#e0e9f3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-inventory-final-search{background:#fff!important;border-color:#d6e2ef!important;color:#71849b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-tabs,.wg-pos-products,.wg-stock-guide-list>div,.wg-purchase-modal,.wg-sales-product-card,.wg-stock-flow,.wg-stock-flow>div,.wg-purchase-kpis article,.wg-sales-kpis article){background:#fff!important;border-color:#dce6f0!important;color:#344a62!important;box-shadow:none!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-tabs a:hover{background:#edf6ff!important;color:#0f69dc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-tabs a.is-active{background:linear-gradient(135deg,#2185ff,#0965e8)!important;color:#fff!important;border-color:#2589ff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-flash{background:#effaf5!important;border-color:#bce8d1!important;color:#07894e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-errors,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-pos-error{background:#fff3f5!important;border-color:#efcbd0!important;color:#d83c4f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-donut::after{background:#fff!important;border-color:#dbe6f0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-product-thumb,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-sales-product-image{background:#f4f9ff!important;border-color:#d7e6f5!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-status.is-ok{background:#eaf9f2!important;color:#078e51!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-status.is-low{background:#fff5e5!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-status.is-inactive{background:#fff0f2!important;color:#df354a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-row-actions :is(button,a){background:#fff!important;border-color:#d8e4ef!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-row-actions :is(button,a):hover{background:#edf6ff!important;border-color:#bdd5ee!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-row-actions :is(.is-sell,.is-approve){background:#f0fbf5!important;border-color:#bfe8d1!important;color:#079c59!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-inv-row-actions .is-danger{background:#fff3f5!important;border-color:#efcbd0!important;color:#d83c4f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-summary-static i.is-purple,.wg-purchase-kpis article>i.is-purple,.wg-sales-kpis article>i.is-purple){background:#f2efff!important;border-color:#d8cff7!important;color:#7654ec!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-summary-list i.is-green,.wg-purchase-kpis article>i.is-green,.wg-sales-kpis article>i.is-green){background:#eaf9f2!important;border-color:#bfe8d1!important;color:#079c59!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-purchase-kpis article>i.is-blue,.wg-sales-kpis article>i.is-blue){background:#edf5ff!important;border-color:#c9def6!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-purchase-kpis article>i.is-orange,.wg-sales-kpis article>i.is-orange){background:#fff5e5!important;border-color:#f0d8ad!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-purchase-kpis article>i.is-red{background:#fff0f2!important;border-color:#efcbd0!important;color:#df354a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-sales-kpis article>i.is-cyan{background:#eaf9fc!important;border-color:#bfe6ee!important;color:#0b9ab8!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-form-grid input,.wg-inv-form-grid select,.wg-inv-form-grid textarea,.wg-purchase-meta-grid input,.wg-purchase-meta-grid select,.wg-purchase-bottom textarea,.wg-sales-checkout-fields input,.wg-sales-checkout-fields select){background:#fff!important;border-color:#d4e0ec!important;color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory :is(.wg-inv-upload>div,.wg-nut-upload){background:#fbfdff!important;border-color:#c9dced!important;color:#71849a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-pos-qty button{background:#edf6ff!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-pos-remove{background:#fff3f5!important;border-color:#efcbd0!important;color:#d83c4f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-stock-flow>div.is-current{background:#edf6ff!important;border-color:#9ac7f1!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-stock-flow>div>i{background:#edf5ff!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-stock-guide-list i.is-blue{background:#edf5ff!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-stock-guide-list i.is-green{background:#eaf9f2!important;color:#079c59!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-stock-guide-list i.is-orange{background:#fff5e5!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-accounting-note{background:#f1f7ff!important;border-color:#c7ddf3!important;color:#35536f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-purchase-items-head button{background:#edf6ff!important;border-color:#b9d5f0!important;color:#0f70e8!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-sales-product-card:hover{background:#f5f9fe!important;border-color:#bcd7ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-inventory .wg-sales-total-box{background:#f0fbf5!important;border-color:#bfe8d1!important;color:#17623f!important}
+
+/* ---------- Nutrition: measurements / actions / payment ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-topbar-nutrition-final{background:#fff!important;border-bottom-color:#e0e9f3!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-nutrition-final-search{background:#fff!important;border-color:#d6e2ef!important;color:#71849b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-flash.is-success{background:#effaf5!important;border-color:#bce8d1!important;color:#07894e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-flash.is-error{background:#fff4f5!important;border-color:#efc8cd!important;color:#d93c4e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-btn-danger{background:#fff3f5!important;border-color:#efcbd0!important;color:#d83c4f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-btn-warning{background:#fff7e8!important;border-color:#efd9ae!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-table tbody tr:hover td,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-table tbody tr.is-selected td{background:#f5f9fe!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-pill.is-green{background:#eaf9f2!important;border-color:#bfe8d1!important;color:#078e51!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-pill.is-red{background:#fff0f2!important;border-color:#efcbd0!important;color:#df354a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-pill.is-orange{background:#fff5e5!important;border-color:#efd8ad!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-pill.is-blue{background:#edf5ff!important;border-color:#c9def6!important;color:#106fdc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-pill.is-gray{background:#f2f5f8!important;border-color:#dce3ea!important;color:#66798f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-row-actions button,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-table-footer nav :is(a,span),
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measurement-actions :is(a,button){background:#fff!important;border-color:#d7e3ef!important;color:#4c627a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-row-actions button:hover{background:#edf6ff!important;border-color:#bdd5ee!important;color:#0e69dc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-table-footer nav span[aria-current=page] span{background:#1478ef!important;color:#fff!important;border-color:#2589ff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-upcoming-list>button:hover,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-upcoming-list>button.is-selected{background:#f1f7ff!important;border-color:#bdd7f0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-action-grid button.is-danger{background:#fff3f5!important;border-color:#efcbd0!important;color:#d83c4f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-action-grid button.is-warning{background:#fff7e8!important;border-color:#efd9ae!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-grid article{background:#fff!important;border-color:#dce6f0!important;color:#344a62!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-grid article>i{background:#edf5ff!important;color:#1478ef!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-grid article.is-green>i{background:#eaf9f2!important;color:#079c59!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-grid article.is-orange>i{background:#fff5e5!important;color:#d97c00!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-grid article.is-purple>i{background:#f2efff!important;color:#7654ec!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-grid article.is-red>i{background:#fff0f2!important;color:#df354a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-measure-bmi{background:#f1f7ff!important;border-color:#c5dcef!important;color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-bmi-pill{background:#f2efff!important;color:#6849d8!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-linked-appointment{background:#edf5ff!important;border-color:#c9def6!important;color:#106fdc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition :is(.wg-nut-form-grid input,.wg-nut-form-grid select,.wg-nut-full-label input,.wg-nut-full-label textarea,.wg-nut-measure-form-grid input,.wg-nut-payment-methods label,.wg-nut-upload){background:#fff!important;border-color:#d4e0ec!important;color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-slots button:hover,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-slots button.is-selected,
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-payment-methods label.is-selected{background:#edf6ff!important;border-color:#9dc9f3!important;color:#0e69dc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-payment-amount{background:#f0fbf5!important;border-color:#bfe8d1!important;color:#17623f!important}
+
+/* ---------- Reports / system / admin legacy utilities ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system :is(.bg-zinc-900,.bg-zinc-950,.bg-slate-900,.bg-slate-950,.bg-neutral-900,.bg-neutral-950,.bg-gray-900,.bg-gray-950,.bg-stone-900,.bg-stone-950){background:#fff!important;color:#344a62!important;border-color:#dce6f0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system a.bg-zinc-900{background:#edf6ff!important;color:#0e69dc!important;border:1px solid #bdd7f0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system .text-white:not(.wg-btn-primary):not([class*="bg-blue"]):not([class*="bg-indigo"]):not([class*="bg-emerald"]):not([class*="bg-red"]){color:#20344e!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system :is(.wg-quick a,.wg-alert,.wg-finance-box){background:#fff!important;border-color:#dce6f0!important;color:#40566f!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-system .wg-alert:hover{background:#f4f9ff!important;color:#0e69dc!important}
+
+/* ---------- Absolute fallback for legacy inline dark surfaces ---------- */
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="background:#030914"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="background: #030914"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="background:#07111d"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="background:#07131f"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="background:#06121f"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="background:#071522"],
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body [style*="background:#08131f"]{background:#fff!important;color:#20344e!important;border-color:#dce6f0!important}
+
+/* Native date/time/select widgets must not keep a dark OS surface. */
+:is(html.wg-light,html[data-wg-theme="light"]) body.wg-body :is(input,select,textarea,button){color-scheme:light}

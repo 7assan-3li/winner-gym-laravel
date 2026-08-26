@@ -1,0 +1,111 @@
+diff --git a/resources/views/livewire/inventory/sales-index.blade.php b/resources/views/livewire/inventory/sales-index.blade.php
+--- a/resources/views/livewire/inventory/sales-index.blade.php
++++ b/resources/views/livewire/inventory/sales-index.blade.php
+@@ -22,16 +22,24 @@
+     @if($canCreate)
+     <section class="wg-pos-workspace">
+         <article class="wg-inv-card wg-sales-products-panel">
+-            <div class="wg-sales-panel-head"><div><h3>منتجات متجر WINNER GYM</h3><span>اضغط على المنتج لإضافته مباشرة للسلة.</span></div><label class="wg-inv-search-small wg-sales-product-search"><input type="search" wire:model.live.debounce.250ms="productSearch" placeholder="ابحث بالاسم أو امسح الباركود..." autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></label></div>
++            <div class="wg-sales-panel-head"><div><h3>منتجات متجر WINNER GYM</h3><span>{{ number_format($products->count()) }} منتج متاح · اضغط على البطاقة لإضافتها إلى الفاتورة</span></div><label class="wg-inv-search-small wg-sales-product-search"><input type="search" wire:model.live.debounce.250ms="productSearch" placeholder="ابحث بالاسم أو امسح الباركود..." autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></label></div>
+             <div class="wg-sales-product-grid">
+                 @forelse($products as $product)
+-                <button type="button" wire:click="addProduct({{ $product->id }})" class="wg-sales-product-card">
++                <button type="button" wire:click="addProduct({{ $product->id }})" class="wg-sales-product-card" aria-label="إضافة {{ $product->name }} إلى الفاتورة">
+                     <span class="wg-sales-product-image">
+                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4"/></svg>
+                         @if($product->image_path)<img src="{{ route('inventory.product-image', $product) }}" alt="{{ $product->name }}" onerror="this.style.display='none'">@endif
+                     </span>
+-                    <span class="wg-sales-product-copy"><strong>{{ $product->name }}</strong><small>{{ $product->category?->name ?? 'بدون تصنيف' }} · متوفر {{ number_format($product->current_quantity) }}</small></span>
+-                    <span class="wg-sales-product-price">{{ number_format((float)$product->selling_price,0) }} <small>{{ $product->currency }}</small></span><i>+</i>
++                    <span class="wg-sales-product-copy">
++                        <strong>{{ $product->name }}</strong>
++                        <small>{{ $product->category?->name ?? 'بدون تصنيف' }}@if($product->barcode) · {{ $product->barcode }}@endif</small>
++                        <span class="wg-sales-stock-badge"><b>متوفر</b> {{ number_format($product->current_quantity) }} وحدة</span>
++                    </span>
++                    <span class="wg-sales-product-price"><small>سعر البيع</small>{{ number_format((float)$product->selling_price,0) }} <em>{{ $product->currency }}</em></span>
++                    <i><b>＋</b><em>إضافة</em></i>
+                 </button>
+-                @empty<div class="wg-pos-empty">لا توجد منتجات متوفرة للبيع. أضف مخزوناً من شاشة المشتريات أولاً.</div>@endforelse
++                @empty<div class="wg-pos-empty"><strong>لا توجد منتجات متوفرة للبيع</strong><span>أضف كمية من صفحة المشتريات أو جرّب عبارة بحث أخرى.</span></div>@endforelse
+             </div>
+         </article>
+diff --git a/public/winner-gym/inventory-final.css b/public/winner-gym/inventory-final.css
+--- a/public/winner-gym/inventory-final.css
++++ b/public/winner-gym/inventory-final.css
+@@ -228,2 +228,93 @@
+ .wg-sales-commandbar{min-height:66px;padding:7px 10px;border:1px solid #172c45;border-radius:12px;background:linear-gradient(135deg,#0a1728,#07121f)}.wg-sales-page-identity{display:flex;align-items:center;gap:10px}.wg-sales-page-identity>span{width:42px;height:42px;border:1px solid #185b8f;border-radius:10px;background:#08213b;color:#2e98ff;display:grid;place-items:center}.wg-sales-page-identity>span svg{width:23px;height:23px}.wg-sales-page-identity strong{display:block;color:#f3f7fc;font-size:13px}.wg-sales-page-identity small{display:block;margin-top:5px;color:#788ca4;font-size:8.8px}.wg-sales-kpis-restored{margin-top:2px}.wg-sales-history-heading{min-height:58px;padding:5px 3px;display:flex;align-items:center;justify-content:space-between;gap:12px}.wg-sales-history-heading h2{margin:0;color:#f4f8fc;font-size:16px}.wg-sales-history-heading p{margin:5px 0 0;color:#7b8ea5;font-size:9px}.wg-sales-history-heading a{height:34px;padding:0 12px;border:1px solid #1b3d60;border-radius:8px;background:#071a2c;color:#4b9fff;text-decoration:none;display:grid;place-items:center;font-size:9px}.wg-sales-page .wg-sales-history{margin:0}
+ @media(max-width:760px){.wg-inv-quick-strip-head{align-items:stretch;flex-direction:column}.wg-inv-quick-strip-title{align-items:flex-start}.wg-inv-pos-hero-icon{width:50px;height:50px}.wg-inv-quick-strip h2{font-size:18px}.wg-inv-open-pos{width:100%;justify-content:center}.wg-sales-commandbar{align-items:stretch}.wg-sales-page-identity{width:100%}.wg-sales-history-heading{align-items:flex-start;flex-direction:column}.wg-sales-history-heading a{width:100%}}
++
++/* Products screen: product management only. */
++.wg-products-focused .wg-inv-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
++.wg-products-focused .wg-inv-middle-grid{grid-template-columns:minmax(0,1fr) minmax(360px,.72fr)}
++.wg-products-focused .wg-inv-bottom-grid{grid-template-columns:minmax(0,1fr)}
++.wg-products-focused .wg-inv-products-card{grid-column:1/-1}
++
++/* Sales/POS professional scale v5. */
++.wg-body-inventory .wg-sales-page{gap:19px}
++.wg-body-inventory .wg-sales-commandbar{min-height:78px;padding:10px 14px}
++.wg-body-inventory .wg-sales-page-identity{gap:13px}
++.wg-body-inventory .wg-sales-page-identity>span{width:50px;height:50px;border-radius:12px}
++.wg-body-inventory .wg-sales-page-identity>span svg{width:28px;height:28px}
++.wg-body-inventory .wg-sales-page-identity strong{font-size:17px}
++.wg-body-inventory .wg-sales-page-identity small{font-size:11px;line-height:1.5}
++.wg-body-inventory .wg-sales-page .wg-pos-workspace{grid-template-columns:minmax(400px,450px) minmax(0,1fr)!important;gap:18px!important}
++.wg-body-inventory .wg-sales-page .wg-sales-products-panel{padding:18px!important;border:1px solid #172c45!important;background:linear-gradient(180deg,#091725,#07131f)!important;border-radius:14px!important}
++.wg-body-inventory .wg-sales-panel-head{margin-bottom:17px}
++.wg-body-inventory .wg-sales-page .wg-sales-panel-head h3{font-size:19px!important}
++.wg-body-inventory .wg-sales-panel-head span{font-size:11.5px;line-height:1.55}
++.wg-body-inventory .wg-sales-page .wg-sales-product-search{width:min(390px,100%);height:47px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-search input{height:47px;font-size:12.5px;padding-inline:14px 42px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-card{min-height:274px;padding-bottom:15px;border-radius:14px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"image image" "copy copy" "price add";gap:11px 10px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-image{height:150px;background:linear-gradient(145deg,#0c2d4f,#071a2e)}
++.wg-body-inventory .wg-sales-page .wg-sales-product-image svg{width:48px;height:48px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-copy{padding:0 14px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-copy strong{font-size:14px;line-height:1.45}
++.wg-body-inventory .wg-sales-page .wg-sales-product-copy small{margin-top:6px;font-size:10.5px;line-height:1.4}
++.wg-sales-stock-badge{width:max-content;margin-top:9px;padding:4px 8px;border:1px solid #18503c;border-radius:999px;background:#08281d;color:#8fb2a2;font-size:9.8px;line-height:1.2}
++.wg-sales-stock-badge b{color:#21dd87;margin-left:3px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-price{padding-right:14px;display:flex;align-items:baseline;gap:5px;font-size:18px;line-height:1}
++.wg-body-inventory .wg-sales-page .wg-sales-product-price small{display:block;margin-left:3px;color:#8092a7;font-size:9.5px;font-weight:600}
++.wg-body-inventory .wg-sales-page .wg-sales-product-price em{color:#7f94aa;font-size:10px;font-style:normal}
++.wg-body-inventory .wg-sales-page .wg-sales-product-card>i{position:static;grid-area:add;width:76px;height:34px;margin-left:13px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:4px;font-size:13px}
++.wg-body-inventory .wg-sales-page .wg-sales-product-card>i b{font-size:16px;line-height:1}.wg-body-inventory .wg-sales-page .wg-sales-product-card>i em{font-size:10.5px;font-style:normal;font-weight:800}
++.wg-body-inventory .wg-sales-page .wg-sales-cart-panel{padding:20px;top:106px;border-radius:14px}
++.wg-body-inventory .wg-sales-cart-title{padding-bottom:14px}
++.wg-body-inventory .wg-sales-cart-title h3{font-size:18px}
++.wg-body-inventory .wg-sales-cart-title span{font-size:11px}
++.wg-body-inventory .wg-sales-cart-title button{font-size:11px;padding:7px}
++.wg-body-inventory .wg-sales-page .wg-sales-cart-items{min-height:220px;max-height:340px}
++.wg-body-inventory .wg-sales-cart-row{min-height:82px;grid-template-columns:minmax(0,1fr) 100px 105px 30px;gap:9px}
++.wg-body-inventory .wg-sales-cart-row strong{font-size:12.5px}.wg-body-inventory .wg-sales-cart-row small{font-size:9.8px;line-height:1.45}.wg-body-inventory .wg-sales-cart-row>b{font-size:11.5px}
++.wg-body-inventory .wg-sales-page .wg-pos-qty button{width:30px;height:32px;font-size:17px}.wg-body-inventory .wg-sales-page .wg-pos-qty span{min-width:34px;font-size:12px}
++.wg-body-inventory .wg-pos-payment-choice{gap:9px;margin-top:14px;padding-top:14px}.wg-body-inventory .wg-pos-payment-choice>span{font-size:11px}.wg-body-inventory .wg-pos-payment-choice button{height:43px;font-size:12px}
++.wg-body-inventory .wg-pos-transfer-field span,.wg-body-inventory .wg-sales-checkout-fields label>span{font-size:10.5px}
++.wg-body-inventory .wg-pos-transfer-field input,.wg-body-inventory .wg-sales-checkout-fields input,.wg-body-inventory .wg-sales-checkout-fields select{height:44px;font-size:11.5px}
++.wg-body-inventory .wg-pos-customer-details summary{height:45px;font-size:11.5px}.wg-body-inventory .wg-pos-customer-details summary small{font-size:9.5px}
++.wg-body-inventory .wg-sales-total-box{margin-top:15px;padding:14px;gap:10px}.wg-body-inventory .wg-sales-total-box>div{font-size:11.5px}.wg-body-inventory .wg-sales-total-box strong{font-size:13px}.wg-body-inventory .wg-sales-total-box .is-total strong{font-size:24px}
++.wg-body-inventory .wg-sales-page .wg-sales-pay-button{height:54px;font-size:14px;border-radius:10px}.wg-body-inventory .wg-sales-page .wg-sales-pay-button svg{width:21px;height:21px}
++.wg-body-inventory .wg-sales-page .wg-sales-auto-note{font-size:10px;line-height:1.65}
++.wg-body-inventory .wg-sales-kpis article span{font-size:11.5px}.wg-body-inventory .wg-sales-kpis article strong{font-size:22px}.wg-body-inventory .wg-sales-kpis article small{font-size:9.8px}
++.wg-body-inventory .wg-sales-history-heading{min-height:72px}.wg-body-inventory .wg-sales-history-heading h2{font-size:20px}.wg-body-inventory .wg-sales-history-heading p{font-size:11px}.wg-body-inventory .wg-sales-history-heading a{height:40px;font-size:11px}
++.wg-body-inventory .wg-sales-history .wg-inv-card-head h3{font-size:16px}.wg-body-inventory .wg-sales-history .wg-inv-card-head span{font-size:10.5px}
++.wg-body-inventory .wg-sales-history .wg-inv-search-small input,.wg-body-inventory .wg-sales-history select{height:42px;font-size:11.5px}
++.wg-body-inventory .wg-sales-history .wg-inv-table th{font-size:11.5px;height:48px}.wg-body-inventory .wg-sales-history .wg-inv-table td{font-size:11.8px;height:62px}.wg-body-inventory .wg-sales-history .wg-subline{font-size:9.5px!important}
++.wg-body-inventory .wg-pos-empty{grid-column:1/-1;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px dashed #23405e;border-radius:13px;color:#768ba2;font-size:11px}.wg-body-inventory .wg-pos-empty strong{color:#d9e4ef;font-size:15px}
++html.wg-light .wg-body-inventory .wg-sales-page .wg-sales-products-panel{background:#fff!important;border-color:#d6e2ef!important}
++html.wg-light .wg-sales-stock-badge{background:#ecfbf4;border-color:#b8ead3;color:#58796a}
++@media(max-width:1450px){.wg-body-inventory .wg-sales-page .wg-pos-workspace{grid-template-columns:380px minmax(0,1fr)!important}.wg-body-inventory .wg-sales-page .wg-sales-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
++@media(max-width:980px){.wg-products-focused .wg-inv-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.wg-products-focused .wg-inv-middle-grid{grid-template-columns:1fr}.wg-body-inventory .wg-sales-page .wg-pos-workspace{grid-template-columns:1fr!important}.wg-body-inventory .wg-sales-page .wg-sales-product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
++@media(max-width:760px){.wg-body-inventory .wg-sales-page .wg-sales-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wg-body-inventory .wg-sales-panel-head{align-items:stretch;flex-direction:column}.wg-body-inventory .wg-sales-page .wg-sales-product-search{width:100%}.wg-body-inventory .wg-sales-cart-row{grid-template-columns:minmax(0,1fr) 96px}.wg-body-inventory .wg-sales-cart-row>b{grid-column:1}.wg-body-inventory .wg-sales-cart-row>.wg-pos-remove{grid-column:2;grid-row:2}}
++@media(max-width:480px){.wg-products-focused .wg-inv-kpis{grid-template-columns:1fr}.wg-body-inventory .wg-sales-page .wg-sales-product-grid{grid-template-columns:1fr}.wg-body-inventory .wg-sales-page .wg-sales-product-image{height:170px}}
+diff --git a/resources/views/layouts/app/sidebar.blade.php b/resources/views/layouts/app/sidebar.blade.php
+--- a/resources/views/layouts/app/sidebar.blade.php
++++ b/resources/views/layouts/app/sidebar.blade.php
+@@ -20,7 +20,7 @@
+     <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20260813-2">
+     <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}">
+     <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}">
+-    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}">
++    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20260813-2">
+     <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}">

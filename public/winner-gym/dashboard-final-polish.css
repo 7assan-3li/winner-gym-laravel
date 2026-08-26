@@ -1,0 +1,231 @@
+/* WINNER GYM — Dashboard final UI polish + light theme */
+
+/* Header: title + breadcrumb always stacked and aligned */
+.wg-body-dashboard .wg-topbar-dashboard{
+  grid-template-columns:minmax(255px,1fr) minmax(350px,420px) auto!important;
+  gap:24px!important;
+  padding-inline:30px!important;
+}
+.wg-body-dashboard .wg-topbar-page{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  width:max-content!important;
+  min-width:220px!important;
+  direction:ltr!important;
+}
+.wg-body-dashboard .wg-topbar-page h1{
+  margin:0!important;
+  font-size:22px!important;
+  line-height:1.1!important;
+  font-weight:850!important;
+  letter-spacing:-.2px!important;
+}
+.wg-body-dashboard .wg-topbar-page>div{
+  display:flex!important;
+  align-items:center!important;
+  align-self:flex-start!important;
+  justify-content:flex-start!important;
+  margin:7px 0 0!important;
+  gap:8px!important;
+  font-size:12px!important;
+  line-height:1!important;
+  direction:rtl!important;
+}
+
+/* Slightly larger, more readable sidebar */
+.wg-body-dashboard .wg-brand{padding:16px 12px 13px!important}
+.wg-body-dashboard .wg-brand img{width:112px!important}
+.wg-body-dashboard .wg-nav{padding-inline:11px!important;gap:4px!important}
+.wg-body-dashboard .wg-nav a{
+  min-height:40px!important;
+  padding-inline:13px!important;
+  gap:11px!important;
+  border-radius:7px!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:700!important;
+}
+.wg-body-dashboard .wg-nav-icon{width:19px!important;height:19px!important;stroke-width:1.75!important}
+
+/* Athlete: give it enough room so it is not visibly cut off */
+.wg-body-dashboard .wg-sidebar-art{
+  min-height:238px!important;
+  height:clamp(220px,29vh,285px)!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+.wg-body-dashboard .wg-sidebar-art::before{
+  inset:4px 0 8px!important;
+  background-size:contain!important;
+  background-position:center bottom!important;
+  opacity:.98!important;
+}
+
+/* Topbar tools */
+.wg-body-dashboard .wg-topbar-dashboard .wg-search{height:44px!important;font-size:12.5px!important}
+.wg-body-dashboard .wg-topbar-tools .wg-top-icon{width:44px!important;height:44px!important;border-radius:9px!important;cursor:pointer}
+.wg-body-dashboard .wg-user-name{font-size:13.5px!important}
+.wg-body-dashboard .wg-user-role{font-size:10.5px!important}
+.wg-body-dashboard .wg-avatar{width:42px!important;height:42px!important}
+
+/* Dashboard spacing */
+.wg-body-dashboard .wg-dashboard-content{padding:20px 30px 30px!important}
+.wg-body-dashboard .wg-dashboard-ref{gap:16px!important}
+.wg-body-dashboard .wg-dash-stats{gap:12px!important}
+.wg-body-dashboard .wg-dash-stat{height:122px!important;border-radius:12px!important}
+.wg-body-dashboard .wg-dash-stat__copy{left:17px!important;top:24px!important;right:80px!important}
+.wg-body-dashboard .wg-dash-stat__label{font-size:12.5px!important}
+.wg-body-dashboard .wg-dash-stat__copy strong{font-size:27px!important;margin-top:8px!important}
+.wg-body-dashboard .wg-dash-stat__copy small{font-size:10.5px!important;margin-top:10px!important}
+.wg-body-dashboard .wg-dash-stat__icon{width:56px!important;height:56px!important;right:17px!important;top:28px!important}
+.wg-body-dashboard .wg-dash-stat__icon svg{width:33px!important;height:33px!important;stroke-width:1.8!important}
+
+.wg-body-dashboard .wg-dash-panel{border-radius:12px!important}
+.wg-body-dashboard .wg-dash-panel__head{height:52px!important;padding-inline:17px!important}
+.wg-body-dashboard .wg-dash-panel__head h2{font-size:14.5px!important}
+.wg-body-dashboard .wg-dash-panel__head a{font-size:11px!important}
+.wg-body-dashboard .wg-dash-select{height:31px!important;font-size:10.5px!important}
+.wg-body-dashboard .wg-dash-money-title strong{font-size:12px!important}
+.wg-body-dashboard .wg-dash-money-cols span,
+.wg-body-dashboard .wg-dash-money-net span{font-size:10px!important}
+.wg-body-dashboard .wg-dash-money-cols strong{font-size:16px!important}
+.wg-body-dashboard .wg-dash-money-net strong{font-size:18px!important}
+.wg-body-dashboard .wg-dash-quick-list a{min-height:39px!important;font-size:11.5px!important;padding-inline:11px!important}
+.wg-body-dashboard .wg-dash-quick-list svg{width:19px!important;height:19px!important}
+.wg-body-dashboard .wg-dash-list-row{min-height:47px!important;font-size:11px!important}
+.wg-body-dashboard .wg-list-main strong{font-size:11px!important}
+.wg-body-dashboard .wg-list-main span{font-size:9.8px!important}
+.wg-body-dashboard .wg-list-avatar{width:30px!important;height:30px!important}
+.wg-body-dashboard .wg-list-status{font-size:9px!important}
+.wg-body-dashboard .wg-dash-alert-list a{min-height:52px!important}
+.wg-body-dashboard .wg-dash-alert-list p{font-size:10.5px!important}
+.wg-body-dashboard .wg-dash-alert-list strong{font-size:9.5px!important}
+.wg-body-dashboard .wg-alert-icon svg{width:19px!important;height:19px!important}
+
+/* Theme switch visual state */
+.wg-theme-toggle .wg-theme-moon{display:none}
+html.wg-light .wg-theme-toggle .wg-theme-sun{display:none}
+html.wg-light .wg-theme-toggle .wg-theme-moon{display:block}
+
+/* ---------------- Light / blue theme ---------------- */
+html.wg-light{color-scheme:light;background:#eef5ff!important}
+html.wg-light body{
+  background:
+    radial-gradient(circle at 70% -10%,rgba(26,124,255,.13),transparent 30rem),
+    linear-gradient(180deg,#f7fbff 0%,#edf5ff 100%)!important;
+  color:#17243a!important;
+}
+html.wg-light .wg-sidebar{
+  background:linear-gradient(180deg,#ffffff 0%,#f4f8ff 100%)!important;
+  border-right-color:#d6e4f5!important;
+  box-shadow:15px 0 45px rgba(34,83,140,.08)!important;
+}
+html.wg-light .wg-brand{background:transparent!important}
+html.wg-light .wg-nav a{color:#52647b!important}
+html.wg-light .wg-nav a:hover{background:#eaf3ff!important;border-color:#c9def8!important;color:#0f5fc9!important}
+html.wg-light .wg-nav a.is-active{
+  color:#fff!important;
+  background:linear-gradient(135deg,#2589ff,#0965e8)!important;
+  border-color:#2d8fff!important;
+  box-shadow:0 9px 24px rgba(24,119,239,.20)!important;
+}
+html.wg-light .wg-sidebar-art::after{
+  content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(244,248,255,0),rgba(231,241,255,.14));pointer-events:none
+}
+html.wg-light .wg-topbar,
+html.wg-light .wg-topbar-dashboard{
+  background:rgba(255,255,255,.94)!important;
+  border-bottom-color:#d6e4f4!important;
+  box-shadow:0 8px 28px rgba(31,75,128,.055)!important;
+}
+html.wg-light .wg-topbar-page h1{color:#12233d!important}
+html.wg-light .wg-topbar-page>div{color:#6c7e94!important}
+html.wg-light .wg-topbar-page i{color:#a1b0c2!important}
+html.wg-light .wg-search,
+html.wg-light .wg-topbar-dashboard .wg-search{
+  background:#f8fbff!important;
+  border-color:#cdddf0!important;
+  color:#61758d!important;
+}
+html.wg-light .wg-search input{color:#1a2c45!important}
+html.wg-light .wg-search input::placeholder{color:#8da0b7!important}
+html.wg-light .wg-top-icon{color:#45617f!important}
+html.wg-light .wg-top-icon:hover{background:#eaf3ff!important;border-color:#c7dcf6!important;color:#0e70ed!important}
+html.wg-light .wg-top-separator{background:#d7e4f3!important}
+html.wg-light .wg-notification-count{border-color:#fff!important}
+html.wg-light .wg-user-name{color:#15273f!important}
+html.wg-light .wg-user-role,html.wg-light .wg-user-chevron{color:#6f8298!important}
+html.wg-light .wg-user-menu{background:#fff!important;border-color:#d3e1f1!important;box-shadow:0 22px 55px rgba(25,66,115,.16)!important}
+html.wg-light .wg-user-menu strong,html.wg-light .wg-user-menu-reference strong{color:#14263e!important}
+html.wg-light .wg-user-menu span,html.wg-light .wg-user-menu-row span{color:#71839a!important}
+
+html.wg-light .wg-body-dashboard{
+  --dash-panel:#ffffff;
+  --dash-panel-2:#f7fbff;
+  --dash-border:#d4e2f2;
+  --dash-border-soft:#e1ebf6;
+  --dash-muted:#6f8196;
+}
+html.wg-light .wg-dashboard-ref{color:#17263d!important}
+html.wg-light .wg-dash-stat,
+html.wg-light .wg-dash-panel{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%)!important;
+  border-color:#d5e3f3!important;
+  box-shadow:0 8px 24px rgba(37,83,137,.06),inset 0 1px rgba(255,255,255,.9)!important;
+}
+html.wg-light .wg-dash-stat:hover,html.wg-light .wg-dash-panel:hover{border-color:#bdd4ef!important}
+html.wg-light .wg-dash-stat__label{color:#61748b!important}
+html.wg-light .wg-dash-stat__copy strong{color:#14253e!important}
+html.wg-light .wg-dash-stat__icon{background:#edf6ff!important}
+html.wg-light .wg-dash-stat--purple .wg-dash-stat__icon{background:#f1edff!important}
+html.wg-light .wg-dash-stat--red .wg-dash-stat__icon{background:#fff0f2!important}
+html.wg-light .wg-dash-stat--orange .wg-dash-stat__icon{background:#fff6e8!important}
+html.wg-light .wg-dash-stat--green .wg-dash-stat__icon{background:#ebfbf4!important}
+html.wg-light .wg-dash-panel__head h2{color:#17263d!important}
+html.wg-light .wg-dash-select{background:#f7fbff!important;border-color:#d1e0f0!important;color:#5d7189!important}
+html.wg-light .wg-chart-gridlines line{stroke:#e0ebf6!important}
+html.wg-light .wg-chart-ylabels,html.wg-light .wg-chart-xlabels{color:#788ba1!important}
+html.wg-light .wg-chart-tooltip{background:#fff!important;color:#657990!important;border-color:#d6e3f2!important;box-shadow:0 10px 24px rgba(35,76,125,.13)!important}
+html.wg-light .wg-chart-tooltip strong{color:#1b2b42!important}
+html.wg-light .wg-dash-money-card{
+  background:linear-gradient(180deg,#f9fcff,#f3f8fe)!important;
+  border-color:#d8e5f3!important;
+}
+html.wg-light .wg-dash-money-title strong,
+html.wg-light .wg-dash-money-net strong{color:#1478ef!important}
+html.wg-light .wg-dash-money-cols span,html.wg-light .wg-dash-money-net span{color:#73869c!important}
+html.wg-light .wg-dash-quick-list a{
+  background:#f9fcff!important;border-color:#d9e6f3!important;color:#53677f!important
+}
+html.wg-light .wg-dash-quick-list a:hover{background:#edf6ff!important;border-color:#bcd7f5!important;color:#0f65d3!important}
+html.wg-light .wg-dash-list-row,html.wg-light .wg-dash-alert-list a{border-color:#e1eaf5!important;color:#52667d!important}
+html.wg-light .wg-list-main strong{color:#1d3049!important}
+html.wg-light .wg-list-main span{color:#75879c!important}
+html.wg-light .wg-dash-empty{color:#7b8fa5!important}
+html.wg-light .wg-dash-empty svg{stroke:#9eb3c9!important}
+html.wg-light .wg-dash-alert-list p{color:#52667d!important}
+
+/* Modals stay elegant in both themes */
+html.wg-light .wg-action-backdrop{background:rgba(31,51,78,.35)!important;backdrop-filter:blur(4px)!important}
+html.wg-light .wg-action-modal{background:#fff!important;border-color:#cbdcf0!important;box-shadow:0 28px 90px rgba(39,75,116,.24)!important}
+html.wg-light .wg-action-head,html.wg-light .wg-action-foot{border-color:#dbe6f3!important}
+html.wg-light .wg-action-head h2,html.wg-light .wg-action-section-title{color:#17263d!important}
+html.wg-light .wg-action-modal label{color:#354a64!important}
+html.wg-light .wg-action-modal input,html.wg-light .wg-action-modal select,html.wg-light .wg-action-modal textarea{background:#f8fbff!important;border-color:#ccdaea!important;color:#1b2d45!important}
+html.wg-light .wg-action-btn{background:#f6faff!important;border-color:#cad9ea!important;color:#263b55!important}
+html.wg-light .wg-action-btn--primary{background:linear-gradient(135deg,#2389ff,#0866e8)!important;color:#fff!important;border-color:#2588ff!important}
+
+@media(max-width:1320px){
+  .wg-body-dashboard .wg-topbar-dashboard{grid-template-columns:220px minmax(280px,350px) auto!important;padding-inline:22px!important}
+  .wg-body-dashboard .wg-dashboard-content{padding-inline:22px!important}
+}
+@media(max-width:1080px){
+  .wg-body-dashboard .wg-topbar-page>div{display:flex!important}
+  .wg-body-dashboard .wg-nav a{font-size:12.5px!important}
+}
+@media(max-width:760px){
+  .wg-body-dashboard .wg-topbar-page>div{display:none!important}
+  .wg-body-dashboard .wg-dashboard-content{padding:13px!important}
+}

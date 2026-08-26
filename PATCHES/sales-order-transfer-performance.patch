@@ -1,0 +1,274 @@
+diff --git a/database/migrations/2026_08_13_170000_add_transfer_service_to_sales_table.php b/database/migrations/2026_08_13_170000_add_transfer_service_to_sales_table.php
+new file mode 100644
+--- /dev/null
++++ b/database/migrations/2026_08_13_170000_add_transfer_service_to_sales_table.php
+@@ -0,0 +1,25 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    public function up(): void
++    {
++        Schema::table('sales', function (Blueprint $table) {
++            $table->string('transfer_service', 40)->nullable()->after('payment_method');
++        });
++    }
++
++    public function down(): void
++    {
++        Schema::table('sales', function (Blueprint $table) {
++            $table->dropColumn('transfer_service');
++        });
++    }
++};
+diff --git a/app/Models/Sale.php b/app/Models/Sale.php
+--- a/app/Models/Sale.php
++++ b/app/Models/Sale.php
+@@ -11,7 +11,7 @@ class Sale extends Model
+     protected $fillable = [
+         'sale_number', 'member_id', 'customer_name', 'currency', 'subtotal',
+         'discount_type', 'discount_value', 'discount_amount', 'total_amount',
+-        'payment_method', 'transfer_reference', 'proof_path', 'status', 'sold_at',
++        'payment_method', 'transfer_service', 'transfer_reference', 'proof_path', 'status', 'sold_at',
+         'created_by', 'cancelled_by', 'cancelled_at', 'cancellation_reason',
+     ];
+diff --git a/app/Services/InventoryService.php b/app/Services/InventoryService.php
+--- a/app/Services/InventoryService.php
++++ b/app/Services/InventoryService.php
+@@ -126,6 +126,7 @@ public function createSale(array $data, User $actor): Sale
+                 'discount_amount' => $discountAmount,
+                 'total_amount' => round($subtotal - $discountAmount, 2),
+                 'payment_method' => $data['payment_method'],
++                'transfer_service' => $data['transfer_service'] ?? null,
+                 'transfer_reference' => $data['transfer_reference'] ?? null,
+                 'proof_path' => $data['proof_path'] ?? null,
+diff --git a/app/Livewire/Inventory/SalesIndex.php b/app/Livewire/Inventory/SalesIndex.php
+--- a/app/Livewire/Inventory/SalesIndex.php
++++ b/app/Livewire/Inventory/SalesIndex.php
+@@ -5,11 +5,11 @@
+ use App\Models\Member;
+ use App\Models\Product;
+ use App\Models\Sale;
+-use App\Models\SaleItem;
+ use App\Services\InventoryService;
+ use App\Services\PermissionService;
+ use Carbon\CarbonImmutable;
++use Illuminate\Support\Facades\Cache;
+ use Illuminate\Support\Facades\DB;
+ use Illuminate\Validation\Rule;
+@@ -31,6 +31,7 @@ class SalesIndex extends Component
+     public ?int $member_id = null;
+     public string $customer_name = '';
+     public string $payment_method = 'cash';
++    public string $transfer_service = '';
+     public string $transfer_reference = '';
+     public string $discount_value = '0';
+@@ -82,6 +83,7 @@ public function updatedPaymentMethod(string $value): void
+     {
+         if ($value === 'cash') {
++            $this->transfer_service = '';
+             $this->transfer_reference = '';
+         }
+@@ -169,9 +171,14 @@ public function completeSale(InventoryService $service): void
+             'customer_name' => ['nullable', 'string', 'max:255'],
+             'payment_method' => ['required', Rule::in(['cash', 'transfer'])],
++            'transfer_service' => ['nullable', Rule::requiredIf($this->payment_method === 'transfer'), Rule::in(['العمقي', 'الكريمي', 'البسيري'])],
+             'transfer_reference' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->payment_method === 'transfer')],
+             'discount_value' => ['required', 'numeric', 'min:0'],
+-        ], ['transfer_reference.required' => 'أدخل مرجع التحويل قبل إتمام البيع.']);
++        ], [
++            'transfer_service.required' => 'اختر جهة الصرافة قبل إتمام البيع.',
++            'transfer_service.in' => 'جهة الصرافة المختارة غير معتمدة.',
++            'transfer_reference.required' => 'أدخل رقم الحوالة قبل إتمام البيع.',
++        ]);
+@@ -186,6 +193,7 @@ public function completeSale(InventoryService $service): void
+             'currency' => $currency,
+             'payment_method' => $this->payment_method,
++            'transfer_service' => $this->payment_method === 'transfer' ? $this->transfer_service : null,
+             'transfer_reference' => $this->payment_method === 'transfer' ? trim($this->transfer_reference) : null,
+             'discount_type' => $discount > 0 ? 'amount' : null,
+@@ -197,6 +205,7 @@ public function completeSale(InventoryService $service): void
+         ], auth()->user());
+ 
+         $this->lastCompletedSaleId = $sale->id;
++        $this->forgetSalesStats();
+         $this->resetSaleForm();
+@@ -220,6 +229,7 @@ public function cancel(InventoryService $service): void
+ 
+         $service->cancelSale(Sale::findOrFail($this->cancelSaleId), $this->cancellation_reason, auth()->user());
++        $this->forgetSalesStats();
+         $this->reset(['cancelSaleId', 'cancellation_reason']);
+@@ -235,6 +245,7 @@ private function resetSaleForm(): void
+         $this->member_id = null;
+         $this->customer_name = '';
+         $this->payment_method = 'cash';
++        $this->transfer_service = '';
+         $this->transfer_reference = '';
+@@ -273,19 +284,51 @@ public function render()
+             ->when($this->currencyFilter !== '', fn ($q) => $q->where('currency', $this->currencyFilter))
+             ->latest('sold_at');
+ 
+-        $todayTotals = Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$todayStart, $todayEnd])
+-            ->select('currency', DB::raw('COALESCE(SUM(total_amount),0) total'))->groupBy('currency')->pluck('total', 'currency');
+-        $monthTotals = Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$monthStart, $monthEnd])
+-            ->select('currency', DB::raw('COALESCE(SUM(total_amount),0) total'))->groupBy('currency')->pluck('total', 'currency');
+-
+-        $monthGrossMargin = SaleItem::query()
+-            ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
+-            ->where('sales.status', 'completed')
+-            ->whereBetween('sales.sold_at', [$monthStart, $monthEnd])
+-            ->select('sales.currency', DB::raw('COALESCE(SUM((sale_items.actual_unit_price - sale_items.unit_cost) * sale_items.quantity),0) total'))
+-            ->groupBy('sales.currency')->pluck('total', 'currency');
+-        $monthDiscounts = Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$monthStart, $monthEnd])
+-            ->select('currency', DB::raw('COALESCE(SUM(discount_amount),0) total'))->groupBy('currency')->pluck('total', 'currency');
++        $stats = Cache::remember(
++            $this->salesStatsCacheKey($now),
++            now()->addSeconds(45),
++            function () use ($todayStart, $todayEnd, $monthStart, $monthEnd): array {
++                $sales = DB::table('sales')
++                    ->where('status', 'completed')
++                    ->whereBetween('sold_at', [$monthStart, $monthEnd])
++                    ->selectRaw('COUNT(CASE WHEN sold_at BETWEEN ? AND ? THEN 1 END) AS today_count', [$todayStart, $todayEnd])
++                    ->selectRaw("COALESCE(SUM(CASE WHEN sold_at BETWEEN ? AND ? AND currency = 'YER' THEN total_amount ELSE 0 END), 0) AS today_yer", [$todayStart, $todayEnd])
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'YER' THEN total_amount ELSE 0 END), 0) AS month_yer")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'SAR' THEN total_amount ELSE 0 END), 0) AS month_sar")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'YER' THEN discount_amount ELSE 0 END), 0) AS discount_yer")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'SAR' THEN discount_amount ELSE 0 END), 0) AS discount_sar")
++                    ->first();
++
++                $items = DB::table('sale_items')
++                    ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
++                    ->where('sales.status', 'completed')
++                    ->whereBetween('sales.sold_at', [$monthStart, $monthEnd])
++                    ->selectRaw("COALESCE(SUM(CASE WHEN sales.currency = 'YER' THEN (sale_items.actual_unit_price - sale_items.unit_cost) * sale_items.quantity ELSE 0 END), 0) AS gross_yer")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN sales.currency = 'SAR' THEN (sale_items.actual_unit_price - sale_items.unit_cost) * sale_items.quantity ELSE 0 END), 0) AS gross_sar")
++                    ->selectRaw('COALESCE(SUM(sale_items.quantity), 0) AS month_units')
++                    ->first();
++
++                return [
++                    'todayCount' => (int) ($sales->today_count ?? 0),
++                    'todayYER' => (float) ($sales->today_yer ?? 0),
++                    'monthYER' => (float) ($sales->month_yer ?? 0),
++                    'monthSAR' => (float) ($sales->month_sar ?? 0),
++                    'profitYER' => (float) ($items->gross_yer ?? 0) - (float) ($sales->discount_yer ?? 0),
++                    'profitSAR' => (float) ($items->gross_sar ?? 0) - (float) ($sales->discount_sar ?? 0),
++                    'monthUnits' => (int) ($items->month_units ?? 0),
++                ];
++            },
++        );
+@@ -293,6 +336,10 @@ public function render()
+ 
+         return view('livewire.inventory.sales-index', [
+             'products' => $productQuery->limit(18)->get(),
+-            'members' => Member::query()->where('status', 'active')->orderBy('full_name')->limit(500)->get(['id', 'full_name', 'membership_code']),
++            'members' => Cache::remember(
++                'winner-gym:sales:active-members',
++                now()->addMinutes(5),
++                fn () => Member::query()->where('status', 'active')->orderBy('full_name')->limit(500)->get(['id', 'full_name', 'membership_code']),
++            ),
+             'sales' => $salesQuery->paginate(12),
+@@ -301,11 +348,21 @@ public function render()
+             'cartTotal' => max(0, $cartSubtotal - $cartDiscount),
+             'cartCurrency' => $cartCurrency,
+-            'todayCount' => Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$todayStart, $todayEnd])->count(),
+-            'todayYER' => (float) ($todayTotals['YER'] ?? 0),
+-            'todaySAR' => (float) ($todayTotals['SAR'] ?? 0),
+-            'monthYER' => (float) ($monthTotals['YER'] ?? 0),
+-            'monthSAR' => (float) ($monthTotals['SAR'] ?? 0),
+-            'profitYER' => (float) ($monthGrossMargin['YER'] ?? 0) - (float) ($monthDiscounts['YER'] ?? 0),
+-            'profitSAR' => (float) ($monthGrossMargin['SAR'] ?? 0) - (float) ($monthDiscounts['SAR'] ?? 0),
+-            'monthUnits' => (int) SaleItem::query()->join('sales', 'sales.id', '=', 'sale_items.sale_id')->where('sales.status', 'completed')->whereBetween('sales.sold_at', [$monthStart, $monthEnd])->sum('sale_items.quantity'),
++            ...$stats,
+         ]);
+     }
++
++    private function salesStatsCacheKey(CarbonImmutable $now): string
++    {
++        return 'winner-gym:sales:stats:'.$now->format('Y-m-d');
++    }
++
++    private function forgetSalesStats(): void
++    {
++        Cache::forget($this->salesStatsCacheKey(CarbonImmutable::now('Asia/Aden')));
++    }
+ }
+diff --git a/resources/views/livewire/inventory/sales-index.blade.php b/resources/views/livewire/inventory/sales-index.blade.php
+--- a/resources/views/livewire/inventory/sales-index.blade.php
++++ b/resources/views/livewire/inventory/sales-index.blade.php
+@@ -19,6 +19,14 @@
+         </div>
+     </section>
+ 
++    <section class="wg-inv-kpis wg-sales-kpis wg-sales-kpis-restored" aria-label="ملخص المبيعات">
++        <article><i class="is-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></i><span>عمليات البيع اليوم</span><strong>{{ $todayCount }}</strong><small>فاتورة مكتملة</small></article>
++        <article><i class="is-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16v12H4zM7 10h10M7 14h5"/></svg></i><span>مبيعات اليوم YER</span><strong>{{ number_format($todayYER,0) }}</strong><small>إيراد المنتجات</small></article>
++        <article><i class="is-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16v12H4zM7 10h10M7 14h5"/></svg></i><span>مبيعات الشهر YER</span><strong>{{ number_format($monthYER,0) }}</strong><small>{{ number_format($monthUnits) }} وحدة مباعة</small></article>
++        <article><i class="is-orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19l5-6 4 3 7-10"/></svg></i><span>ربح المنتجات YER</span><strong>{{ number_format($profitYER,0) }}</strong><small>بعد التكلفة والخصم</small></article>
++        <article><i class="is-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></i><span>مبيعات الشهر SAR</span><strong>{{ number_format($monthSAR,2) }}</strong><small>ربح {{ number_format($profitSAR,2) }} SAR</small></article>
++    </section>
++
+     @if($canCreate)
+@@ -62,7 +70,18 @@
+                 <button type="button" wire:click="$set('payment_method','cash')" class="{{ $payment_method === 'cash' ? 'is-active' : '' }}">نقدي</button>
+                 <button type="button" wire:click="$set('payment_method','transfer')" class="{{ $payment_method === 'transfer' ? 'is-active' : '' }}">تحويل</button>
+             </div>
+-            @if($payment_method==='transfer')<label class="wg-pos-transfer-field"><span>مرجع التحويل <b>*</b></span><input type="text" wire:model="transfer_reference" placeholder="رقم الحوالة أو المرجع"></label>@endif
++            @if($payment_method === 'transfer')
++                <div class="wg-pos-transfer-grid">
++                    <label class="wg-pos-transfer-field"><span>جهة الصرافة <b>*</b></span><select wire:model="transfer_service"><option value="">اختر جهة الصرافة</option><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select>@error('transfer_service')<small class="is-error">{{ $message }}</small>@enderror</label>
++                    <label class="wg-pos-transfer-field"><span>رقم الحوالة <b>*</b></span><input type="text" wire:model="transfer_reference" placeholder="أدخل رقم الحوالة">@error('transfer_reference')<small class="is-error">{{ $message }}</small>@enderror</label>
++                </div>
++            @endif
+@@ -79,14 +98,6 @@
+     </section>
+     @endif
+ 
+-    <section class="wg-inv-kpis wg-sales-kpis wg-sales-kpis-restored" aria-label="ملخص المبيعات">
+-        <article><i class="is-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></i><span>عمليات البيع اليوم</span><strong>{{ $todayCount }}</strong><small>فاتورة مكتملة</small></article>
+-        <article><i class="is-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16v12H4zM7 10h10M7 14h5"/></svg></i><span>مبيعات اليوم YER</span><strong>{{ number_format($todayYER,0) }}</strong><small>إيراد المنتجات</small></article>
+-        <article><i class="is-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16v12H4zM7 10h10M7 14h5"/></svg></i><span>مبيعات الشهر YER</span><strong>{{ number_format($monthYER,0) }}</strong><small>{{ number_format($monthUnits) }} وحدة مباعة</small></article>
+-        <article><i class="is-orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19l5-6 4 3 7-10"/></svg></i><span>ربح المنتجات YER</span><strong>{{ number_format($profitYER,0) }}</strong><small>بعد التكلفة والخصم</small></article>
+-        <article><i class="is-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></i><span>مبيعات الشهر SAR</span><strong>{{ number_format($monthSAR,2) }}</strong><small>ربح {{ number_format($profitSAR,2) }} SAR</small></article>
+-    </section>
+-
+     <div class="wg-sales-history-heading" id="sales-history"><div><h2>سجل المبيعات</h2><p>راجع الفواتير واطبعها أو ألغِ العملية حسب الصلاحية.</p></div><a href="#sales-pos-top">العودة لنقطة البيع</a></div>
+@@ -93,7 +104,7 @@
+         <div class="wg-inv-table-scroll"><table class="wg-inv-table wg-sales-table"><thead><tr><th>رقم البيع</th><th>العميل</th><th>المنتجات</th><th>الإجمالي</th><th>طريقة الدفع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody>
+         @forelse($sales as $sale)
+             @php $customer = $sale->member?->full_name ?: ($sale->customer_name ?: 'عميل نقدي'); $units=$sale->items->sum('quantity'); @endphp
+-            <tr><td><strong class="wg-code">{{ $sale->sale_number }}</strong></td><td><strong>{{ $customer }}</strong>@if($sale->member)<small class="wg-subline">{{ $sale->member->membership_code }}</small>@endif</td><td><strong>{{ $sale->items->count() }} منتج</strong><small class="wg-subline">{{ number_format($units) }} وحدة</small></td><td class="wg-inv-money"><strong>{{ number_format((float)$sale->total_amount,2) }}</strong> <small>{{ $sale->currency }}</small>@if((float)$sale->discount_amount>0)<small class="wg-subline is-orange">خصم {{ number_format((float)$sale->discount_amount,2) }}</small>@endif</td><td>{{ $sale->payment_method==='transfer' ? 'تحويل' : 'نقدي' }}@if($sale->transfer_reference)<small class="wg-subline">{{ $sale->transfer_reference }}</small>@endif</td><td>{{ optional($sale->sold_at)->timezone('Asia/Aden')->format('Y-m-d h:i A') }}</td><td>@if($sale->status==='completed')<span class="wg-inv-status is-ok">مكتمل</span>@else<span class="wg-inv-status is-inactive">ملغي</span>@endif</td><td><div class="wg-inv-row-actions"><a href="{{ route('inventory.sales.receipt', $sale) }}" target="_blank" class="wg-pos-print-action" title="طباعة الإيصال"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 8V3h10v5M7 17h10v4H7z"/><path d="M5 17H3v-7h18v7h-2"/></svg></a>@if($canCancel && $sale->status==='completed')<button type="button" wire:click="startCancel({{ $sale->id }})" class="is-danger" title="إلغاء البيع وإرجاع المخزون"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 6 12 12M18 6 6 18"/></svg></button>@endif</div></td></tr>
++            <tr><td><strong class="wg-code">{{ $sale->sale_number }}</strong></td><td><strong>{{ $customer }}</strong>@if($sale->member)<small class="wg-subline">{{ $sale->member->membership_code }}</small>@endif</td><td><strong>{{ $sale->items->count() }} منتج</strong><small class="wg-subline">{{ number_format($units) }} وحدة</small></td><td class="wg-inv-money"><strong>{{ number_format((float)$sale->total_amount,2) }}</strong> <small>{{ $sale->currency }}</small>@if((float)$sale->discount_amount>0)<small class="wg-subline is-orange">خصم {{ number_format((float)$sale->discount_amount,2) }}</small>@endif</td><td>@if($sale->payment_method === 'transfer')<strong>تحويل · {{ $sale->transfer_service ?: 'غير محدد' }}</strong>@if($sale->transfer_reference)<small class="wg-subline">رقم الحوالة: {{ $sale->transfer_reference }}</small>@endif @else نقدي @endif</td><td>{{ optional($sale->sold_at)->timezone('Asia/Aden')->format('Y-m-d h:i A') }}</td><td>@if($sale->status==='completed')<span class="wg-inv-status is-ok">مكتمل</span>@else<span class="wg-inv-status is-inactive">ملغي</span>@endif</td><td><div class="wg-inv-row-actions"><a href="{{ route('inventory.sales.receipt', $sale) }}" target="_blank" class="wg-pos-print-action" title="طباعة الإيصال"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 8V3h10v5M7 17h10v4H7z"/><path d="M5 17H3v-7h18v7h-2"/></svg></a>@if($canCancel && $sale->status==='completed')<button type="button" wire:click="startCancel({{ $sale->id }})" class="is-danger" title="إلغاء البيع وإرجاع المخزون"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m6 6 12 12M18 6 6 18"/></svg></button>@endif</div></td></tr>
+diff --git a/resources/views/inventory/sale-receipt.blade.php b/resources/views/inventory/sale-receipt.blade.php
+--- a/resources/views/inventory/sale-receipt.blade.php
++++ b/resources/views/inventory/sale-receipt.blade.php
+@@ -11,7 +11,7 @@
+ @php $customer = $sale->member?->full_name ?: ($sale->customer_name ?: 'عميل نقدي'); @endphp
+ <main class="receipt">
+ <header class="brand"><h1>WINNER GYM</h1><p>نظام الإدارة والمالية المتكامل</p></header>
+-<section class="meta"><div><span>رقم الفاتورة</span><b>{{ $sale->sale_number }}</b></div><div><span>التاريخ</span><b>{{ optional($sale->sold_at)->timezone('Asia/Aden')->format('Y-m-d h:i A') }}</b></div><div><span>العميل</span><b>{{ $customer }}</b></div><div><span>الدفع</span><b>{{ $sale->payment_method === 'transfer' ? 'تحويل' : 'نقدي' }}</b></div></section>
++<section class="meta"><div><span>رقم الفاتورة</span><b>{{ $sale->sale_number }}</b></div><div><span>التاريخ</span><b>{{ optional($sale->sold_at)->timezone('Asia/Aden')->format('Y-m-d h:i A') }}</b></div><div><span>العميل</span><b>{{ $customer }}</b></div><div><span>الدفع</span><b>{{ $sale->payment_method === 'transfer' ? 'تحويل' : 'نقدي' }}</b></div>@if($sale->payment_method === 'transfer')<div><span>جهة الصرافة</span><b>{{ $sale->transfer_service ?: '—' }}</b></div><div><span>رقم الحوالة</span><b>{{ $sale->transfer_reference ?: '—' }}</b></div>@endif</section>
+diff --git a/public/winner-gym/inventory-final.css b/public/winner-gym/inventory-final.css
+--- a/public/winner-gym/inventory-final.css
++++ b/public/winner-gym/inventory-final.css
+@@ -292,0 +293,8 @@
++/* Transfer details v5.1 */
++.wg-body-inventory .wg-pos-transfer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}
++.wg-body-inventory .wg-pos-transfer-grid .wg-pos-transfer-field{margin-top:0}
++.wg-body-inventory .wg-pos-transfer-field select{width:100%;height:44px;border:1px solid #203851;border-radius:8px;background:#07121f;color:#e3eaf2;padding:0 10px;font-size:11.5px;outline:0}
++.wg-body-inventory .wg-pos-transfer-field b{color:#ff6773}
++html.wg-light .wg-body-inventory .wg-pos-transfer-field select{background:#f8fbff;border-color:#ccdaea;color:#1b2d45}
++@media(max-width:560px){.wg-body-inventory .wg-pos-transfer-grid{grid-template-columns:1fr}}
+diff --git a/resources/views/layouts/app/sidebar.blade.php b/resources/views/layouts/app/sidebar.blade.php
+--- a/resources/views/layouts/app/sidebar.blade.php
++++ b/resources/views/layouts/app/sidebar.blade.php
+@@ -20,7 +20,7 @@
+     <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20260813-2">
+     <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}">
+     <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}">
+-    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20260813-2">
++    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20260813-3">
+     <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}">

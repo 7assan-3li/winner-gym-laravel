@@ -1,0 +1,82 @@
+diff --git a/app/Livewire/Inventory/SalesIndex.php b/app/Livewire/Inventory/SalesIndex.php
+--- a/app/Livewire/Inventory/SalesIndex.php
++++ b/app/Livewire/Inventory/SalesIndex.php
+@@ -283,13 +283,35 @@
+-        $todayTotals = Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$todayStart, $todayEnd])
+-            ->select('currency', DB::raw('COALESCE(SUM(total_amount),0) total'))->groupBy('currency')->pluck('total', 'currency');
+-        $monthTotals = Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$monthStart, $monthEnd])
+-            ->select('currency', DB::raw('COALESCE(SUM(total_amount),0) total'))->groupBy('currency')->pluck('total', 'currency');
+-
+-        $monthGrossMargin = SaleItem::query()
+-            ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
+-            ->where('sales.status', 'completed')
+-            ->whereBetween('sales.sold_at', [$monthStart, $monthEnd])
+-            ->select('sales.currency', DB::raw('COALESCE(SUM((sale_items.actual_unit_price - sale_items.unit_cost) * sale_items.quantity),0) total'))
+-            ->groupBy('sales.currency')->pluck('total', 'currency');
+-        $monthDiscounts = Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$monthStart, $monthEnd])
+-            ->select('currency', DB::raw('COALESCE(SUM(discount_amount),0) total'))->groupBy('currency')->pluck('total', 'currency');
++        $stats = Cache::remember(
++            $this->salesStatsCacheKey($now),
++            now()->addSeconds(45),
++            function () use ($todayStart, $todayEnd, $monthStart, $monthEnd): array {
++                $sales = DB::table('sales')
++                    ->where('status', 'completed')
++                    ->whereBetween('sold_at', [$monthStart, $monthEnd])
++                    ->selectRaw('COUNT(CASE WHEN sold_at BETWEEN ? AND ? THEN 1 END) AS today_count', [$todayStart, $todayEnd])
++                    ->selectRaw("COALESCE(SUM(CASE WHEN sold_at BETWEEN ? AND ? AND currency = 'YER' THEN total_amount ELSE 0 END), 0) AS today_yer", [$todayStart, $todayEnd])
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'YER' THEN total_amount ELSE 0 END), 0) AS month_yer")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'SAR' THEN total_amount ELSE 0 END), 0) AS month_sar")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'YER' THEN discount_amount ELSE 0 END), 0) AS discount_yer")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN currency = 'SAR' THEN discount_amount ELSE 0 END), 0) AS discount_sar")
++                    ->first();
++
++                $items = DB::table('sale_items')
++                    ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
++                    ->where('sales.status', 'completed')
++                    ->whereBetween('sales.sold_at', [$monthStart, $monthEnd])
++                    ->selectRaw("COALESCE(SUM(CASE WHEN sales.currency = 'YER' THEN (sale_items.actual_unit_price - sale_items.unit_cost) * sale_items.quantity ELSE 0 END), 0) AS gross_yer")
++                    ->selectRaw("COALESCE(SUM(CASE WHEN sales.currency = 'SAR' THEN (sale_items.actual_unit_price - sale_items.unit_cost) * sale_items.quantity ELSE 0 END), 0) AS gross_sar")
++                    ->selectRaw('COALESCE(SUM(sale_items.quantity), 0) AS month_units')
++                    ->first();
++
++                return [
++                    'todayCount' => (int) ($sales->today_count ?? 0),
++                    'todayYER' => (float) ($sales->today_yer ?? 0),
++                    'monthYER' => (float) ($sales->month_yer ?? 0),
++                    'monthSAR' => (float) ($sales->month_sar ?? 0),
++                    'profitYER' => (float) ($items->gross_yer ?? 0) - (float) ($sales->discount_yer ?? 0),
++                    'profitSAR' => (float) ($items->gross_sar ?? 0) - (float) ($sales->discount_sar ?? 0),
++                    'monthUnits' => (int) ($items->month_units ?? 0),
++                ];
++            },
++        );
+@@ -303,1 +325,5 @@
+-            'members' => Member::query()->where('status', 'active')->orderBy('full_name')->limit(500)->get(['id', 'full_name', 'membership_code']),
++            'members' => Cache::remember(
++                'winner-gym:sales:active-members',
++                now()->addMinutes(5),
++                fn () => Member::query()->where('status', 'active')->orderBy('full_name')->limit(500)->get(['id', 'full_name', 'membership_code']),
++            ),
+@@ -309,8 +335,1 @@
+-            'todayCount' => Sale::query()->where('status', 'completed')->whereBetween('sold_at', [$todayStart, $todayEnd])->count(),
+-            'todayYER' => (float) ($todayTotals['YER'] ?? 0),
+-            'todaySAR' => (float) ($todayTotals['SAR'] ?? 0),
+-            'monthYER' => (float) ($monthTotals['YER'] ?? 0),
+-            'monthSAR' => (float) ($monthTotals['SAR'] ?? 0),
+-            'profitYER' => (float) ($monthGrossMargin['YER'] ?? 0) - (float) ($monthDiscounts['YER'] ?? 0),
+-            'profitSAR' => (float) ($monthGrossMargin['SAR'] ?? 0) - (float) ($monthDiscounts['SAR'] ?? 0),
+-            'monthUnits' => (int) SaleItem::query()->join('sales', 'sales.id', '=', 'sale_items.sale_id')->where('sales.status', 'completed')->whereBetween('sales.sold_at', [$monthStart, $monthEnd])->sum('sale_items.quantity'),
++            ...$stats,
+@@ -318,2 +337,12 @@
+     }
++
++    private function salesStatsCacheKey(CarbonImmutable $now): string
++    {
++        return 'winner-gym:sales:stats:'.$now->format('Y-m-d');
++    }
++
++    private function forgetSalesStats(): void
++    {
++        Cache::forget($this->salesStatsCacheKey(CarbonImmutable::now('Asia/Aden')));
++    }
+ }

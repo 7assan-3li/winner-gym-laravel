@@ -1,0 +1,164 @@
+/* WINNER GYM — Members final polish
+   Keeps the accepted dark design, aligns the header with Dashboard,
+   adds a working More menu and a consistent light-blue appearance. */
+
+.wg-body-members{--mem-panel:#071422;--mem-panel-2:#06111d;--mem-border:#172a42;--mem-muted:#8998ad;--mem-text:#f5f8ff}
+.wg-body-members .wg-sidebar{width:196px!important}
+.wg-body-members .wg-main{margin-left:196px!important}
+.wg-body-members .wg-brand{padding:15px 12px 12px!important}
+.wg-body-members .wg-brand img{width:104px!important}
+.wg-body-members .wg-nav{padding:0 10px!important;gap:3px!important}
+.wg-body-members .wg-nav a{min-height:40px!important;padding:0 12px!important;gap:10px!important;border-radius:7px!important;font-size:12.5px!important;font-weight:650!important}
+.wg-body-members .wg-nav-icon{width:18px!important;height:18px!important;stroke-width:1.75!important}
+.wg-body-members .wg-sidebar-art{min-height:245px!important;padding:0!important}
+.wg-body-members .wg-sidebar-art::before{inset:4px 0 8px!important;background-size:contain!important;background-position:center bottom!important;opacity:.98!important}
+.wg-body-members .wg-sidebar-art strong,.wg-body-members .wg-sidebar-art span{display:none!important}
+
+/* Same topbar composition used by the accepted dashboard */
+.wg-topbar-members-final{
+    height:86px!important;min-height:86px!important;padding:0 30px!important;
+    display:grid!important;grid-template-columns:minmax(250px,1fr) minmax(340px,410px) auto!important;
+    align-items:center!important;gap:26px!important;direction:ltr!important;
+    background:#030914!important;border-bottom:1px solid #162438!important;backdrop-filter:none!important;
+}
+.wg-members-final-page{direction:rtl!important;text-align:left!important}
+.wg-members-final-page h1{margin:0!important;color:#f8fafc!important;font-size:23px!important;line-height:1.1!important;font-weight:850!important}
+.wg-members-final-page>div{margin-top:8px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#8797ac!important;font-size:11.5px!important}
+.wg-members-final-page i{font-style:normal!important;color:#4e5d72!important}
+.wg-topbar-members-final .wg-members-final-search{width:100%!important;height:45px!important;margin:0!important;border-radius:9px!important;border-color:#1a2a40!important;background:#050d18!important;padding:0 14px!important;direction:rtl!important;cursor:pointer!important;color:#718199!important;font-size:12px!important;justify-content:space-between!important}
+.wg-topbar-members-final .wg-members-final-search span{flex:1!important;text-align:right!important}
+.wg-members-final-tools{height:100%!important;display:flex!important;align-items:center!important;gap:8px!important;direction:ltr!important;justify-content:flex-end!important}
+.wg-members-final-tools .wg-top-icon{position:relative!important;width:43px!important;height:43px!important;border-radius:9px!important;cursor:pointer!important}
+.wg-members-final-tools .wg-user{margin:0!important;position:relative!important;direction:rtl!important}
+.wg-members-final-tools .wg-user summary{gap:10px!important;min-width:185px!important}
+.wg-members-final-tools .wg-avatar{width:42px!important;height:42px!important;font-size:12px!important}
+.wg-members-final-tools .wg-user-name{font-size:13.5px!important}
+.wg-members-final-tools .wg-user-role{font-size:10.5px!important}
+.wg-members-final-tools .wg-user-menu{top:62px!important;right:0!important;left:auto!important}
+
+.wg-members-content{padding:20px 28px 34px!important}
+.wg-members-page{gap:16px!important}
+.wg-members-summary-grid{gap:14px!important}
+.wg-members-stat{min-height:136px!important;padding:20px!important;border-radius:12px!important}
+.wg-members-stat-label{font-size:13.5px!important}
+.wg-members-stat strong{font-size:30px!important}
+.wg-members-stat small{font-size:11px!important}
+.wg-members-stat-icon{width:64px!important;height:64px!important}
+.wg-members-stat-icon svg{width:35px!important;height:35px!important}
+.wg-members-primary,.wg-members-secondary{font-size:13px!important}
+.wg-members-filter-panel{border-radius:12px!important}
+.wg-members-search-control input,.wg-members-select-control select{font-size:12.5px!important}
+.wg-members-select-control{height:58px!important;min-height:58px!important;padding:7px 12px 6px!important;display:grid!important;grid-template-rows:13px minmax(0,1fr)!important;align-content:center!important;overflow:hidden!important;box-sizing:border-box!important}
+body.wg-body-members .wg-members-filter-panel .wg-members-select-control select{height:31px!important;min-height:31px!important;max-height:31px!important;padding:0!important;line-height:31px!important;border-radius:0!important;box-sizing:border-box!important;position:relative!important;top:-3px!important}
+.wg-members-select-control>span{line-height:13px!important;position:relative!important;z-index:1!important}
+.wg-members-select-control select{height:31px!important;min-height:31px!important;padding:0 0 1px!important;line-height:31px!important;border-radius:0!important;box-sizing:border-box!important}
+.wg-members-table th{font-size:11.5px!important;padding:14px 13px!important}
+.wg-members-table td{font-size:12px!important;padding:13px!important}
+.wg-members-person strong{font-size:12.5px!important}
+.wg-members-person span{font-size:10px!important}
+
+/* Primary row actions */
+.wg-members-actions-cell{position:relative!important;overflow:visible!important}
+.wg-members-actions{display:flex!important;gap:7px!important;align-items:center!important;position:relative!important;overflow:visible!important}
+.wg-members-actions>button,.wg-members-actions>.wg-members-quick-subscribe:not(.has-label),.wg-members-more-wrap>button{width:36px!important;height:36px!important;min-height:36px!important;border-radius:7px!important}
+.wg-members-quick-subscribe{display:grid!important;place-items:center!important;background:#07131f!important;border:1px solid #165d42!important;color:#24df85!important;text-decoration:none!important;flex:0 0 auto!important}
+.wg-members-quick-subscribe.has-label{min-height:36px!important;padding:0 12px!important;display:flex!important;align-items:center!important;gap:7px!important;border-radius:7px!important;direction:rtl!important;white-space:nowrap!important;font-size:11.5px!important;font-weight:750!important}
+.wg-members-quick-subscribe:hover{background:#09271b!important;border-color:#24a76c!important;color:#38ee98!important}
+.wg-members-actions svg{width:19px!important;height:19px!important}
+.wg-members-more-wrap{position:relative!important;display:block!important}
+.wg-members-more-menu{
+    position:absolute!important;left:0!important;top:43px!important;z-index:90!important;width:205px!important;
+    padding:7px!important;border:1px solid #29405c!important;border-radius:10px!important;
+    background:#071522!important;box-shadow:0 22px 55px rgba(0,0,0,.48)!important;direction:rtl!important;text-align:right!important;
+}
+.wg-members-more-menu button,.wg-members-more-menu a{
+    width:100%!important;min-height:39px!important;padding:0 10px!important;border:0!important;border-radius:7px!important;
+    display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;
+    background:transparent!important;color:#d9e3f0!important;text-decoration:none!important;font-size:11.5px!important;font-weight:650!important;cursor:pointer!important;
+}
+.wg-members-more-menu button:hover,.wg-members-more-menu a:hover{background:#0c2035!important;color:#fff!important}
+.wg-members-more-menu svg{width:17px!important;height:17px!important;fill:none!important;stroke:#2388ff!important;stroke-width:1.8!important;flex:0 0 auto!important}
+.wg-members-more-menu .is-success-menu{color:#31dc8a!important}
+.wg-members-more-menu .is-success-menu svg{stroke:#31dc8a!important}
+.wg-members-more-menu .is-danger-menu{color:#ff6876!important;border-top:1px solid #192b40!important;margin-top:4px!important;padding-top:4px!important}
+.wg-members-more-menu .is-danger-menu svg{stroke:#ff6876!important}
+.wg-members-table-shell,.wg-members-table-scroll{overflow:visible!important}
+
+/* Active subscription with its nearest scheduled renewal in one member row */
+.wg-members-next-sub{margin-top:8px!important;padding-top:7px!important;border-top:1px dashed #24405f!important;display:grid!important;gap:2px!important}
+.wg-members-next-sub .wg-members-next-label{color:#a883ff!important;font-size:8.5px!important;font-weight:850!important}
+.wg-members-next-sub strong{color:#e5dcff!important;font-size:10.5px!important}
+.wg-members-next-sub>span:last-child,.wg-members-next-date{display:block!important;color:#9d8bc5!important;font-size:8.8px!important;margin-top:3px!important}
+.wg-members-next-date b{color:#b398ef!important;font-weight:800!important}
+.wg-members-status-stack{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important}
+.wg-members-renewed-badge{display:inline-flex!important;align-items:center!important;min-height:22px!important;padding:0 8px!important;border-radius:999px!important;background:#1c1538!important;color:#b798ff!important;font-size:8.5px!important;font-weight:850!important}
+.wg-members-upcoming-card{border-top:2px solid #7555cb!important}
+/* Detail modal: stronger hierarchy and action footer */
+.wg-members-modal-form{width:min(860px,calc(100vw - 32px))!important}
+.wg-members-modal-head h3{font-size:23px!important}
+.wg-members-modal-head p{font-size:11.5px!important}
+.wg-members-profile-summary{padding:15px!important}
+.wg-members-profile-avatar{width:52px!important;height:52px!important;font-size:18px!important}
+.wg-members-profile-summary strong{font-size:16px!important}
+.wg-members-detail-grid>div,.wg-members-subscription-card>div{padding:13px 14px!important}
+.wg-members-detail-grid span,.wg-members-subscription-card span,.wg-members-notes-box span{font-size:10px!important}
+.wg-members-detail-grid strong,.wg-members-subscription-card strong{font-size:12.5px!important}
+.wg-members-detail-actions{justify-content:flex-start!important;flex-wrap:wrap!important}
+.wg-members-detail-actions .wg-members-primary,.wg-members-detail-actions .wg-members-secondary{min-width:150px!important;min-height:45px!important}
+
+/* Light / blue mode — member screen */
+html.wg-light .wg-body-members{--mem-panel:#fff;--mem-panel-2:#f7fbff;--mem-border:#d5e3f3;--mem-muted:#6f839b;--mem-text:#172a43;background:#eef5ff!important;color:#172a43!important}
+html.wg-light .wg-topbar-members-final{background:#fff!important;border-bottom-color:#d8e4f2!important;box-shadow:0 6px 22px rgba(37,79,129,.05)!important}
+html.wg-light .wg-members-final-page h1{color:#14263e!important}
+html.wg-light .wg-members-final-page>div{color:#73869c!important}
+html.wg-light .wg-topbar-members-final .wg-members-final-search{background:#f7fbff!important;border-color:#cfdff0!important;color:#7c8fa5!important}
+html.wg-light .wg-members-final-tools .wg-user-name{color:#14263e!important}
+html.wg-light .wg-members-final-tools .wg-user-role,html.wg-light .wg-members-final-tools .wg-user-chevron{color:#70839a!important}
+html.wg-light .wg-members-content{background:transparent!important}
+html.wg-light .wg-members-stat,html.wg-light .wg-members-filter-panel,html.wg-light .wg-members-table-shell{background:#fff!important;border-color:#d5e3f3!important;box-shadow:0 8px 24px rgba(31,76,128,.055)!important}
+html.wg-light .wg-members-stat-label,html.wg-light .wg-members-stat strong{color:#172941!important}
+html.wg-light .wg-members-stat small{color:#72869d!important}
+html.wg-light .wg-members-stat-icon{background:#edf6ff!important;border-color:#cfe2f7!important}
+html.wg-light .wg-members-secondary,html.wg-light .wg-members-reset{background:#f7fbff!important;border-color:#cdddef!important;color:#243b57!important}
+html.wg-light .wg-members-search-control,html.wg-light .wg-members-select-control{background:#f8fbff!important;border-color:#d1dfef!important}
+html.wg-light .wg-members-search-control input,html.wg-light .wg-members-select-control select{background:transparent!important;color:#1d3049!important}
+html.wg-light .wg-members-search-control input::placeholder{color:#8799ae!important}
+html.wg-light .wg-members-select-control>span{color:#72869d!important}
+html.wg-light .wg-members-table{background:#fff!important}
+html.wg-light .wg-members-table th{background:#f6faff!important;color:#647990!important;border-color:#dce7f3!important}
+html.wg-light .wg-members-table td{color:#23384f!important;border-color:#e0e9f3!important}
+html.wg-light .wg-members-table tbody tr:hover td{background:#f8fbff!important}
+html.wg-light .wg-members-person strong,html.wg-light .wg-members-sub-name{color:#172941!important}
+html.wg-light .wg-members-person span,html.wg-light .wg-members-sub-duration,html.wg-light .wg-members-empty,html.wg-light .wg-members-days{color:#788ba1!important}
+html.wg-light .wg-members-next-sub{border-top-color:#d7caef!important}
+html.wg-light .wg-members-next-sub .wg-members-next-label,html.wg-light .wg-members-next-date,html.wg-light .wg-members-next-date b{color:#7354b8!important}
+html.wg-light .wg-members-next-sub strong{color:#4f347f!important}
+html.wg-light .wg-members-renewed-badge{background:#eee8fb!important;color:#6946ad!important}
+html.wg-light .wg-members-actions>button,html.wg-light .wg-members-more-wrap>button{background:#f7fbff!important;border-color:#bdd5ee!important;color:#0b72f7!important}
+html.wg-light .wg-members-quick-subscribe{background:#effbf5!important;border-color:#a8dec3!important;color:#07834a!important}
+html.wg-light .wg-members-more-menu{background:#fff!important;border-color:#cadbec!important;box-shadow:0 20px 50px rgba(34,74,120,.17)!important}
+html.wg-light .wg-members-more-menu button,html.wg-light .wg-members-more-menu a{color:#28405b!important}
+html.wg-light .wg-members-more-menu button:hover,html.wg-light .wg-members-more-menu a:hover{background:#edf6ff!important;color:#0d66d8!important}
+html.wg-light .wg-members-table-footer{border-color:#dce7f3!important;color:#72869c!important;background:#fbfdff!important}
+html.wg-light .wg-members-page-size,html.wg-light .wg-members-pagination a,html.wg-light .wg-members-pagination span[aria-disabled="true"] span{background:#fff!important;border-color:#d2e0ef!important;color:#536a83!important}
+html.wg-light .wg-members-modal{background:#fff!important;border-color:#c8d9ec!important;color:#172941!important;box-shadow:0 28px 90px rgba(33,71,115,.22)!important}
+html.wg-light .wg-members-modal-head,html.wg-light .wg-members-modal-foot{border-color:#dbe6f2!important}
+html.wg-light .wg-members-modal-head h3,html.wg-light .wg-members-profile-summary strong,html.wg-light .wg-members-modal-confirm h3{color:#172941!important}
+html.wg-light .wg-members-modal-head p,html.wg-light .wg-members-modal-confirm>p,html.wg-light .wg-members-modal-confirm form>p{color:#71859c!important}
+html.wg-light .wg-members-profile-summary,html.wg-light .wg-members-detail-grid>div,html.wg-light .wg-members-subscription-card>div,html.wg-light .wg-members-notes-box,html.wg-light .wg-members-confirm-member{background:#f8fbff!important;border-color:#d7e4f2!important}
+html.wg-light .wg-members-detail-grid span,html.wg-light .wg-members-subscription-card span,html.wg-light .wg-members-notes-box span{color:#71859c!important}
+html.wg-light .wg-members-detail-grid strong,html.wg-light .wg-members-subscription-card strong,html.wg-light .wg-members-notes-box p{color:#21364f!important}
+html.wg-light .wg-members-form-grid label>span,html.wg-light .wg-members-full-field>span{color:#314963!important}
+html.wg-light .wg-members-form-grid input,html.wg-light .wg-members-form-grid select,html.wg-light .wg-members-full-field textarea,html.wg-light .wg-members-full-field select{background:#f8fbff!important;border-color:#ccdaea!important;color:#1b2d45!important}
+html.wg-light .wg-members-info-strip{background:#edf6ff!important;border-color:#bad7f6!important;color:#45698f!important}
+html.wg-light .wg-members-modal-head>button,html.wg-light .wg-members-confirm-close{color:#2c425c!important}
+
+@media(max-width:1100px){
+    .wg-body-members .wg-sidebar{width:78px!important}.wg-body-members .wg-main{margin-left:78px!important}.wg-body-members .wg-nav span,.wg-body-members .wg-sidebar-art{display:none!important}.wg-body-members .wg-nav a{justify-content:center!important;padding:0!important}
+    .wg-topbar-members-final{grid-template-columns:1fr minmax(280px,360px) auto!important;padding:0 18px!important;gap:15px!important}
+    .wg-members-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .wg-members-summary-actions{grid-column:1/-1!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+    .wg-body-members .wg-main{margin-left:0!important}.wg-topbar-members-final{height:auto!important;min-height:82px!important;grid-template-columns:1fr auto!important;padding:12px 14px!important}.wg-members-final-search{display:none!important}.wg-members-final-tools .wg-user-copy{display:none!important}.wg-members-final-tools .wg-user summary{min-width:0!important}.wg-members-content{padding:13px!important}.wg-members-table-shell{overflow:hidden!important}.wg-members-table-scroll{overflow:auto!important}
+}

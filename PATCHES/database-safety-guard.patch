@@ -1,0 +1,69 @@
+diff --git a/app/Providers/AppServiceProvider.php b/app/Providers/AppServiceProvider.php
+--- a/app/Providers/AppServiceProvider.php
++++ b/app/Providers/AppServiceProvider.php
+@@ -34,7 +34,7 @@ protected function configureDefaults(): void
+         Date::use(CarbonImmutable::class);
+ 
+         DB::prohibitDestructiveCommands(
+-            app()->isProduction(),
++            $this->usesProtectedDatabase(),
+         );
+ 
+         Password::defaults(fn (): ?Password => app()->isProduction()
+@@ -46,4 +46,28 @@ protected function configureDefaults(): void
+             : null,
+         );
+     }
++
++    /**
++     * Never allow destructive Artisan commands against a remote database.
++     * The desktop application runs in the local environment while its real
++     * data lives on Supabase, so checking only APP_ENV=production is unsafe.
++     */
++    private function usesProtectedDatabase(): bool
++    {
++        $default = (string) config('database.default');
++        $connection = (array) config("database.connections.{$default}", []);
++        $url = (string) ($connection['url'] ?? '');
++        $host = strtolower((string) ($connection['host'] ?? ''));
++
++        if ($host === '' && $url !== '') {
++            $host = strtolower((string) (parse_url($url, PHP_URL_HOST) ?: ''));
++        }
++
++        $isRemotePostgres = $default === 'pgsql'
++            && $host !== ''
++            && ! in_array($host, ['localhost', '127.0.0.1', '::1'], true);
++
++        return app()->isProduction() || $isRemotePostgres;
++    }
+ }
+diff --git a/tests/TestCase.php b/tests/TestCase.php
+--- a/tests/TestCase.php
++++ b/tests/TestCase.php
+@@ -8,6 +8,25 @@ use Laravel\Fortify\Features;
+ 
+ abstract class TestCase extends BaseTestCase
+ {
++    protected function setUp(): void
++    {
++        $connection = $_ENV['DB_CONNECTION'] ?? $_SERVER['DB_CONNECTION'] ?? getenv('DB_CONNECTION') ?: null;
++        $database = $_ENV['DB_DATABASE'] ?? $_SERVER['DB_DATABASE'] ?? getenv('DB_DATABASE') ?: null;
++        $url = $_ENV['DB_URL'] ?? $_SERVER['DB_URL'] ?? getenv('DB_URL') ?: null;
++
++        if ($connection !== 'sqlite' || $database !== ':memory:' || filled($url)) {
++            throw new \RuntimeException(
++                'Unsafe test database blocked. PHPUnit must use sqlite with DB_DATABASE=:memory: and an empty DB_URL.'
++            );
++        }
++
++        parent::setUp();
++
++        if (config('database.default') !== 'sqlite' || config('database.connections.sqlite.database') !== ':memory:') {
++            throw new \RuntimeException('Laravel loaded an unsafe database during tests.');
++        }
++    }
++
+     protected function skipUnlessFortifyHas(string $feature, ?string $message = null): void
+     {
+         if (! Features::enabled($feature)) {

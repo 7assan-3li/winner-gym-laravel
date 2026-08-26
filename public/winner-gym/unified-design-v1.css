@@ -1,0 +1,692 @@
+/* WINNER GYM — Unified Design System V1
+   Final geometry/typography/accessibility layer shared by every module. */
+
+:root {
+  --wg-shell-sidebar: 184px;
+  --wg-page-gap: 16px;
+  --wg-radius-sm: 8px;
+  --wg-radius-md: 10px;
+  --wg-radius-lg: 12px;
+  --wg-control-height: 40px;
+  --wg-font: "Segoe UI", Tahoma, Arial, sans-serif;
+  --wg-bg: #020914;
+  --wg-panel: #071523;
+  --wg-panel-2: #091a2a;
+  --wg-border: #172b42;
+  --wg-border-strong: #23415f;
+  --wg-text: #eef5fc;
+  --wg-muted: #8ea0b5;
+  --wg-primary: #167fff;
+  --wg-primary-strong: #0868e8;
+  --wg-success: #14d77b;
+  --wg-warning: #f5a000;
+  --wg-danger: #ff5362;
+}
+
+html, body, button, input, select, textarea { font-family: var(--wg-font) !important; }
+html { font-size: 16px; }
+body.wg-body { color: var(--wg-text); background: var(--wg-bg); }
+body.wg-body *, body.wg-body *::before, body.wg-body *::after { box-sizing: border-box; }
+body.wg-body .wg-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+body.wg-body .wg-dash-period-control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+body.wg-body select.wg-dash-select {
+  min-width: 116px !important;
+  height: 34px !important;
+  padding: 0 12px 0 32px !important;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer !important;
+  font-weight: 700 !important;
+  line-height: 34px !important;
+  color-scheme: dark;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%) !important;
+  background-position:
+    15px 14px,
+    10px 14px !important;
+  background-size: 5px 5px, 5px 5px !important;
+  background-repeat: no-repeat !important;
+}
+body.wg-body select.wg-dash-select:disabled {
+  cursor: wait !important;
+  opacity: .72;
+}
+body.wg-body .wg-dash-period-control > i {
+  position: absolute;
+  inset-inline-end: -21px;
+  width: 13px;
+  height: 13px;
+  border: 2px solid color-mix(in srgb, var(--wg-primary) 28%, transparent);
+  border-top-color: var(--wg-primary);
+  border-radius: 50%;
+  animation: wg-period-spin .7s linear infinite;
+}
+html.wg-light body.wg-body select.wg-dash-select { color-scheme: light; }
+@keyframes wg-period-spin { to { transform: rotate(360deg); } }
+
+/* Dashboard review: more room for finance and fully readable system alerts. */
+@media (min-width: 1321px) {
+  body.wg-body-dashboard .wg-dash-main-grid {
+    grid-template-columns:
+      minmax(0, 1.32fr)
+      minmax(0, 1.82fr)
+      minmax(285px, .96fr) !important;
+  }
+}
+body.wg-body-dashboard .wg-dash-finance-cards {
+  gap: 12px !important;
+  padding: 0 14px 15px !important;
+}
+body.wg-body-dashboard .wg-dash-money-card {
+  padding: 17px 16px 13px !important;
+}
+body.wg-body-dashboard .wg-dash-money-title {
+  height: 30px !important;
+}
+body.wg-body-dashboard .wg-dash-money-title strong {
+  font-size: 13px !important;
+}
+body.wg-body-dashboard .wg-money-symbol {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 10px !important;
+}
+body.wg-body-dashboard .wg-dash-money-cols {
+  margin-top: 22px !important;
+  gap: 18px !important;
+}
+body.wg-body-dashboard .wg-dash-money-cols span,
+body.wg-body-dashboard .wg-dash-money-net span {
+  font-size: 11px !important;
+}
+body.wg-body-dashboard .wg-dash-money-cols strong {
+  margin-top: 7px !important;
+  font-size: 19px !important;
+}
+body.wg-body-dashboard .wg-dash-money-net {
+  margin-top: 20px !important;
+  height: 70px !important;
+}
+body.wg-body-dashboard .wg-dash-money-net strong {
+  margin-top: 6px !important;
+  font-size: 22px !important;
+}
+body.wg-body-dashboard .wg-dash-alert-list {
+  padding: 2px 15px 14px !important;
+}
+body.wg-body-dashboard .wg-dash-alert-list a {
+  min-height: 68px !important;
+  padding-block: 9px !important;
+  grid-template-columns: 30px minmax(0, 1fr) 12px !important;
+  grid-template-rows: auto auto !important;
+  column-gap: 9px !important;
+  row-gap: 4px !important;
+}
+body.wg-body-dashboard .wg-dash-alert-list .wg-alert-icon {
+  grid-column: 1 !important;
+  grid-row: 1 / 3 !important;
+  align-self: center !important;
+}
+body.wg-body-dashboard .wg-dash-alert-list p {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  font-size: 11px !important;
+  line-height: 1.55 !important;
+}
+body.wg-body-dashboard .wg-dash-alert-list strong {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  justify-self: start !important;
+  font-size: 10px !important;
+  line-height: 1.3 !important;
+}
+body.wg-body-dashboard .wg-dash-alert-list b {
+  grid-column: 3 !important;
+  grid-row: 1 / 3 !important;
+  align-self: center !important;
+}
+
+@media (max-width: 760px) {
+  body.wg-body-dashboard .wg-dash-finance-cards {
+    gap: 10px !important;
+  }
+  body.wg-body-dashboard .wg-dash-money-card {
+    min-height: 215px !important;
+  }
+}
+
+/* Dashboard subscription wizard */
+body.wg-body-dashboard .wg-subscription-modal {
+  width: min(1060px, calc(100vw - 44px)) !important;
+  font-family: var(--wg-font) !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-action-head {
+  padding: 19px 28px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-action-title h2 {
+  font-size: 22px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps {
+  direction: rtl !important;
+  padding: 20px 64px 14px !important;
+  border-bottom: 1px solid var(--wg-border) !important;
+  background: color-mix(in srgb, var(--wg-panel-2) 58%, transparent) !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps div {
+  gap: 8px !important;
+  font-size: 11.5px !important;
+  font-weight: 750 !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps div:not(:last-child)::after {
+  left: -50% !important;
+  right: 50% !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps i {
+  width: 34px !important;
+  height: 34px !important;
+  font-size: 12px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps .is-done i {
+  background: #0d9f5d !important;
+  border-color: #1bd47d !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps .is-done span {
+  color: #29d985 !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-action-body {
+  padding: 24px 28px 26px !important;
+  gap: 20px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-step-panel {
+  gap: 20px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal label {
+  gap: 8px !important;
+  font-size: 12px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal input,
+body.wg-body-dashboard .wg-subscription-modal select,
+body.wg-body-dashboard .wg-subscription-modal textarea {
+  min-height: 46px !important;
+  border-radius: 9px !important;
+  font-size: 12px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal input[readonly] {
+  color: var(--wg-success) !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  cursor: default !important;
+}
+body.wg-body-dashboard .wg-subscription-modal label > small,
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-price > small {
+  display: block;
+  margin-top: 5px;
+  color: var(--wg-muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-member-package > div {
+  min-height: 86px !important;
+  padding: 17px 19px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-member-package span,
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-price span {
+  font-size: 11px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-member-package strong,
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-price strong {
+  margin-top: 8px !important;
+  font-size: 14px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-sub-price {
+  min-height: 76px !important;
+  padding: 16px 18px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-payment-plan {
+  min-height: 76px !important;
+  padding: 16px 18px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-payment-plan strong {
+  font-size: 13px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-payment-plan small {
+  margin-top: 6px !important;
+  font-size: 10px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-full-payment-row {
+  align-items: stretch !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .is-payment-summary {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-file-field.is-required {
+  border-color: #b87712 !important;
+  background: color-mix(in srgb, #b87712 9%, var(--wg-panel)) !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-file-field .is-uploaded {
+  color: var(--wg-success) !important;
+  font-weight: 800 !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-action-info.is-warning {
+  color: #ffc15c !important;
+  border-color: #8f5b10 !important;
+  background: #241805 !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-no-packages-notice {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-no-packages-notice a {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #b87712;
+  border-radius: 7px;
+  color: #ffd17a !important;
+  font-weight: 800;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-action-foot {
+  min-height: 76px !important;
+  padding: 16px 28px !important;
+  background: color-mix(in srgb, var(--wg-panel) 92%, transparent) !important;
+}
+body.wg-body-dashboard .wg-subscription-modal .wg-action-btn--primary {
+  min-width: 250px !important;
+}
+
+@media (max-width: 760px) {
+  body.wg-body-dashboard .wg-subscription-modal {
+    width: calc(100vw - 18px) !important;
+  }
+  body.wg-body-dashboard .wg-subscription-modal .wg-action-head,
+  body.wg-body-dashboard .wg-subscription-modal .wg-action-body,
+  body.wg-body-dashboard .wg-subscription-modal .wg-action-foot {
+    padding-inline: 16px !important;
+  }
+  body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps {
+    padding-inline: 10px !important;
+  }
+  body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps div {
+    font-size: 9px !important;
+  }
+  body.wg-body-dashboard .wg-subscription-modal .wg-sub-steps i {
+    width: 30px !important;
+    height: 30px !important;
+  }
+}
+
+/* Shared shell */
+.wg-body .wg-topbar-unified {
+  height: 88px !important;
+  min-height: 88px !important;
+  padding-inline: 26px !important;
+}
+.wg-unified-page h1 { font-size: 24px !important; line-height: 1.15 !important; }
+.wg-unified-crumb { font-size: 12px !important; }
+.wg-body .wg-unified-search { height: 44px !important; font-size: 12.5px !important; }
+.wg-body .wg-nav { gap: 4px !important; padding-inline: 10px !important; }
+.wg-body .wg-nav a {
+  min-height: 42px !important;
+  padding-inline: 13px !important;
+  gap: 11px !important;
+  border-radius: var(--wg-radius-sm) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+.wg-body .wg-nav-icon { width: 19px !important; height: 19px !important; }
+body.wg-body .wg-unified-tools .wg-top-icon.wg-mobile-menu-toggle,
+body.wg-body .wg-sidebar-scrim { display: none !important; }
+
+/* One canvas rhythm for every screen */
+.wg-body .wg-content,
+.wg-body .wg-dashboard-content,
+.wg-body .wg-members-content,
+.wg-body .wg-subscriptions-content,
+.wg-body .wg-attendance-content,
+.wg-body .wg-finance-content,
+.wg-body .wg-inventory-content,
+.wg-body .wg-nutrition-content,
+.wg-body .wg-system-content {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  padding: 20px 24px 34px !important;
+}
+.wg-body .wg-content > * { min-width: 0; }
+
+/* Generic legacy/system pages */
+.wg-body-system :is(.wg-title, h1.text-2xl, h1.text-xl) {
+  color: var(--wg-text) !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+}
+.wg-body-system :is(.wg-subtitle, .text-sm, .text-xs) { line-height: 1.55 !important; }
+.wg-body-system :is(.rounded-2xl, .rounded-xl, .rounded-lg)[class*="border"],
+.wg-body-system :is(.wg-card, .wg-stat, .wg-panel) {
+  border-color: var(--wg-border) !important;
+  border-radius: var(--wg-radius-lg) !important;
+}
+
+/* Unified controls */
+.wg-body :is(
+  .wg-btn, .wg-members-primary, .wg-members-secondary, .wg-members-reset,
+  .wg-sub-new-btn, .wg-sub-export-btn, .wg-sub-reset,
+  .att-btn, .fin-btn, .fin-reset, .wg-inv-btn, .wg-nut-btn,
+  button[class*="primary"], button[class*="secondary"]
+) {
+  min-height: var(--wg-control-height) !important;
+  border-radius: var(--wg-radius-sm) !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  font-weight: 750 !important;
+}
+.wg-body :is(input, select, textarea) {
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+.wg-body :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select) {
+  min-height: var(--wg-control-height) !important;
+  border-radius: var(--wg-radius-sm) !important;
+}
+.wg-body textarea { border-radius: var(--wg-radius-sm) !important; }
+.wg-body :is(input, select, textarea, button, a):focus-visible {
+  outline: 2px solid #55a8ff !important;
+  outline-offset: 2px !important;
+}
+.wg-body button:disabled, .wg-body [aria-disabled="true"] {
+  cursor: not-allowed !important;
+  opacity: .55 !important;
+}
+
+/* Dates keep the native professional picker and a visible calendar affordance. */
+.wg-body input[type="date"] {
+  color-scheme: dark;
+  padding-inline: 11px !important;
+}
+html.wg-light .wg-body input[type="date"],
+html[data-wg-theme="light"] .wg-body input[type="date"] { color-scheme: light; }
+.wg-body input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: .85;
+}
+
+/* Cards and panels share one border/radius language */
+.wg-body :is(
+  .wg-card, .wg-stat, .wg-dash-stat, .wg-chart-card,
+  .wg-members-stat, .wg-members-filters, .wg-members-table-card,
+  .wg-sub-card, .wg-sub-stat, .wg-sub-table-card,
+  .att-card, .att-kpi, .fin-card, .fin-kpi,
+  .wg-inv-card, .wg-inv-kpi, .wg-nut-card, .wg-nut-kpi
+) {
+  border-color: var(--wg-border) !important;
+  border-radius: var(--wg-radius-lg) !important;
+}
+
+/* Readable tables across modules */
+.wg-body :is(
+  table, .wg-members-table, .wg-sub-table, .att-table,
+  .fin-table, .wg-inv-table, .wg-nut-table
+) th {
+  min-height: 42px !important;
+  font-size: 10.75px !important;
+  line-height: 1.35 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+.wg-body :is(
+  table, .wg-members-table, .wg-sub-table, .att-table,
+  .fin-table, .wg-inv-table, .wg-nut-table
+) td {
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+}
+.wg-body :is(.wg-members-table-scroll, .wg-sub-table-scroll, .att-table-scroll, .fin-table-scroll, .wg-inv-table-scroll, .wg-nut-table-scroll) {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+/* Labels, badges and supporting text must remain legible */
+.wg-body :is(
+  .wg-members-stat span, .wg-sub-stat span, .att-kpi span,
+  .fin-kpi span, .wg-inv-kpi span, .wg-nut-kpi span,
+  .wg-pill, .wg-badge, .wg-members-badge, .wg-sub-pill,
+  .att-pill, .fin-pill, .wg-inv-status, .wg-nut-pill
+) { font-size: 10.25px !important; }
+.wg-body :is(small, .wg-muted, [class*="subtitle"], [class*="hint"]) {
+  line-height: 1.5;
+}
+
+/* Modal geometry is identical in every module */
+.wg-body :is(.wg-modal-backdrop, .wg-members-modal-backdrop, .att-modal-backdrop, .fin-modal-backdrop, .wg-inv-modal-backdrop, .wg-nut-modal-backdrop) {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9998 !important;
+  padding: 20px !important;
+  background: rgba(0, 6, 14, .76) !important;
+  backdrop-filter: blur(6px) !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.wg-body :is(.wg-modal, .wg-members-modal, .att-modal, .fin-modal, .wg-inv-modal, .wg-nut-modal) {
+  width: min(680px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: calc(100vh - 32px) !important;
+  overflow: auto !important;
+  border-radius: 14px !important;
+  border: 1px solid #28435f !important;
+  background: linear-gradient(180deg, #0b1726, #081321) !important;
+  box-shadow: 0 30px 100px rgba(0,0,0,.68) !important;
+  color: #eaf1f9 !important;
+}
+.wg-body .wg-modal-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid #172a42 !important;
+}
+.wg-body .wg-modal-body {
+  padding: 20px !important;
+}
+.wg-body .wg-modal-foot {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  padding: 14px 20px !important;
+  border-top: 1px solid #172a42 !important;
+}
+.wg-body .wg-modal-x {
+  width: 34px !important;
+  height: 34px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  color: #d9e3f0 !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  font-size: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: .15s ease !important;
+}
+.wg-body .wg-modal-x:hover {
+  background: #102137 !important;
+  color: #fff !important;
+}
+.wg-body .wg-two {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+.wg-body .wg-three {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+/* Light theme uses the same geometry and a single color language. */
+:is(html.wg-light, html[data-wg-theme="light"]) {
+  --wg-bg: #f5f9fe;
+  --wg-panel: #ffffff;
+  --wg-panel-2: #f8fbff;
+  --wg-border: #d9e5f0;
+  --wg-border-strong: #c6d7e7;
+  --wg-text: #14263d;
+  --wg-muted: #6f8299;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body {
+  background: linear-gradient(180deg, #fbfdff, #f4f8fd) !important;
+  color: var(--wg-text) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-body :is(.wg-modal, .wg-members-modal, .att-modal, .fin-modal, .wg-inv-modal, .wg-nut-modal) {
+  background: #ffffff !important;
+  border-color: #cadbec !important;
+  color: #172941 !important;
+  box-shadow: 0 28px 90px rgba(33,71,115,.22) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-body .wg-modal-head,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-body .wg-modal-foot {
+  border-color: #dbe6f2 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-body .wg-modal-x {
+  color: #556c86 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-body .wg-modal-x:hover {
+  background: #eef5fc !important;
+  color: #1b5f9f !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-body :is(
+  .wg-card, .wg-stat, .wg-dash-stat, .wg-chart-card,
+  .wg-members-stat, .wg-members-filters, .wg-members-table-card,
+  .wg-sub-card, .wg-sub-stat, .wg-sub-table-card,
+  .att-card, .att-kpi, .fin-card, .fin-kpi,
+  .wg-inv-card, .wg-inv-kpi, .wg-nut-card, .wg-nut-kpi
+) { box-shadow: 0 8px 24px rgba(45, 78, 114, .045) !important; }
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-page { color: var(--wg-text) !important; }
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-page :is(
+  .wg-stock-flow strong, .wg-inv-quick-strip h2, .wg-inv-quick-product-copy strong,
+  .wg-inv-card h3, .wg-inv-products-head h3, .wg-inv-summary-list span,
+  .wg-inv-summary-static span, .wg-inv-product-cell strong
+) { color: #172a42 !important; }
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-page :is(
+  .wg-stock-flow span, .wg-inv-quick-strip p, .wg-inv-quick-product-copy small,
+  .wg-inv-products-head p, .wg-inv-card-head h3 span, .wg-inv-alert-item span
+) { color: #71849b !important; }
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-page .wg-stock-flow > div {
+  background: #fff !important;
+  border-color: #d6e2ee !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-page .wg-stock-flow > div.is-current {
+  background: #edf6ff !important;
+  border-color: #75b7ff !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-page .wg-inv-quick-product {
+  background: #fff !important;
+  border-color: #d6e2ee !important;
+}
+
+/* Responsive shell: a real off-canvas navigation replaces disappearing menus. */
+@media (max-width: 900px) {
+  :root { --wg-shell-sidebar: 0px; }
+  .wg-body .wg-main {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+  .wg-body .wg-sidebar {
+    display: block !important;
+    width: min(300px, 86vw) !important;
+    min-width: min(300px, 86vw) !important;
+    max-width: min(300px, 86vw) !important;
+    transform: translateX(105%) !important;
+    transition: transform .24s ease !important;
+    z-index: 100 !important;
+  }
+  .wg-body.wg-nav-open .wg-sidebar { transform: translateX(0) !important; }
+  body.wg-body .wg-unified-tools .wg-top-icon.wg-mobile-menu-toggle { display: grid !important; }
+  body.wg-body .wg-sidebar-scrim {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 90 !important;
+    border: 0 !important;
+    background: rgba(0, 7, 16, .65) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity .2s ease, visibility .2s ease !important;
+  }
+  .wg-body.wg-nav-open .wg-sidebar-scrim { opacity: 1 !important; visibility: visible !important; }
+  .wg-body .wg-topbar-unified {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-areas: "page tools" "search search" !important;
+    height: auto !important;
+    min-height: 126px !important;
+    gap: 10px 14px !important;
+    padding: 14px 16px !important;
+  }
+  .wg-body .wg-unified-search { max-width: none !important; }
+  .wg-body .wg-unified-tools .wg-user summary { min-width: auto !important; }
+  .wg-body .wg-unified-tools .wg-user-copy,
+  .wg-body .wg-unified-tools .wg-user-chevron,
+  .wg-body .wg-top-separator { display: none !important; }
+  .wg-body .wg-content,
+  .wg-body .wg-dashboard-content,
+  .wg-body .wg-members-content,
+  .wg-body .wg-subscriptions-content,
+  .wg-body .wg-attendance-content,
+  .wg-body .wg-finance-content,
+  .wg-body .wg-inventory-content,
+  .wg-body .wg-nutrition-content,
+  .wg-body .wg-system-content { padding: 14px !important; }
+}
+
+@media (max-width: 600px) {
+  .wg-unified-page h1 { font-size: 20px !important; }
+  .wg-body .wg-unified-tools { gap: 4px !important; }
+  .wg-body .wg-unified-tools .wg-top-icon,
+  .wg-body .wg-unified-tools .wg-avatar { width: 39px !important; height: 39px !important; }
+  .wg-body :is(.wg-modal-backdrop, .wg-members-modal-backdrop, .att-modal-backdrop, .fin-modal-backdrop, .wg-inv-modal-backdrop, .wg-nut-modal-backdrop) { padding: 8px !important; }
+  .wg-body :is(.wg-modal, .wg-members-modal, .att-modal, .fin-modal, .wg-inv-modal, .wg-nut-modal) {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: calc(100vh - 16px) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wg-body *, .wg-body *::before, .wg-body *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

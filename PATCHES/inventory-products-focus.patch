@@ -1,0 +1,226 @@
+diff --git a/resources/views/livewire/inventory/products-index.blade.php b/resources/views/livewire/inventory/products-index.blade.php
+--- a/resources/views/livewire/inventory/products-index.blade.php
++++ b/resources/views/livewire/inventory/products-index.blade.php
+@@ -1,9 +1,9 @@
+-<div class="wg-inventory-page" dir="rtl">
++<div class="wg-inventory-page wg-products-focused" dir="rtl">
+     @if (session('success'))
+         <div class="wg-inv-flash">{{ session('success') }}</div>
+     @endif
+ 
+-    @if ($errors->any() && !$showQuickSaleModal && !$showCreateModal && !$showEditModal)
++    @if ($errors->any() && !$showCreateModal && !$showEditModal)
+         <div class="wg-inv-errors">
+             @foreach($errors->all() as $error)<span>• {{ $error }}</span>@endforeach
+         </div>
+@@ -23,58 +23,8 @@
+                     <span>إضافة منتج جديد</span>
+                 </button>
+             @endif
+-            @if($canCreateSales)
+-                <button type="button" wire:click="openQuickSale" class="wg-inv-btn wg-inv-btn-sale">
+-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18v12H3zM7 10h10M7 14h5"/><path d="M18 3v6M15 6h6"/></svg>
+-                    <span>بيع جديد</span>
+-                </button>
+-            @endif
+-            @if($canManagePurchases)
+-                <a href="{{ route('inventory.purchases', ['new' => 1]) }}" wire:navigate class="wg-inv-btn">
+-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16v13H4zM8 4h8v3M8 12h8"/></svg>
+-                    <span>شراء جديد</span>
+-                </a>
+-            @endif
+-            @if($canViewSales)
+-            <a href="{{ route('inventory.sales') }}" wire:navigate class="wg-inv-btn">
+-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/></svg>
+-                <span>سجل المبيعات</span>
+-            </a>
+-            @endif
+         </div>
+     </section>
+ 
+-
+-    @if($canCreateSales)
+-    <section class="wg-inv-quick-strip">
+-        <div class="wg-inv-quick-strip-head">
+-            <div class="wg-inv-quick-strip-title">
+-                <span class="wg-inv-pos-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H7M10 20h.01M18 20h.01"/></svg></span>
+-                <div>
+-                    <span class="wg-inv-eyebrow">نقطة البيع</span>
+-                    <h2>البيع السريع من المخزون</h2>
+-                    <p>اختر منتجاً متوفراً وسيُفتح مباشرة في فاتورة البيع.</p>
+-                </div>
+-            </div>
+-            <button type="button" wire:click="openQuickSale" class="wg-inv-open-pos">
+-                فتح نقطة البيع
+-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+-            </button>
+-        </div>
+-        <div class="wg-inv-quick-products">
+-            @forelse($quickProducts as $product)
+-                <button type="button" wire:click="openQuickSale({{ $product->id }})" class="wg-inv-quick-product">
+-                    <span class="wg-inv-quick-product-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></svg>@if($product->image_path)<img src="{{ route('inventory.product-image', $product) }}" alt="{{ $product->name }}" onerror="this.style.display='none'">@endif</span>
+-                    <span class="wg-inv-quick-product-copy"><strong>{{ $product->name }}</strong><small>متوفر {{ number_format($product->current_quantity) }}</small></span>
+-                    <span class="wg-inv-quick-product-price">{{ number_format((float)$product->selling_price, 0) }} <small>{{ $product->currency }}</small></span>
+-                    <i>+</i>
+-                </button>
+-            @empty
+-                <div class="wg-inv-quick-empty">لا توجد منتجات متوفرة للبيع حالياً. أضف شراءً أو اعتمد مخزوناً أولاً.</div>
+-            @endforelse
+-        </div>
+-    </section>
+-    @endif
+-
+     <section class="wg-inv-kpis">
+@@ -93,16 +43,6 @@
+             <div><span>منتجات منخفضة</span><strong>{{ number_format($lowStockCount) }}</strong><small class="wg-red">تحتاج متابعة</small></div>
+             <i class="is-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 2.8 20h18.4L12 3zM12 9v5M12 17h.01"/></svg></i>
+         </article>
+-        <article class="wg-inv-kpi">
+-            <div><span>مبيعات اليوم</span><strong>{{ number_format($todaySalesCount) }}</strong><small class="wg-green">{{ number_format($todaySalesYER, 0) }} YER</small>@if($todaySalesSAR > 0)<em>{{ number_format($todaySalesSAR, 2) }} SAR</em>@endif</div>
+-            <i class="is-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16v12H4zM8 10h8M8 14h4"/><path d="m16 3 3 3-3 3"/></svg></i>
+-        </article>
+-        <article class="wg-inv-kpi">
+-            <div><span>مشتريات معلقة</span><strong>{{ number_format($pendingPurchases) }}</strong><small class="wg-blue">بانتظار الاعتماد</small></div>
+-            <i class="is-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h14v16H5zM8 2v4M16 2v4M8 11h8M8 15h5"/></svg></i>
+-        </article>
+     </section>
+ 
+     <section class="wg-inv-middle-grid">
+-        <article class="wg-inv-card wg-inv-chart-card">
+-            <div class="wg-inv-card-head">
+-                <h3>حركة المخزون <span>(آخر 6 أشهر)</span></h3>
+-                <div class="wg-inv-legend"><span><i class="is-blue"></i>المشتريات</span><span><i class="is-green"></i>المبيعات</span></div>
+-            </div>
+-            <div class="wg-inv-chart">
+-                <div class="wg-inv-chart-y"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0</span></div>
+-                <svg viewBox="0 0 560 145" preserveAspectRatio="none" aria-label="حركة المخزون">
+-                    <g class="grid"><path d="M0 20H560M0 50H560M0 80H560M0 110H560M0 140H560"/></g>
+-                    <polyline points="{{ $purchasePoints }}" class="purchase-line"/>
+-                    <polyline points="{{ $salePoints }}" class="sale-line"/>
+-                    @foreach($purchaseSeries as $i => $value)
+-                        @php $x = count($purchaseSeries) > 1 ? ($i / (count($purchaseSeries)-1))*560 : 0; $maxSeries = max(1, ...array_merge($purchaseSeries, $saleSeries)); $y = 145 - (($value / $maxSeries) * 118) - 9; @endphp
+-                        <circle cx="{{ $x }}" cy="{{ $y }}" r="4.2" class="purchase-point"/>
+-                    @endforeach
+-                    @foreach($saleSeries as $i => $value)
+-                        @php $x = count($saleSeries) > 1 ? ($i / (count($saleSeries)-1))*560 : 0; $maxSeries = max(1, ...array_merge($purchaseSeries, $saleSeries)); $y = 145 - (($value / $maxSeries) * 118) - 9; @endphp
+-                        <circle cx="{{ $x }}" cy="{{ $y }}" r="4.2" class="sale-point"/>
+-                    @endforeach
+-                </svg>
+-                <div class="wg-inv-chart-labels">@foreach($movementLabels as $label)<span>{{ $label }}</span>@endforeach</div>
+-            </div>
+-        </article>
+-
+         <article class="wg-inv-card wg-inv-distribution-card">
+@@ -192,14 +132,10 @@
+                             <td>{{ optional($product->updated_at)->timezone('Asia/Aden')->format('Y-m-d') }}</td>
+                             <td>
+                                 <div class="wg-inv-row-actions">
+-                                    @if($canCreateSales && $product->status === 'active' && $product->current_quantity > 0)
+-                                        <button type="button" wire:click="openQuickSale({{ $product->id }})" class="is-sell" title="بيع المنتج الآن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16v12H4zM8 10h8M8 14h4"/></svg></button>
+-                                    @endif
+                                     @if($canManageProducts)
+                                         <button type="button" wire:click="openEdit({{ $product->id }})" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m4 16-1 5 5-1L19 9l-4-4L4 16zM13 7l4 4"/></svg></button>
+                                         <button type="button" wire:click="toggle({{ $product->id }})" title="{{ $product->status === 'active' ? 'إيقاف' : 'تفعيل' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M9 9v6M15 9v6"/></svg></button>
+                                     @endif
+-                                    @if($canViewSales)<a href="{{ route('inventory.sales') }}" wire:navigate title="سجل المبيعات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h14v16H5zM8 9h8M8 13h8M8 17h5"/></svg></a>@endif
+                                 </div>
+                             </td>
+@@ -214,19 +150,6 @@
+                 <div>{{ $products->onEachSide(1)->links() }}</div>
+             </div>
+         </article>
+-
+-        <aside class="wg-inv-card wg-inv-summary-card">
+-            <div class="wg-inv-card-head"><h3>ملخص العمليات</h3></div>
+-            <div class="wg-inv-summary-list">
+-                @if($canViewPurchases)<a href="{{ route('inventory.purchases') }}" wire:navigate><i class="is-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16v13H4zM8 4h8v3"/></svg></i><span>مشتريات معلقة</span><strong>{{ $pendingPurchases }}</strong></a>
+-                <a href="{{ route('inventory.purchases') }}" wire:navigate><i class="is-orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16v13H4zM8 12h8M12 8v8"/></svg></i><span>مشتريات معتمدة هذا الشهر</span><strong>{{ $approvedPurchasesThisMonth }}</strong></a>@endif
+-                @if($canViewSales)<a href="{{ route('inventory.sales') }}" wire:navigate><i class="is-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></i><span>مبيعات هذا الشهر</span><strong>{{ $salesThisMonth }}</strong></a>
+-                <a href="{{ route('inventory.sales') }}" wire:navigate><i class="is-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg></i><span>مبيعات ملغاة هذا الشهر</span><strong>{{ $cancelledSalesThisMonth }}</strong></a>@endif
+-                <div class="wg-inv-summary-static"><i class="is-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/></svg></i><span>منتجات غير نشطة</span><strong>{{ $inactiveCount }}</strong></div>
+-            </div>
+-            @if($canCreateSales)<button type="button" wire:click="openQuickSale" class="wg-inv-summary-button wg-inv-summary-sale">بدء عملية بيع <span>↗</span></button>@endif
+-            @if($canManagePurchases)<a href="{{ route('inventory.purchases', ['new' => 1]) }}" wire:navigate class="wg-inv-summary-button">إنشاء شراء جديد <span>🛒</span></a>@endif
+-        </aside>
+     </section>
+@@ -256,79 +179,4 @@
+             </div>
+         </div>
+     @endif
+-
+-    @if($showQuickSaleModal)
+-        <div class="wg-inv-modal-backdrop" wire:click.self="closeQuickSale">
+-            <div class="wg-pos-modal">
+-                <div class="wg-pos-head">
+-                    <button type="button" wire:click="closeQuickSale">×</button>
+-                    <div><span>نقطة البيع السريعة</span><h2>عملية بيع جديدة</h2><p>اختر المنتجات، راجع الكميات ثم أكد الدفع. المخزون يُخصم تلقائياً بعد الحفظ.</p></div>
+-                    <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18v12H3zM7 10h10M7 14h5"/></svg></i>
+-                </div>
+-
+-                <div class="wg-pos-body">
+-                    <section class="wg-pos-products">
+-                        <div class="wg-pos-search">
+-                            <input type="search" wire:model.live.debounce.250ms="saleProductSearch" placeholder="ابحث باسم المنتج أو الباركود..." autofocus>
+-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+-                        </div>
+-                        <div class="wg-pos-product-results">
+-                            @forelse($saleSearchResults as $product)
+-                                <button type="button" wire:click="addSaleProduct({{ $product->id }})">
+-                                    <span class="wg-pos-product-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4"/></svg></span>
+-                                    <span><strong>{{ $product->name }}</strong><small>{{ $product->barcode ?: 'بدون باركود' }} · المخزون {{ number_format($product->current_quantity) }}</small></span>
+-                                    <b>{{ number_format((float)$product->selling_price, 0) }} <small>{{ $product->currency }}</small></b>
+-                                    <i>+</i>
+-                                </button>
+-                            @empty
+-                                <div class="wg-pos-empty">لا توجد منتجات متاحة تطابق البحث.</div>
+-                            @endforelse
+-                        </div>
+-                    </section>
+-
+-                    <section class="wg-pos-cart">
+-                        <div class="wg-pos-cart-head"><h3>سلة البيع</h3><span>{{ count($saleCart) }} منتج</span></div>
+-                        @error('quickSale')<div class="wg-pos-error">{{ $message }}</div>@enderror
+-                        <div class="wg-pos-cart-items">
+-                            @forelse($saleCart as $row)
+-                                <div class="wg-pos-cart-item">
+-                                    <div><strong>{{ $row['name'] }}</strong><small>{{ number_format($row['price'], 0) }} {{ $row['currency'] }} للوحدة · متوفر {{ $row['stock'] }}</small></div>
+-                                    <div class="wg-pos-qty"><button type="button" wire:click="decreaseSaleQuantity({{ $row['id'] }})">−</button><span>{{ $row['quantity'] }}</span><button type="button" wire:click="increaseSaleQuantity({{ $row['id'] }})">+</button></div>
+-                                    <b>{{ number_format($row['price'] * $row['quantity'], 0) }} <small>{{ $row['currency'] }}</small></b>
+-                                    <button type="button" wire:click="removeSaleProduct({{ $row['id'] }})" class="wg-pos-remove">×</button>
+-                                </div>
+-                            @empty
+-                                <div class="wg-pos-cart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18v12H3zM7 10h10"/></svg><strong>السلة فارغة</strong><span>اختر منتجاً من القائمة لبدء البيع.</span></div>
+-                            @endforelse
+-                        </div>
+-                    </section>
+-
+-                    <section class="wg-pos-checkout">
+-                        <div class="wg-pos-field"><label>اسم العميل (اختياري)</label><input type="text" wire:model="saleCustomerName" placeholder="عميل نقدي أو اسم المشتري"></div>
+-                        <div class="wg-pos-checkout-row">
+-                            <div class="wg-pos-field"><label>طريقة الدفع</label><select wire:model.live="salePaymentMethod"><option value="cash">نقدي</option><option value="transfer">تحويل / صرافة</option></select></div>
+-                            @if($canDiscountSales)<div class="wg-pos-field"><label>خصم رسمي (اختياري)</label><div class="wg-pos-money-input"><input type="number" min="0" step="0.01" wire:model.live.debounce.250ms="saleDiscount"><span>{{ $saleCurrency }}</span></div></div>@endif
+-                        </div>
+-                        @if($salePaymentMethod === 'transfer')
+-                            <div class="wg-pos-field"><label>مرجع التحويل <b>*</b></label><input type="text" wire:model="saleTransferReference" placeholder="رقم الحوالة أو المرجع">@error('saleTransferReference')<small class="is-error">{{ $message }}</small>@enderror</div>
+-                        @endif
+-
+-                        <div class="wg-pos-totals">
+-                            <div><span>الإجمالي قبل الخصم</span><strong>{{ number_format($saleSubtotal, 0) }} {{ $saleCurrency }}</strong></div>
+-                            <div><span>الخصم</span><strong class="is-orange">- {{ number_format($saleDiscountValue, 0) }} {{ $saleCurrency }}</strong></div>
+-                            <div class="is-total"><span>المبلغ النهائي</span><strong>{{ number_format($saleTotal, 0) }} {{ $saleCurrency }}</strong></div>
+-                        </div>
+-                    </section>
+-                </div>
+-
+-                <div class="wg-pos-foot">
+-                    <button type="button" wire:click="closeQuickSale" class="wg-inv-modal-cancel">إلغاء</button>
+-                    <button type="button" wire:click="completeQuickSale" wire:loading.attr="disabled" class="wg-pos-complete" @disabled(empty($saleCart))>
+-                        <span wire:loading.remove wire:target="completeQuickSale">تأكيد البيع واستلام المبلغ</span>
+-                        <span wire:loading wire:target="completeQuickSale">جارٍ حفظ البيع...</span>
+-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg>
+-                    </button>
+-                </div>
+-            </div>
+-        </div>
+-    @endif
+ </div>

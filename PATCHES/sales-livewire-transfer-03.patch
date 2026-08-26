@@ -1,0 +1,48 @@
+diff --git a/app/Livewire/Inventory/SalesIndex.php b/app/Livewire/Inventory/SalesIndex.php
+--- a/app/Livewire/Inventory/SalesIndex.php
++++ b/app/Livewire/Inventory/SalesIndex.php
+@@ -5,9 +5,9 @@
+ use App\Models\Member;
+ use App\Models\Product;
+ use App\Models\Sale;
+-use App\Models\SaleItem;
+ use App\Services\InventoryService;
+ use App\Services\PermissionService;
+ use Carbon\CarbonImmutable;
++use Illuminate\Support\Facades\Cache;
+ use Illuminate\Support\Facades\DB;
+ use Illuminate\Validation\Rule;
+@@ -31,5 +31,6 @@
+     public ?int $member_id = null;
+     public string $customer_name = '';
+     public string $payment_method = 'cash';
++    public string $transfer_service = '';
+     public string $transfer_reference = '';
+     public string $discount_value = '0';
+@@ -75,4 +76,5 @@
+     {
+         if ($value === 'cash') {
++            $this->transfer_service = '';
+             $this->transfer_reference = '';
+         }
+@@ -187,3 +189,4 @@
+             'currency' => $currency,
+             'payment_method' => $this->payment_method,
++            'transfer_service' => $this->payment_method === 'transfer' ? $this->transfer_service : null,
+             'transfer_reference' => $this->payment_method === 'transfer' ? trim($this->transfer_reference) : null,
+@@ -198,3 +201,4 @@
+ 
+         $this->lastCompletedSaleId = $sale->id;
++        $this->forgetSalesStats();
+         $this->resetSaleForm();
+@@ -220,3 +224,4 @@
+ 
+         $service->cancelSale(Sale::findOrFail($this->cancelSaleId), $this->cancellation_reason, auth()->user());
++        $this->forgetSalesStats();
+         $this->reset(['cancelSaleId', 'cancellation_reason']);
+@@ -235,4 +240,5 @@
+         $this->customer_name = '';
+         $this->payment_method = 'cash';
++        $this->transfer_service = '';
+         $this->transfer_reference = '';
+         $this->discount_value = '0';

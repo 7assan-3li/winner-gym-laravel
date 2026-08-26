@@ -1,0 +1,267 @@
+/* WINNER GYM — Attendance final polish
+   Route-scoped to /attendance. Matches the accepted Dashboard/Members/Subscriptions visual system. */
+
+.wg-body-attendance{
+    --att-border:#162940;
+    --att-panel:#071321;
+    --att-panel-2:#091827;
+    --att-muted:#8a9aaf;
+    --att-blue:#147dff;
+    --att-green:#15dc7c;
+    --att-orange:#f5a000;
+    --att-red:#ff4657;
+    --att-purple:#8566ff;
+    background:#020914!important;
+    color:#edf4fc!important;
+    overflow-x:hidden!important;
+}
+.wg-body-attendance .wg-app{width:100%!important;max-width:100vw!important;overflow-x:hidden!important}
+.wg-body-attendance .wg-sidebar{width:184px!important;left:0!important;right:auto!important}
+.wg-body-attendance .wg-main{margin-left:184px!important;margin-right:0!important;width:calc(100vw - 184px)!important;max-width:calc(100vw - 184px)!important;min-width:0!important;overflow-x:hidden!important}
+.wg-body-attendance .wg-brand{padding:15px 12px 11px!important}
+.wg-body-attendance .wg-brand img{width:105px!important;height:auto!important}
+.wg-body-attendance .wg-nav{padding:0 10px!important;gap:3px!important}
+.wg-body-attendance .wg-nav a{min-height:41px!important;padding:0 12px!important;gap:10px!important;border-radius:7px!important;font-size:12.5px!important;font-weight:650!important}
+.wg-body-attendance .wg-nav-icon{width:18.5px!important;height:18.5px!important;flex:0 0 18.5px!important;stroke-width:1.75!important}
+.wg-body-attendance .wg-sidebar-art{min-height:255px!important;padding:0!important;overflow:hidden!important}
+.wg-body-attendance .wg-sidebar-art::before{inset:0 0 8px!important;background-size:contain!important;background-position:center bottom!important;opacity:.98!important}
+.wg-body-attendance .wg-sidebar-art strong,.wg-body-attendance .wg-sidebar-art span{display:none!important}
+
+/* Dedicated header: title left, search centered, manager/theme/notifications fixed on the right. */
+.wg-topbar-attendance-final{
+    height:86px!important;
+    min-height:86px!important;
+    padding:0 30px!important;
+    display:grid!important;
+    grid-template-columns:minmax(230px,1fr) minmax(350px,430px) auto!important;
+    align-items:center!important;
+    gap:24px!important;
+    direction:ltr!important;
+    background:#030914!important;
+    border-bottom:1px solid #162438!important;
+    backdrop-filter:none!important;
+    position:sticky!important;
+    top:0!important;
+    z-index:55!important;
+    overflow:visible!important;
+}
+.wg-att-final-page{direction:rtl!important;text-align:left!important;justify-self:start!important}
+.wg-att-final-page h1{margin:0!important;color:#f8fafc!important;font-size:23px!important;line-height:1.1!important;font-weight:850!important}
+.wg-att-final-page>div{margin-top:8px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#8797ac!important;font-size:11.5px!important}
+.wg-att-final-page i{font-style:normal!important;color:#1680ff!important}
+.wg-topbar-attendance-final .wg-att-final-search{
+    width:100%!important;height:45px!important;margin:0!important;border-radius:9px!important;
+    border:1px solid #1a2a40!important;background:#050d18!important;padding:0 14px!important;
+    direction:rtl!important;cursor:pointer!important;color:#718199!important;font-size:12px!important;
+    display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;
+}
+.wg-topbar-attendance-final .wg-att-final-search:hover{border-color:#28527e!important;color:#9aacbf!important}
+.wg-topbar-attendance-final .wg-att-final-search span{flex:1!important;text-align:right!important}
+.wg-topbar-attendance-final .wg-att-final-search svg{width:19px!important;height:19px!important;flex:0 0 19px!important;color:#d1dae5!important}
+.wg-att-final-tools{height:100%!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;direction:ltr!important;justify-self:end!important}
+.wg-att-final-tools .wg-top-icon{position:relative!important;width:43px!important;height:43px!important;border-radius:9px!important;cursor:pointer!important}
+.wg-att-final-tools .wg-user{margin:0!important;position:relative!important;direction:rtl!important}
+.wg-att-final-tools .wg-user summary{gap:10px!important;min-width:188px!important;cursor:pointer!important}
+.wg-att-final-tools .wg-avatar{width:42px!important;height:42px!important;font-size:12px!important}
+.wg-att-final-tools .wg-user-name{font-size:13.5px!important;color:#fff!important;font-weight:800!important}
+.wg-att-final-tools .wg-user-role{font-size:10.5px!important;color:#8292a7!important}
+.wg-att-final-tools .wg-user-menu{top:62px!important;right:0!important;left:auto!important;z-index:90!important}
+
+/* Page canvas */
+.wg-body-attendance .wg-attendance-content{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:20px 24px 34px!important;overflow-x:hidden!important}
+.wg-body-attendance .wg-attendance-page{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;color:#f5f8ff!important;font-family:Tahoma,"Segoe UI",Arial,sans-serif!important}
+.wg-body-attendance .wg-att-layout{width:100%!important;min-width:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) 320px!important;gap:16px!important;direction:ltr!important;align-items:start!important;box-sizing:border-box!important}
+.wg-body-attendance .wg-att-main,.wg-body-attendance .wg-att-aside{min-width:0!important;direction:rtl!important}
+.wg-body-attendance .wg-att-main{display:grid!important;gap:15px!important}
+.wg-body-attendance .wg-att-aside{display:grid!important;gap:14px!important;position:sticky!important;top:106px!important}
+
+/* Shared card language */
+.wg-body-attendance .wg-att-scan-card,
+.wg-body-attendance .wg-att-ready-card,
+.wg-body-attendance .wg-att-table-card,
+.wg-body-attendance .wg-att-side-card,
+.wg-body-attendance .wg-att-success-card{
+    border:1px solid var(--att-border)!important;
+    border-radius:12px!important;
+    background:linear-gradient(180deg,#091625 0%,#07111d 100%)!important;
+    box-shadow:inset 0 1px rgba(255,255,255,.018),0 12px 28px rgba(0,0,0,.08)!important;
+}
+
+/* Scan area */
+.wg-body-attendance .wg-att-scan-card{min-height:246px!important;padding:22px 24px 20px!important}
+.wg-body-attendance .wg-att-card-title{text-align:center!important}
+.wg-body-attendance .wg-att-card-title h2{margin:0!important;color:#fff!important;font-size:20px!important;font-weight:850!important;letter-spacing:.1px!important}
+.wg-body-attendance .wg-att-card-title p{margin:8px 0 0!important;color:#8696aa!important;font-size:12.5px!important;line-height:1.55!important}
+.wg-body-attendance .wg-att-scan-form{margin:20px auto 0!important;width:min(100%,790px)!important;display:grid!important;justify-items:center!important}
+.wg-body-attendance .wg-att-scan-input-wrap{width:100%!important;height:55px!important;position:relative!important}
+.wg-body-attendance .wg-att-scan-input-wrap input{
+    width:100%!important;height:100%!important;padding:0 56px!important;border:1px solid #147dff!important;border-radius:9px!important;outline:0!important;
+    background:#06101c!important;color:#edf3fb!important;font-size:14px!important;text-align:center!important;font-weight:600!important;
+    box-shadow:0 0 0 1px rgba(20,125,255,.05),0 0 24px rgba(20,125,255,.06)!important;
+    transition:border-color .18s ease,box-shadow .18s ease!important;
+}
+.wg-body-attendance .wg-att-scan-input-wrap input:focus{border-color:#43a0ff!important;box-shadow:0 0 0 3px rgba(20,125,255,.12),0 0 26px rgba(20,125,255,.08)!important}
+.wg-body-attendance .wg-att-scan-input-wrap input::placeholder{color:#75859a!important;font-weight:500!important}
+.wg-body-attendance .wg-att-camera-inline{position:absolute!important;left:8px!important;top:8px!important;z-index:2!important;width:39px!important;height:39px!important;border:1px solid #27425f!important;border-radius:8px!important;background:#081521!important;color:#e3ebf5!important;display:grid!important;place-items:center!important;cursor:pointer!important}
+.wg-body-attendance .wg-att-camera-inline:hover{border-color:#147dff!important;color:#42a0ff!important;background:#071a2e!important}
+.wg-body-attendance .wg-att-camera-inline svg,.wg-body-attendance .wg-att-scan-symbol{width:21px!important;height:21px!important;stroke-width:1.7!important}
+.wg-body-attendance .wg-att-scan-symbol{position:absolute!important;right:17px!important;top:17px!important;color:#1d85ff!important}
+.wg-body-attendance .wg-att-or{color:#aab7c7!important;margin:10px 0 9px!important;font-size:11.5px!important}
+.wg-body-attendance .wg-att-scan-actions{width:min(100%,790px)!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}
+.wg-body-attendance .wg-att-camera-button,.wg-body-attendance .wg-att-record-button{width:100%!important;height:43px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;border-radius:8px!important;font-size:12.5px!important;font-weight:800!important;cursor:pointer!important;transition:.18s ease!important}
+.wg-body-attendance .wg-att-camera-button{border:1px solid #214365!important;background:#071522!important;color:#45a1ff!important}
+.wg-body-attendance .wg-att-camera-button:hover{border-color:#147dff!important;background:#081c31!important;color:#78baff!important}
+.wg-body-attendance .wg-att-record-button{border:1px solid #248aff!important;background:linear-gradient(135deg,#147dff,#075ee9)!important;color:#fff!important;box-shadow:0 8px 18px rgba(20,125,255,.17)!important}
+.wg-body-attendance .wg-att-record-button:hover{filter:brightness(1.08)!important;box-shadow:0 10px 24px rgba(20,125,255,.24)!important}
+.wg-body-attendance .wg-att-camera-button svg,.wg-body-attendance .wg-att-record-button svg{width:18px!important;height:18px!important;stroke-width:1.8!important}
+.wg-body-attendance .wg-att-hidden-submit{display:none!important}
+
+.wg-body-attendance .wg-att-flash{width:min(100%,790px)!important;margin:12px auto -6px!important;min-height:42px!important;padding:9px 12px!important;display:flex!important;align-items:center!important;gap:9px!important;border-radius:8px!important;font-size:11.5px!important}
+.wg-body-attendance .wg-att-flash svg{width:18px!important;height:18px!important;flex:0 0 auto!important;stroke-width:1.8!important}
+.wg-body-attendance .wg-att-flash-success{color:#34e995!important;border:1px solid #18583d!important;background:#071f16!important}
+.wg-body-attendance .wg-att-flash-error{color:#ff7a86!important;border:1px solid #5a202a!important;background:#210c12!important}
+
+/* Readiness */
+.wg-body-attendance .wg-att-ready-card{min-height:138px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:15px!important}
+.wg-body-attendance .wg-att-fingerprint{width:60px!important;height:60px!important;border:1px solid #126acb!important;border-radius:50%!important;display:grid!important;place-items:center!important;color:#1a87ff!important;background:#071a30!important;margin-bottom:10px!important;box-shadow:0 0 20px rgba(20,125,255,.08)!important}
+.wg-body-attendance .wg-att-fingerprint svg{width:36px!important;height:36px!important;stroke-width:1.55!important}
+.wg-body-attendance .wg-att-ready-card strong{color:#fff!important;font-size:16px!important;font-weight:850!important}
+.wg-body-attendance .wg-att-ready-card span{color:#8494a8!important;font-size:11.5px!important;margin-top:6px!important;line-height:1.55!important}
+
+/* Attendance table */
+.wg-body-attendance .wg-att-table-card{overflow:hidden!important}
+.wg-body-attendance .wg-att-table-head{min-height:78px!important;padding:13px 18px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:15px!important;border-bottom:1px solid #162438!important;direction:rtl!important}
+.wg-body-attendance .wg-att-table-title h3{margin:0!important;color:#fff!important;font-size:15px!important;font-weight:850!important}
+.wg-body-attendance .wg-att-table-title span{display:block!important;margin-top:5px!important;color:#8796aa!important;font-size:10.5px!important}
+.wg-body-attendance .wg-att-table-filters{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:nowrap!important}
+.wg-body-attendance .wg-att-table-filters select,.wg-body-attendance .wg-att-date-input{height:41px!important;min-width:140px!important;border:1px solid #1b304a!important;border-radius:8px!important;background:#07131f!important;color:#d5deea!important;padding:0 11px!important;font-size:11.5px!important;outline:0!important;cursor:pointer!important}
+.wg-body-attendance .wg-att-date-input{min-width:168px!important;color-scheme:dark!important}
+.wg-body-attendance .wg-att-table-filters select:focus,.wg-body-attendance .wg-att-date-input:focus{border-color:#197ff7!important;box-shadow:0 0 0 2px rgba(25,127,247,.08)!important}
+.wg-body-attendance .wg-att-export{height:41px!important;padding:0 15px!important;border:1px solid #1763ba!important;border-radius:8px!important;background:#07192c!important;color:#2590ff!important;display:flex!important;align-items:center!important;gap:8px!important;text-decoration:none!important;font-size:11.5px!important;font-weight:800!important;white-space:nowrap!important}
+.wg-body-attendance .wg-att-export:hover{background:#08213b!important;color:#66b1ff!important;border-color:#268bff!important}
+.wg-body-attendance .wg-att-export svg{width:17px!important;height:17px!important;stroke-width:1.8!important}
+.wg-body-attendance .wg-att-table-scroll{width:100%!important;overflow-x:auto!important}
+.wg-body-attendance .wg-att-table{width:100%!important;min-width:870px!important;border-collapse:collapse!important}
+.wg-body-attendance .wg-att-table th{height:45px!important;padding:0 14px!important;color:#bdc8d5!important;font-size:11px!important;font-weight:750!important;text-align:right!important;background:#081522!important;white-space:nowrap!important}
+.wg-body-attendance .wg-att-table td{height:54px!important;padding:8px 14px!important;border-top:1px solid #14263a!important;color:#dbe3ee!important;font-size:11.8px!important;vertical-align:middle!important}
+.wg-body-attendance .wg-att-table tr.is-selected td{background:#091c2f!important}
+.wg-body-attendance .wg-att-table tbody tr:hover td{background:#0a1929!important}
+.wg-body-attendance .wg-att-time{direction:ltr!important;text-align:right!important;white-space:nowrap!important}
+.wg-body-attendance .wg-att-time small{font-size:10px!important;color:#aab6c4!important}
+.wg-body-attendance .wg-att-code{direction:ltr!important;text-align:right!important;color:#c8d3df!important}
+.wg-body-attendance .wg-att-member-button{padding:0!important;border:0!important;background:transparent!important;color:#edf3fb!important;display:flex!important;align-items:center!important;gap:9px!important;cursor:pointer!important;white-space:nowrap!important;font-size:11.8px!important}
+.wg-body-attendance .wg-att-row-avatar{width:31px!important;height:31px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:#6d4a36!important;color:#fff!important;border:1px solid #1c679f!important;font-size:10.5px!important;font-weight:850!important}
+.wg-body-attendance .wg-att-status{display:inline-flex!important;min-width:58px!important;height:27px!important;align-items:center!important;justify-content:center!important;border-radius:6px!important;background:#07291d!important;color:#19df80!important;font-size:10.5px!important;font-weight:850!important}
+.wg-body-attendance .wg-att-row-action{width:31px!important;height:31px!important;display:grid!important;place-items:center!important;border:1px solid #1d3652!important;border-radius:7px!important;background:#07131f!important;color:#9bacc0!important;cursor:pointer!important}
+.wg-body-attendance .wg-att-row-action:hover{border-color:#147dff!important;color:#5aabff!important;background:#081c30!important}
+.wg-body-attendance .wg-att-row-action svg{width:16px!important;height:16px!important;stroke-width:1.8!important}
+.wg-body-attendance .wg-att-empty{height:175px!important;text-align:center!important;color:#7c8ca1!important;font-size:12px!important}
+.wg-body-attendance .wg-att-table-footer{min-height:61px!important;padding:10px 17px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:15px!important;border-top:1px solid #162438!important;color:#8b9aaf!important;font-size:11px!important}
+.wg-body-attendance .wg-att-pagination{display:flex!important;align-items:center!important;gap:7px!important}
+.wg-body-attendance .wg-att-pagination button{width:36px!important;height:36px!important;border:1px solid #1b304a!important;border-radius:7px!important;background:#07131f!important;color:#b5c0cf!important;font-size:11.5px!important;cursor:pointer!important}
+.wg-body-attendance .wg-att-pagination button:hover:not(:disabled){border-color:#2369b1!important;color:#fff!important}
+.wg-body-attendance .wg-att-pagination button.is-active{background:#147dff!important;border-color:#3291ff!important;color:#fff!important;box-shadow:0 7px 18px rgba(20,125,255,.18)!important}
+.wg-body-attendance .wg-att-pagination button:disabled{opacity:.35!important;cursor:not-allowed!important}
+
+/* Right-side information column */
+.wg-body-attendance .wg-att-side-card{padding:17px!important}
+.wg-body-attendance .wg-att-side-card h3,.wg-body-attendance .wg-att-actions-card h3,.wg-body-attendance .wg-att-stats-card h3{margin:0 0 13px!important;color:#fff!important;font-size:14px!important;font-weight:850!important}
+.wg-body-attendance .wg-att-member-head{display:flex!important;align-items:center!important;gap:12px!important;padding:2px 0 15px!important;border-bottom:1px solid #182b41!important}
+.wg-body-attendance .wg-att-member-avatar{width:64px!important;height:64px!important;flex:0 0 auto!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:linear-gradient(145deg,#9b6543,#443026)!important;border:1px solid #2a5577!important;color:#fff!important;font-size:21px!important;font-weight:900!important}
+.wg-body-attendance .wg-att-member-head>div:last-child{min-width:0!important;display:grid!important;justify-items:start!important}
+.wg-body-attendance .wg-att-member-head strong{color:#fff!important;font-size:14px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:195px!important}
+.wg-body-attendance .wg-att-member-head span{margin-top:4px!important;color:#8a99ad!important;font-size:10.5px!important;direction:ltr!important}
+.wg-body-attendance .wg-att-member-head em{margin-top:7px!important;min-height:24px!important;padding:0 9px!important;display:inline-flex!important;align-items:center!important;border-radius:6px!important;font-size:10px!important;font-style:normal!important;font-weight:850!important}
+.wg-body-attendance .wg-att-member-head em.is-green{background:#07271b!important;color:#14d87a!important}
+.wg-body-attendance .wg-att-member-head em.is-orange{background:#2a200c!important;color:#f1a300!important}
+.wg-body-attendance .wg-att-member-info-list{display:grid!important;gap:0!important;padding-top:9px!important}
+.wg-body-attendance .wg-att-member-info-list>div{min-height:37px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;color:#aeb9c8!important;font-size:11px!important;border-bottom:1px dashed rgba(30,52,78,.38)!important}
+.wg-body-attendance .wg-att-member-info-list>div:last-child{border-bottom:0!important}
+.wg-body-attendance .wg-att-member-info-list strong{color:#dce5ef!important;font-size:11px!important;font-weight:700!important;text-align:left!important}
+.wg-body-attendance .wg-att-side-empty{min-height:185px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:10px!important;color:#7f8fa4!important;text-align:center!important;font-size:11px!important;line-height:1.55!important}
+.wg-body-attendance .wg-att-side-empty svg{width:44px!important;height:44px!important;stroke-width:1.45!important;color:#27629e!important}
+
+.wg-body-attendance .wg-att-success-card{padding:15px!important;border-color:#165338!important;background:linear-gradient(180deg,#08251b,#071c16)!important;display:grid!important;grid-template-columns:42px minmax(0,1fr)!important;gap:10px 11px!important;align-items:center!important}
+.wg-body-attendance .wg-att-success-card.is-muted{border-color:#1d3047!important;background:#081522!important}
+.wg-body-attendance .wg-att-success-icon{width:37px!important;height:37px!important;border-radius:50%!important;background:#0dbb68!important;color:#002b18!important;display:grid!important;place-items:center!important}
+.wg-body-attendance .wg-att-success-icon svg{width:21px!important;height:21px!important;stroke-width:2.4!important}
+.wg-body-attendance .wg-att-success-card strong{display:block!important;color:#eafbf2!important;font-size:13px!important;font-weight:850!important}
+.wg-body-attendance .wg-att-success-card span{display:block!important;margin-top:4px!important;color:#94a99e!important;font-size:10.5px!important;line-height:1.45!important}
+.wg-body-attendance .wg-att-success-card button{grid-column:1/-1!important;height:41px!important;border:0!important;border-radius:7px!important;background:linear-gradient(135deg,#147dff,#075be5)!important;color:#fff!important;font-size:11.5px!important;font-weight:850!important;cursor:pointer!important}
+.wg-body-attendance .wg-att-success-card button:hover{filter:brightness(1.08)!important}
+.wg-body-attendance .wg-att-success-card.is-muted .wg-att-success-icon{background:#17324f!important;color:#6dafff!important}
+
+.wg-body-attendance .wg-att-actions-card{display:grid!important;gap:8px!important}
+.wg-body-attendance .wg-att-actions-card h3{margin-bottom:3px!important}
+.wg-body-attendance .wg-att-actions-card a,.wg-body-attendance .wg-att-actions-card button{width:100%!important;min-height:42px!important;padding:0 11px!important;border:1px solid #1a3049!important;border-radius:8px!important;background:#07131f!important;color:#b9c4d1!important;display:flex!important;align-items:center!important;justify-content:space-between!important;text-decoration:none!important;font-size:11.5px!important;font-weight:650!important;cursor:pointer!important}
+.wg-body-attendance .wg-att-actions-card a:hover,.wg-body-attendance .wg-att-actions-card button:hover{color:#fff!important;border-color:#2367a8!important;background:#091b2c!important}
+.wg-body-attendance .wg-att-actions-card svg{width:18px!important;height:18px!important;color:#1683ff!important;stroke-width:1.7!important}
+
+.wg-body-attendance .wg-att-stats-card{padding-bottom:16px!important}
+.wg-body-attendance .wg-att-mini-stats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important}
+.wg-body-attendance .wg-att-mini-stats>div{min-height:78px!important;position:relative!important;padding:12px!important;border:1px solid #152b43!important;border-radius:9px!important;background:#071521!important}
+.wg-body-attendance .wg-att-mini-stats strong{color:#fff!important;font-size:20px!important;line-height:1!important;display:block!important;direction:ltr!important;text-align:right!important}
+.wg-body-attendance .wg-att-mini-stats span{color:#8796aa!important;font-size:10px!important;margin-top:8px!important;display:block!important}
+.wg-body-attendance .wg-att-mini-stats i{position:absolute!important;left:9px!important;top:13px!important;width:35px!important;height:35px!important;border-radius:50%!important;display:grid!important;place-items:center!important;font-style:normal!important}
+.wg-body-attendance .wg-att-mini-stats i svg{width:21px!important;height:21px!important;stroke-width:1.65!important}
+.wg-body-attendance .wg-att-mini-stats i.is-blue{color:#147fff!important;background:#071c34!important}
+.wg-body-attendance .wg-att-mini-stats i.is-orange{color:#f4a000!important;background:#201707!important}
+.wg-body-attendance .wg-att-mini-stats i.is-purple{color:#8b70ff!important;background:#17122f!important}
+.wg-body-attendance .wg-att-mini-stats i.is-red{color:#ff4655!important;background:#251016!important}
+
+/* Camera modal */
+.wg-body-attendance .wg-att-camera-modal{position:fixed!important;inset:0!important;z-index:120!important;display:none!important;place-items:center!important;padding:24px!important;background:rgba(0,5,12,.8)!important;backdrop-filter:blur(6px)!important}
+.wg-body-attendance .wg-att-camera-modal.is-open{display:grid!important}
+.wg-body-attendance .wg-att-camera-dialog{width:min(100%,590px)!important;padding:16px!important;border:1px solid #244566!important;border-radius:13px!important;background:#07111d!important;box-shadow:0 30px 80px rgba(0,0,0,.58)!important}
+.wg-body-attendance .wg-att-camera-head{display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:13px!important}
+.wg-body-attendance .wg-att-camera-head strong{color:#fff!important;font-size:14px!important}
+.wg-body-attendance .wg-att-camera-head button{width:35px!important;height:35px!important;border:1px solid #29405a!important;border-radius:8px!important;background:#0a1522!important;color:#fff!important;font-size:22px!important;line-height:1!important;cursor:pointer!important}
+.wg-body-attendance .wg-att-camera-dialog video{width:100%!important;max-height:410px!important;object-fit:cover!important;border:1px solid #172b44!important;border-radius:10px!important;background:#02060b!important}
+.wg-body-attendance .wg-att-camera-dialog p{margin:11px 0 0!important;color:#91a1b6!important;font-size:11.5px!important;text-align:center!important}
+
+/* Focus visibility and disabled states */
+.wg-body-attendance button:focus-visible,.wg-body-attendance a:focus-visible,.wg-body-attendance select:focus-visible,.wg-body-attendance input:focus-visible{outline:2px solid rgba(52,153,255,.72)!important;outline-offset:2px!important}
+.wg-body-attendance button:disabled{opacity:.42!important;cursor:not-allowed!important;filter:none!important}
+
+@media (max-width:1380px) and (min-width:1101px){
+    .wg-body-attendance .wg-sidebar{width:172px!important}
+    .wg-body-attendance .wg-main{margin-left:172px!important;width:calc(100vw - 172px)!important;max-width:calc(100vw - 172px)!important}
+    .wg-topbar-attendance-final{grid-template-columns:minmax(200px,1fr) minmax(300px,390px) auto!important;padding-inline:20px!important;gap:17px!important}
+    .wg-body-attendance .wg-attendance-content{padding-inline:18px!important}
+    .wg-body-attendance .wg-att-layout{grid-template-columns:minmax(0,1fr) 295px!important;gap:13px!important}
+    .wg-body-attendance .wg-att-table-filters{gap:6px!important}
+    .wg-body-attendance .wg-att-table-filters select{min-width:118px!important}
+    .wg-body-attendance .wg-att-date-input{min-width:145px!important}
+    .wg-att-final-tools .wg-user summary{min-width:165px!important}
+}
+
+@media (max-width:1100px){
+    .wg-body-attendance .wg-sidebar{width:78px!important}
+    .wg-body-attendance .wg-main{margin-left:78px!important;width:calc(100vw - 78px)!important;max-width:calc(100vw - 78px)!important}
+    .wg-body-attendance .wg-sidebar .wg-nav span{display:none!important}
+    .wg-body-attendance .wg-sidebar-art{display:none!important}
+    .wg-topbar-attendance-final{grid-template-columns:minmax(165px,1fr) minmax(250px,340px) auto!important;padding-inline:15px!important;gap:12px!important}
+    .wg-att-final-tools .wg-user-copy{display:none!important}
+    .wg-att-final-tools .wg-user summary{min-width:auto!important}
+    .wg-body-attendance .wg-att-layout{grid-template-columns:1fr!important}
+    .wg-body-attendance .wg-att-aside{position:static!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .wg-body-attendance .wg-att-member-card{grid-column:1/-1!important}
+    .wg-body-attendance .wg-att-table-head{align-items:flex-start!important;flex-direction:column!important}
+    .wg-body-attendance .wg-att-table-filters{width:100%!important;flex-wrap:wrap!important}
+}
+
+@media (max-width:820px){
+    .wg-body-attendance .wg-sidebar{display:none!important}
+    .wg-body-attendance .wg-main{margin-left:0!important;width:100%!important;max-width:100vw!important}
+    .wg-topbar-attendance-final{position:relative!important;height:auto!important;min-height:0!important;grid-template-columns:1fr!important;padding:14px!important;gap:12px!important}
+    .wg-att-final-page{text-align:right!important;justify-self:stretch!important}
+    .wg-att-final-tools{position:absolute!important;top:10px!important;left:12px!important}
+    .wg-att-final-tools .wg-user{display:none!important}
+    .wg-topbar-attendance-final .wg-att-final-search{margin-top:6px!important}
+    .wg-body-attendance .wg-attendance-content{padding:12px!important}
+    .wg-body-attendance .wg-att-scan-card{padding:18px 14px!important}
+    .wg-body-attendance .wg-att-scan-actions{grid-template-columns:1fr!important}
+    .wg-body-attendance .wg-att-aside{grid-template-columns:1fr!important}
+    .wg-body-attendance .wg-att-member-card{grid-column:auto!important}
+    .wg-body-attendance .wg-att-table-filters select,.wg-body-attendance .wg-att-date-input,.wg-body-attendance .wg-att-export{flex:1 1 145px!important}
+}

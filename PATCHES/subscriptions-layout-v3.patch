@@ -1,0 +1,141 @@
+diff --git a/public/winner-gym/subscriptions-final.css b/public/winner-gym/subscriptions-final.css
+--- a/public/winner-gym/subscriptions-final.css
++++ b/public/winner-gym/subscriptions-final.css
+@@ -202,3 +202,121 @@
+     .wg-body-subscriptions .wg-sub-aside{grid-template-columns:1fr!important}
+     .wg-body-subscriptions .wg-sub-table-footer{grid-template-columns:1fr!important;justify-items:center!important;text-align:center!important}
+ }
++
++/* Subscriptions professional flow v3: filters and records first, insights below, packages last. */
++.wg-body-subscriptions .wg-sub-shell{
++    grid-template-columns:repeat(3,minmax(0,1fr))!important;
++    gap:16px!important;
++    direction:rtl!important;
++}
++.wg-body-subscriptions .wg-sub-maincol,
++.wg-body-subscriptions .wg-sub-aside{
++    display:contents!important;
++}
++.wg-body-subscriptions .wg-sub-summary-row{
++    grid-column:1/-1!important;
++    order:1;
++}
++.wg-body-subscriptions .wg-sub-aside-actions{
++    grid-column:1/-1!important;
++    order:2;
++    display:flex!important;
++    justify-content:flex-start!important;
++    gap:10px!important;
++    direction:rtl!important;
++}
++.wg-body-subscriptions .wg-sub-aside-actions .wg-sub-new-btn,
++.wg-body-subscriptions .wg-sub-aside-actions .wg-sub-export-btn{
++    width:220px!important;
++    max-width:100%!important;
++    flex:0 1 220px!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel{
++    grid-column:1/-1!important;
++    order:3;
++    grid-template-columns:minmax(240px,1.6fr) minmax(150px,.95fr) minmax(150px,.95fr) repeat(3,minmax(128px,.76fr)) 118px!important;
++    overflow:visible!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel>*{
++    min-width:0!important;
++    width:100%!important;
++    box-sizing:border-box!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field{
++    height:46px!important;
++    display:block!important;
++    padding:4px 10px 3px!important;
++    border:1px solid #203550!important;
++    border-radius:8px!important;
++    background:#07111d!important;
++    overflow:hidden!important;
++    cursor:pointer!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field:focus-within{
++    border-color:#197ff7!important;
++    box-shadow:0 0 0 2px rgba(25,127,247,.1)!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field>span{
++    display:block!important;
++    margin:0 0 1px!important;
++    color:#778aa1!important;
++    font-size:8.8px!important;
++    line-height:12px!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field .wg-sub-date-input-wrap{
++    height:25px!important;
++    display:flex!important;
++    align-items:center!important;
++    gap:6px!important;
++    min-width:0!important;
++    position:relative!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field svg{
++    width:15px!important;
++    height:15px!important;
++    flex:0 0 15px!important;
++    fill:none!important;
++    stroke:#92a4b9!important;
++    stroke-width:1.65!important;
++    stroke-linecap:round!important;
++    stroke-linejoin:round!important;
++}
++.wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field input{
++    width:100%!important;
++    min-width:0!important;
++    height:25px!important;
++    padding:0!important;
++    border:0!important;
++    background:transparent!important;
++    color:#dbe5f0!important;
++    font-size:10.8px!important;
++    line-height:25px!important;
++    direction:ltr!important;
++    text-align:left!important;
++    color-scheme:dark!important;
++    cursor:pointer!important;
++}
++.wg-body-subscriptions .wg-sub-table-card{
++    grid-column:1/-1!important;
++    order:4;
++}
++.wg-body-subscriptions .wg-sub-aside-card{
++    order:5;
++    min-height:258px!important;
++    height:100%!important;
++    box-sizing:border-box!important;
++}
++.wg-body-subscriptions .wg-sub-packages-section{
++    grid-column:1/-1!important;
++    order:6;
++    margin-top:2px!important;
++}
++html.wg-light .wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field{
++    background:#f8fbff!important;
++    border-color:#d1dfef!important;
++}
++html.wg-light .wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field input{
++    color:#1d3049!important;
++    color-scheme:light!important;
++}
++@media(max-width:1180px){
++    .wg-body-subscriptions .wg-sub-shell{grid-template-columns:repeat(2,minmax(0,1fr))!important}
++    .wg-body-subscriptions .wg-sub-aside-card{min-height:245px!important}
++    .wg-body-subscriptions .wg-sub-distribution-card{grid-column:1/-1!important}
++    .wg-body-subscriptions .wg-sub-filter-panel{grid-template-columns:repeat(3,minmax(0,1fr))!important}
++    .wg-body-subscriptions .wg-sub-filter-search{grid-column:span 2!important}
++}
++@media(max-width:820px){
++    .wg-body-subscriptions .wg-sub-shell{grid-template-columns:1fr!important}
++    .wg-body-subscriptions .wg-sub-aside-actions{display:grid!important;grid-template-columns:1fr!important}
++    .wg-body-subscriptions .wg-sub-aside-actions .wg-sub-new-btn,
++    .wg-body-subscriptions .wg-sub-aside-actions .wg-sub-export-btn{width:100%!important;max-width:none!important}
++    .wg-body-subscriptions .wg-sub-filter-panel{grid-template-columns:1fr!important}
++    .wg-body-subscriptions .wg-sub-filter-search{grid-column:auto!important}
++    .wg-body-subscriptions .wg-sub-aside-card,
++    .wg-body-subscriptions .wg-sub-distribution-card{grid-column:auto!important;min-height:auto!important}
++}
