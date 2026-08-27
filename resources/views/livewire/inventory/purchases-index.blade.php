@@ -23,8 +23,14 @@
             if (product && (!row.unit_cost || Number(row.unit_cost) === 0)) row.unit_cost = product.cost;
             this.syncRows();
         },
-        subtotal() { return this.rows.reduce((sum, row) => sum + Math.max(0, Number(row.quantity) || 0) * Math.max(0, Number(row.unit_cost) || 0), 0); },
-        formatMoney(value) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value || 0); }
+        subtotal() {
+            return this.rows.reduce((sum, row) => {
+                const q = parseFloat(row.quantity) || 0;
+                const c = parseFloat(row.unit_cost) || 0;
+                return sum + (q * c);
+            }, 0);
+        },
+        formatMoney(value) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value || 0); }
      }"
      x-on:purchase-saved.window="purchaseOpen = false; resetRows()">
     @php
@@ -137,7 +143,17 @@
                     </div>
 
                     <div class="wg-purchase-bottom">
-                        <div><label><span>فاتورة المورد / سند الشراء <b>*</b></span><input type="file" wire:model="purchase_document" accept=".jpg,.jpeg,.png,.webp,.pdf"><small wire:loading wire:target="purchase_document">جارٍ رفع المستند...</small></label></div><label><span>ملاحظات <em>اختياري</em></span><textarea wire:model="notes" placeholder="تفاصيل الاستلام أو شرط المورد أو أي ملاحظة للمراجعة..."></textarea></label>
+                        <div>
+                            <label>
+                                <span>فاتورة المورد / سند الشراء <b>*</b></span>
+                                <input type="file" wire:model="purchase_document" accept=".jpg,.jpeg,.png,.webp,.pdf">
+                                <small wire:loading wire:target="purchase_document" style="color:#38bdf8;font-weight:700;">⏳ جارٍ رفع المستند، يرجى الانتظار...</small>
+                                @if($purchase_document)
+                                    <small style="color:#22c55e;font-weight:700;display:block;margin-top:4px;">✓ تم رفع الملف بنجاح وجاهز للحفظ</small>
+                                @endif
+                            </label>
+                        </div>
+                        <label><span>ملاحظات <em>اختياري</em></span><textarea wire:model="notes" placeholder="تفاصيل الاستلام أو شرط المورد أو أي ملاحظة للمراجعة..."></textarea></label>
                         <div><span>إجمالي فاتورة الشراء</span><strong><span x-text="formatMoney(subtotal())"></span> <span x-text="currency"></span></strong><small>المجموع محسوب من الكمية × تكلفة الوحدة.</small></div>
                     </div>
 
@@ -145,7 +161,11 @@
                 </div>
                 <div class="wg-inv-modal-foot">
                     <button type="button" x-on:click="purchaseOpen = false; $wire.closeCreate()" class="wg-inv-modal-cancel">إلغاء</button>
-                    <button type="submit" wire:loading.attr="disabled" wire:target="create" class="wg-inv-modal-save"><span wire:loading.remove wire:target="create">حفظ كشراء معلق ✓</span><span wire:loading wire:target="create">جارٍ حفظ الشراء...</span></button>
+                    <button type="submit" wire:loading.attr="disabled" wire:target="create,purchase_document" class="wg-inv-modal-save">
+                        <span wire:loading.remove wire:target="create,purchase_document">حفظ كشراء معلق ✓</span>
+                        <span wire:loading wire:target="create">جارٍ حفظ الشراء...</span>
+                        <span wire:loading wire:target="purchase_document">جارٍ رفع الفاتورة...</span>
+                    </button>
                 </div>
             </form>
         </div>
