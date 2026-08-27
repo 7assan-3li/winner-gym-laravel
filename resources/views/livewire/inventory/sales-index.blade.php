@@ -62,7 +62,15 @@
             </div>
             <div class="wg-pos-transfer-grid" x-cloak x-show="payment === 'transfer'" x-transition>
                 <label class="wg-pos-transfer-field"><span>جهة التحويل <b>*</b></span><select wire:model="transfer_service"><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select></label>
-                <label class="wg-pos-transfer-field"><span>رقم الحوالة / المرجع <b>*</b></span><input type="text" wire:model="transfer_reference" placeholder="أدخل المرجع كما في الإيصال"></label><label class="wg-pos-transfer-field"><span>سند التحويل</span><input type="file" wire:model="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf"><small wire:loading wire:target="payment_proof">جارٍ رفع السند...</small></label>
+                <label class="wg-pos-transfer-field"><span>رقم الحوالة / المرجع <b>*</b></span><input type="text" wire:model="transfer_reference" placeholder="أدخل المرجع كما في الإيصال"></label>
+                <label class="wg-pos-transfer-field">
+                    <span>سند التحويل</span>
+                    <input type="file" wire:model="payment_proof" accept=".jpg,.jpeg,.png,.webp,.pdf">
+                    <small wire:loading wire:target="payment_proof" style="color:#38bdf8;font-weight:750;">⏳ جارٍ رفع السند، يرجى الانتظار...</small>
+                    @if($payment_proof)
+                        <small style="color:#22c55e;font-weight:750;display:block;margin-top:3px;">✓ تم رفع السند بنجاح وجاهز للحفظ</small>
+                    @endif
+                </label>
             </div>
             <details class="wg-pos-customer-details">
                 <summary>بيانات العميل والخصم <small>اختياري</small></summary>
@@ -74,7 +82,12 @@
             </details>
 
             <div class="wg-sales-total-box"><div><span>الإجمالي</span><strong>{{ number_format($cartSubtotal,0) }} {{ $cartCurrency }}</strong></div>@if($cartDiscount>0)<div><span>الخصم</span><strong class="is-orange">- {{ number_format($cartDiscount,0) }} {{ $cartCurrency }}</strong></div>@endif<div class="is-total"><span>المبلغ المطلوب</span><strong>{{ number_format($cartTotal,0) }} {{ $cartCurrency }}</strong></div></div>
-            <button type="button" wire:click="completeSale" wire:loading.attr="disabled" class="wg-sales-pay-button" @disabled(empty($cart))><span wire:loading.remove wire:target="completeSale">إصدار الفاتورة وتأكيد البيع</span><span wire:loading wire:target="completeSale">جارٍ إصدار الفاتورة...</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg></button>
+            <button type="button" wire:click="completeSale" wire:loading.attr="disabled" wire:target="completeSale,payment_proof" class="wg-sales-pay-button" @disabled(empty($cart))>
+                <span wire:loading.remove wire:target="completeSale,payment_proof">إصدار الفاتورة وتأكيد البيع</span>
+                <span wire:loading wire:target="completeSale">جارٍ إصدار الفاتورة...</span>
+                <span wire:loading wire:target="payment_proof">جارٍ رفع السند...</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg>
+            </button>
             <div class="wg-sales-auto-note">بعد التأكيد: <strong>المخزون ينقص</strong> · <strong>المبيعات تُحفظ</strong> · <strong>الإيراد يظهر في المالية</strong>.</div>
         </aside>
     </section>
