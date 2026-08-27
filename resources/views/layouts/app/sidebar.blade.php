@@ -74,7 +74,7 @@
                         'gym.dashboard' => true,
                         'members.index' => $canAny(['members.view','members.manage']),
                         'subscriptions.index' => $canAny(['subscriptions.view','subscriptions.manage','subscriptions.create']),
-                        'packages.index' => $u->role === 'owner' || $canAny(['subscriptions.view','subscriptions.manage']),
+                        'packages.index' => $u->role === 'owner',
                         'attendance.index' => $canAny(['attendance.view','attendance.record']),
                         'payments.index' => $canAny(['payments.view','payments.create','payments.reverse','refunds.process','expenses.view','expenses.manage','reports.finance','audit.financial']),
                         'inventory.products' => $canAny(['products.view','products.manage','inventory.view','inventory.manage','purchases.view','purchases.manage','sales.view','sales.create','sales.cancel']),
