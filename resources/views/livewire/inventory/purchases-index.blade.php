@@ -88,7 +88,22 @@
                     <td><strong>{{ $purchase->supplier_name ?: 'مورد غير محدد' }}</strong><small class="wg-subline">فاتورة: {{ $purchase->supplier_invoice ?: '—' }}</small></td>
                     <td><strong>{{ $purchase->items->count() }} منتج · {{ number_format($units) }} وحدة</strong><small class="wg-subline">{{ $productNames ?: '—' }}@if($purchase->items->count() > 2) …@endif</small></td>
                     <td class="wg-inv-money"><strong>{{ \App\Support\NumberFormatter::money($total) }}</strong> <small>{{ $purchase->currency }}</small></td>
-                    <td>{{ $purchase->payment_method === 'transfer' ? 'تحويل' : 'نقدي' }}@if($purchase->transfer_service)<small class="wg-subline">{{ $purchase->transfer_service }}</small>@endif@if($purchase->transfer_reference)<small class="wg-subline">{{ $purchase->transfer_reference }}</small>@endif@if($purchase->proof_path)<a class="wg-subline" href="{{ route('inventory.purchases.document', $purchase) }}" target="_blank" rel="noopener">عرض المستند</a>@endif</td>
+                    <td>
+                        <div style="font-weight:750;">{{ $purchase->payment_method === 'transfer' ? 'تحويل' : 'نقدي' }}</div>
+                        @if($purchase->transfer_service)
+                            <small class="wg-subline" dir="ltr">{{ $purchase->transfer_service }}@if($purchase->transfer_reference) · {{ $purchase->transfer_reference }}@endif</small>
+                        @elseif($purchase->transfer_reference)
+                            <small class="wg-subline" dir="ltr">{{ $purchase->transfer_reference }}</small>
+                        @endif
+                        @if($purchase->proof_path)
+                            <div style="margin-top:6px;">
+                                <a href="{{ route('inventory.purchases.document', $purchase) }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:#38bdf8;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);padding:4px 11px;border-radius:6px;font-size:11px;font-weight:800;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.25);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    <span>عرض فاتورة المورد</span>
+                                </a>
+                            </div>
+                        @endif
+                    </td>
                     <td>{{ $purchase->purchase_date?->format('Y-m-d') }}@if($purchase->approved_at)<small class="wg-subline">اعتمد {{ $purchase->approved_at->timezone('Asia/Aden')->format('Y-m-d') }}</small>@endif</td>
                     <td>@if($purchase->status==='approved')<span class="wg-inv-status is-ok">معتمد</span>@elseif($purchase->status==='cancelled')<span class="wg-inv-status is-inactive">ملغي</span>@else<span class="wg-inv-status is-low">بانتظار الاعتماد</span>@endif</td>
                     <td><div class="wg-inv-row-actions">
