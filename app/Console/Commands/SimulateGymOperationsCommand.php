@@ -3,11 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Appointment;
-use App\Models\Branch;
 use App\Models\ExpenseCategory;
-use App\Models\GymPeriod;
-use App\Models\Member;
 use App\Models\MeasurementType;
+use App\Models\Member;
 use App\Models\Package;
 use App\Models\Product;
 use App\Models\ProductCategory;
@@ -24,7 +22,6 @@ use App\Services\SubscriptionService;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class SimulateGymOperationsCommand extends Command
 {
@@ -50,6 +47,7 @@ class SimulateGymOperationsCommand extends Command
         $owner = User::where('role', 'owner')->first() ?? User::first();
         if (! $owner) {
             $this->error('لم يتم العثور على حساب المالك أو مستخدم صالح.');
+
             return 1;
         }
 
@@ -278,7 +276,7 @@ class SimulateGymOperationsCommand extends Command
         $this->info("\n[7/7] إنشاء نسخة احتياطية مشفرة للنظام...");
         try {
             $backup = $backupService->create($owner);
-            $this->line("  ✓ تم إنشاء النسخة الاحتياطية بنجاح: {$backup->filename} (الحجم: ".round($backup->size_bytes / 1024, 2)." KB)");
+            $this->line("  ✓ تم إنشاء النسخة الاحتياطية بنجاح: {$backup->filename} (الحجم: ".round($backup->size_bytes / 1024, 2).' KB)');
         } catch (\Exception $e) {
             $this->line("  ℹ نتيجة النسخ الاحتياطي: {$e->getMessage()}");
         }

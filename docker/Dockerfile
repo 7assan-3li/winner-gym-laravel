@@ -17,10 +17,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfreetype6-dev \
     libicu-dev \
     libonig-dev \
-    nodejs \
-    npm \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 22 LTS & npm from official Node image
+COPY --from=node:22-bookworm-slim /usr/local/bin /usr/local/bin
+COPY --from=node:22-bookworm-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 # Configure and install PHP extensions directly
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \

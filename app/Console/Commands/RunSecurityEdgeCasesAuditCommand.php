@@ -12,7 +12,6 @@ use App\Services\PermissionService;
 use App\Services\SubscriptionService;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class RunSecurityEdgeCasesAuditCommand extends Command
@@ -54,6 +53,7 @@ class RunSecurityEdgeCasesAuditCommand extends Command
             $this->info('  ✓ موظف الاستقبال معزول تماماً عن صلاحيات المالك والتقارير المالية.');
         } else {
             $this->error('  ⨯ تسريب في الصلاحيات لموظف الاستقبال!');
+
             return 1;
         }
 
@@ -79,6 +79,7 @@ class RunSecurityEdgeCasesAuditCommand extends Command
         try {
             $subscriptionService->create($invalidSubData, User::where('role', 'owner')->first());
             $this->error('  ⨯ ثغرة: تم قبول دفعة أولى أقل من 50%!');
+
             return 1;
         } catch (ValidationException $e) {
             $this->info("  ✓ تم صد محاولة التقسيط بدفعة أقل من 50% بنجاح: {$e->getMessage()}");
@@ -106,6 +107,7 @@ class RunSecurityEdgeCasesAuditCommand extends Command
         try {
             $expenseService->create($yerExpense, User::where('role', 'owner')->first());
             $this->error('  ⨯ ثغرة: تم قبول عملة غير مدعومة!');
+
             return 1;
         } catch (ValidationException $e) {
             $this->info("  ✓ تم صد إدخال عملة غير مدعومة بنجاح: {$e->getMessage()}");
@@ -114,7 +116,7 @@ class RunSecurityEdgeCasesAuditCommand extends Command
         // 4. Payload Injection Defense (XSS & SQLi Strings)
         $this->info("\n[4/4] فحص الحماية من حقن الأوامر والنصوص الخبيثة (XSS & SQLi Defense)...");
         $xssName = "أحمد <script>alert('xss')</script> الهاشمي ' OR '1'='1";
-        
+
         $sanitizedMember = Member::create([
             'full_name' => $xssName,
             'gender' => 'male',
@@ -129,8 +131,8 @@ class RunSecurityEdgeCasesAuditCommand extends Command
 
         $fetchedMember = Member::find($sanitizedMember->id);
         if ($fetchedMember) {
-            $this->info("  ✓ تم تخزين السجل المعقم بأمان عبر PDO Prepared Statements دون تنفيذ أي SQL Injection.");
-            $this->info("  ✓ قوالب Blade تعقم النصوص تلقائياً عبر دالة e() وتمنع تشغيل وسوم الـ script في المتصفح.");
+            $this->info('  ✓ تم تخزين السجل المعقم بأمان عبر PDO Prepared Statements دون تنفيذ أي SQL Injection.');
+            $this->info('  ✓ قوالب Blade تعقم النصوص تلقائياً عبر دالة e() وتمنع تشغيل وسوم الـ script في المتصفح.');
         }
 
         $this->info("\n===========================================================");

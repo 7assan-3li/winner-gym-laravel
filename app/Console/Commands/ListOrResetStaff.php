@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\RolePermission;
+use App\Models\NutritionistSchedule;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Console\Command;
@@ -108,7 +108,7 @@ class ListOrResetStaff extends Command
         $nutritionists = User::where('role', 'nutritionist')->get();
         foreach ($nutritionists as $nut) {
             for ($day = 0; $day <= 6; $day++) {
-                \App\Models\NutritionistSchedule::updateOrCreate([
+                NutritionistSchedule::updateOrCreate([
                     'nutritionist_id' => $nut->id,
                     'day_of_week' => $day,
                 ], [
@@ -124,7 +124,7 @@ class ListOrResetStaff extends Command
         $this->info('==========================================');
         foreach (User::orderBy('role')->get() as $u) {
             $canAdmin = $u->role === 'owner' || $u->hasGymPermission('staff.view');
-            $this->line("• اسم المستخدم: {$u->username} | الدور: {$u->role} | رابط الإدارة ظاهر؟ " . ($canAdmin ? 'نعم' : 'لا (مخفي)') . " | كلمة المرور: {$defaultPassword}");
+            $this->line("• اسم المستخدم: {$u->username} | الدور: {$u->role} | رابط الإدارة ظاهر؟ ".($canAdmin ? 'نعم' : 'لا (مخفي)')." | كلمة المرور: {$defaultPassword}");
         }
         $this->info('==========================================');
 

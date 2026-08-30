@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Services\AttendanceService;
 use App\Services\InventoryService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class RunConcurrencyStressTestCommand extends Command
@@ -31,7 +30,7 @@ class RunConcurrencyStressTestCommand extends Command
         // 1. Last Stock Race Condition Test
         $this->info("\n[1/2] اختبار سباق المخزون للقطعة الأخيرة (Race Condition on Last Stock)...");
         $category = ProductCategory::firstOrCreate(['name' => 'اختبارات الضغط'], ['is_active' => true]);
-        
+
         $raceProduct = Product::updateOrCreate(
             ['barcode' => 'STRESS-LAST-ITEM-01'],
             [
@@ -84,6 +83,7 @@ class RunConcurrencyStressTestCommand extends Command
             $this->info('  ✓ اجتاز فحص سباق المخزون بنجاح 100%: تم منع المخزون السالب وحماية العمليات عبر lockForUpdate().');
         } else {
             $this->error('  ⨯ فشل اختبار سباق المخزون.');
+
             return 1;
         }
 

@@ -31,8 +31,13 @@ class ReportService
         abort_unless(in_array($currency, ['YER', 'SAR'], true), 422);
         abort_unless(in_array($gender, ['all', 'male', 'female'], true), 422);
 
-        $fromUtc = CarbonImmutable::parse($from, 'Asia/Aden')->startOfDay()->utc();
-        $toExclusiveUtc = CarbonImmutable::parse($to, 'Asia/Aden')->addDay()->startOfDay()->utc();
+        $tz = config('app.timezone', 'Asia/Aden');
+        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
+        $fromDt = CarbonImmutable::parse($from, $tz)->startOfDay();
+        $toExclusiveDt = CarbonImmutable::parse($to, $tz)->addDay()->startOfDay();
+
+        $fromUtc = $isSqlite ? $fromDt->format('Y-m-d H:i:s') : $fromDt->utc();
+        $toExclusiveUtc = $isSqlite ? $toExclusiveDt->format('Y-m-d H:i:s') : $toExclusiveDt->utc();
 
         // The WINNER GYM schema is fixed by our migrations, so we avoid
         // Schema::hasTable / hasColumn checks on every page request.

@@ -40,7 +40,7 @@ class Member extends Model
             $member->membership_code ??= static::generateUniqueMembershipCode();
             $member->barcode_value ??= $member->membership_code;
             $member->qr_value ??= 'winner-gym:'.$member->membership_code;
-            $member->registration_date ??= now('Asia/Aden')->startOfDay();
+            $member->registration_date ??= Carbon::now('Asia/Aden')->startOfDay();
         });
     }
 

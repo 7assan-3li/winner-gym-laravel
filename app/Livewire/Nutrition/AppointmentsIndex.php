@@ -365,7 +365,7 @@ class AppointmentsIndex extends Component
         $this->showBookingModal = false;
         $this->resetBookingForm();
         $this->dispatch('nutrition-appointment-saved');
-        session()->flash('success', 'تم حفظ وتأكيد حجز موعد التغذية بنجاح! رقم الموعد: #' . $appointment->id . ' - يظهر الآن في الجدول أدناه.');
+        session()->flash('success', 'تم حفظ وتأكيد حجز موعد التغذية بنجاح! رقم الموعد: #'.$appointment->id.' - يظهر الآن في الجدول أدناه.');
     }
 
     public function openEdit(int $appointmentId): void
