@@ -1,5 +1,141 @@
 <div class="wg-inventory-page wg-sales-page" id="sales-pos-top" dir="rtl"
-     x-data="{ payment: $wire.entangle('payment_method') }">
+     x-data="{
+         payment: $wire.entangle('payment_method'),
+         cart: $wire.entangle('cart'),
+         canDiscount: @js($canDiscount),
+         discountVal: $wire.entangle('discount_value'),
+         cartError: '',
+         cartCurrency() {
+             const items = Object.values(this.cart || {});
+             return items.length > 0 && items[0].currency ? items[0].currency : 'YER';
+         },
+         cartCount() {
+             return Object.values(this.cart || {}).reduce((sum, i) => sum + Number(i.quantity || 0), 0);
+         },
+         cartSubtotal() {
+             return Object.values(this.cart || {}).reduce((sum, i) => sum + (Number(i.price || 0) * Number(i.quantity || 0)), 0);
+         },
+         cartDiscount() {
+             if (!this.canDiscount) return 0;
+             const val = Math.max(0, parseFloat(this.discountVal || '0') || 0);
+             return Math.min(val, this.cartSubtotal());
+         },
+         cartTotal() {
+             return Math.max(0, this.cartSubtotal() - this.cartDiscount());
+         },
+         addProduct(p) {
+             this.cartError = '';
+             const key = String(p.id);
+             if (!this.cart || typeof this.cart !== 'object') this.cart = {};
+             
+             const items = Object.values(this.cart);
+             if (items.length > 0 && items[0].currency && items[0].currency !== p.currency) {
+                 this.cartError = 'أكمل الفاتورة الحالية أولاً؛ لا يمكن جمع YER و SAR في فاتورة واحدة.';
+                 return;
+             }
+
+             if (this.cart[key]) {
+                 if (Number(this.cart[key].quantity) >= Number(p.stock)) {
+                     this.cartError = 'وصلت إلى كامل الكمية المتاحة من «' + p.name + '».';
+                     return;
+                 }
+                 this.cart[key].quantity = Number(this.cart[key].quantity) + 1;
+             } else {
+                 if (Number(p.stock) <= 0) {
+                     this.cartError = 'المنتج «' + p.name + '» غير متوفر حالياً.';
+                     return;
+                 }
+                 this.cart[key] = {
+                     id: p.id,
+                     name: p.name,
+                     barcode: p.barcode || '',
+                     currency: p.currency,
+                     price: Number(p.price),
+                     stock: Number(p.stock),
+                     quantity: 1,
+                     image_path: p.image_path || null
+                 };
+             }
+             this.cart = { ...this.cart };
+         },
+         increase(id) {
+             this.cartError = '';
+             const key = String(id);
+             if (!this.cart || !this.cart[key]) return;
+             if (Number(this.cart[key].quantity) >= Number(this.cart[key].stock)) {
+                 this.cartError = 'وصلت إلى كامل الكمية المتاحة من «' + this.cart[key].name + '».';
+                 return;
+             }
+             this.cart[key].quantity = Number(this.cart[key].quantity) + 1;
+             this.cart = { ...this.cart };
+         },
+         decrease(id) {
+             this.cartError = '';
+             const key = String(id);
+             if (!this.cart || !this.cart[key]) return;
+             if (Number(this.cart[key].quantity) <= 1) {
+                 delete this.cart[key];
+             } else {
+                 this.cart[key].quantity = Number(this.cart[key].quantity) - 1;
+             }
+             this.cart = { ...this.cart };
+         },
+         setQuantity(id, val, inputEl = null) {
+             this.cartError = '';
+             const key = String(id);
+             if (!this.cart || !this.cart[key]) return;
+
+             const maxStock = Number(this.cart[key].stock || 0);
+             let parsed = parseInt(val, 10);
+             if (isNaN(parsed) || parsed < 1) {
+                 return;
+             }
+
+             if (parsed > maxStock) {
+                 this.cartError = 'أقصى كمية متوفرة من «' + this.cart[key].name + '» هي ' + maxStock + ' وحدة فقط.';
+                 parsed = maxStock;
+                 if (inputEl) {
+                     inputEl.value = maxStock;
+                 }
+             }
+             this.cart[key].quantity = parsed;
+             this.cart = { ...this.cart };
+         },
+         validateQuantity(id, val, inputEl = null) {
+             this.cartError = '';
+             const key = String(id);
+             if (!this.cart || !this.cart[key]) return;
+
+             const maxStock = Number(this.cart[key].stock || 0);
+             let parsed = parseInt(val, 10);
+             if (isNaN(parsed) || parsed < 1) {
+                 parsed = 1;
+             } else if (parsed > maxStock) {
+                 this.cartError = 'أقصى كمية متوفرة من «' + this.cart[key].name + '» هي ' + maxStock + ' وحدة فقط.';
+                 parsed = maxStock;
+             }
+             if (inputEl) {
+                 inputEl.value = parsed;
+             }
+             this.cart[key].quantity = parsed;
+             this.cart = { ...this.cart };
+         },
+         remove(id) {
+             this.cartError = '';
+             const key = String(id);
+             if (!this.cart || !this.cart[key]) return;
+             delete this.cart[key];
+             this.cart = { ...this.cart };
+         },
+         clear() {
+             this.cartError = '';
+             this.cart = {};
+             this.discountVal = '0';
+         },
+         formatMoney(num) {
+             return Math.round(Number(num || 0)).toLocaleString('en-US');
+         }
+     }">
     @php
         $u = auth()->user();
         $canProducts = $u->role === 'owner' || $u->hasGymPermission('products.view') || $u->hasGymPermission('products.manage') || $u->hasGymPermission('inventory.view') || $u->hasGymPermission('inventory.manage');
@@ -23,7 +159,7 @@
             <div class="wg-sales-panel-head"><div><h3>منتجات متجر WINNER GYM</h3><span>{{ number_format($products->count()) }} منتج متاح · اضغط على البطاقة لإضافتها إلى الفاتورة</span></div><label class="wg-inv-search-small wg-sales-product-search"><input type="search" wire:model.live.debounce.250ms="productSearch" placeholder="ابحث بالاسم أو امسح الباركود..." autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></label></div>
             <div class="wg-sales-product-grid">
                 @forelse($products as $product)
-                <button type="button" x-data="{ adding: false }" x-on:click="adding = true; $wire.addProduct({{ $product->id }}).finally(() => adding = false)" x-bind:disabled="adding" x-bind:class="{ 'is-adding': adding }" class="wg-sales-product-card" aria-label="إضافة {{ $product->name }} إلى الفاتورة">
+                <button type="button" x-on:click="addProduct({ id: {{ $product->id }}, name: {{ Js::from($product->name) }}, barcode: {{ Js::from($product->barcode ?? '') }}, currency: {{ Js::from($product->currency) }}, price: {{ (float)$product->selling_price }}, stock: {{ (int)$product->current_quantity }}, image_path: {{ Js::from($product->image_path) }} })" class="wg-sales-product-card" aria-label="إضافة {{ $product->name }} إلى الفاتورة">
                     <span class="wg-sales-product-image">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4"/></svg>
                         @if($product->image_path)<img src="{{ route('inventory.product-image', $product) }}" alt="{{ $product->name }}" onerror="this.style.display='none'">@endif
@@ -34,25 +170,49 @@
                         <span class="wg-sales-stock-badge"><b>متوفر</b> {{ number_format($product->current_quantity) }} وحدة</span>
                     </span>
                     <span class="wg-sales-product-price"><small>سعر البيع</small>{{ number_format((float)$product->selling_price,0) }} <em>{{ $product->currency }}</em></span>
-                    <i><b x-show="!adding">＋</b><b x-cloak x-show="adding" class="wg-mini-spinner"></b><em x-text="adding ? 'جارٍ...' : 'إضافة'"></em></i>
+                    <i><b>＋</b><em>إضافة</em></i>
                 </button>
                 @empty<div class="wg-pos-empty"><strong>لا توجد منتجات متوفرة للبيع</strong><span>أضف كمية من صفحة المشتريات أو جرّب عبارة بحث أخرى.</span></div>@endforelse
             </div>
         </article>
 
         <aside class="wg-inv-card wg-sales-cart-panel">
-            <div class="wg-sales-cart-title"><div><h3>فاتورة البيع</h3><span>{{ collect($cart)->sum('quantity') }} قطعة في السلة</span></div>@if(count($cart))<button type="button" wire:click="clearCart">تفريغ</button>@endif</div>
-            @error('cart')<div class="wg-pos-error">{{ $message }}</div>@enderror
+            <div class="wg-sales-cart-title">
+                <div>
+                    <h3>فاتورة البيع</h3>
+                    <span x-text="cartCount() + ' قطعة في السلة'">{{ collect($cart)->sum('quantity') }} قطعة في السلة</span>
+                </div>
+                <button type="button" x-show="cartCount() > 0" x-on:click="clear()" x-cloak>تفريغ</button>
+            </div>
+            <div class="wg-pos-error" x-show="cartError" x-text="cartError" x-cloak></div>
+            @error('cart')<div class="wg-pos-error" x-show="!cartError">{{ $message }}</div>@enderror
 
             <div class="wg-sales-cart-items">
-                @forelse($cart as $row)
-                <div class="wg-sales-cart-row">
-                    <div><strong>{{ $row['name'] }}</strong><small>{{ number_format($row['price'],0) }} {{ $row['currency'] }} · متوفر {{ $row['stock'] }}</small></div>
-                    <div class="wg-pos-qty"><button type="button" wire:click="decreaseQuantity({{ $row['id'] }})">−</button><span>{{ $row['quantity'] }}</span><button type="button" wire:click="increaseQuantity({{ $row['id'] }})">+</button></div>
-                    <b>{{ number_format($row['price']*$row['quantity'],0) }} <small>{{ $row['currency'] }}</small></b>
-                    <button type="button" wire:click="removeProduct({{ $row['id'] }})" class="wg-pos-remove">×</button>
+                <template x-for="row in Object.values(cart || {})" :key="row.id">
+                    <div class="wg-sales-cart-row">
+                        <div>
+                            <strong x-text="row.name"></strong>
+                            <small x-text="formatMoney(row.price) + ' ' + row.currency + ' · متوفر ' + row.stock"></small>
+                        </div>
+                        <div class="wg-pos-qty">
+                            <button type="button" x-on:click="decrease(row.id)" title="إنقاص الكمية">−</button>
+                            <input type="number" min="1" :max="row.stock" :value="row.quantity"
+                                   x-on:input="setQuantity(row.id, $event.target.value, $event.target)"
+                                   x-on:change="validateQuantity(row.id, $event.target.value, $event.target)"
+                                   x-on:blur="validateQuantity(row.id, $event.target.value, $event.target)"
+                                   class="wg-pos-qty-field"
+                                   aria-label="الكمية المطلوبة">
+                            <button type="button" x-on:click="increase(row.id)" title="زيادة الكمية">+</button>
+                        </div>
+                        <b><span x-text="formatMoney(row.price * row.quantity)"></span> <small x-text="row.currency"></small></b>
+                        <button type="button" x-on:click="remove(row.id)" class="wg-pos-remove">×</button>
+                    </div>
+                </template>
+                <div class="wg-pos-cart-empty" x-show="cartCount() === 0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18v12H3zM7 10h10"/></svg>
+                    <strong>السلة فارغة</strong>
+                    <span>اختر منتجاً من الجهة المقابلة.</span>
                 </div>
-                @empty<div class="wg-pos-cart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18v12H3zM7 10h10"/></svg><strong>السلة فارغة</strong><span>اختر منتجاً من الجهة المقابلة.</span></div>@endforelse
             </div>
 
             <div class="wg-pos-payment-choice">
@@ -77,12 +237,25 @@
                 <div class="wg-sales-checkout-fields">
                     <label><span>عضو النادي</span><select wire:model="member_id"><option value="">عميل عادي / غير عضو</option>@foreach($members as $member)<option value="{{ data_get($member, 'id') }}">{{ data_get($member, 'full_name') }} · {{ data_get($member, 'membership_code') }}</option>@endforeach</select></label>
                     <label><span>اسم المشتري</span><input type="text" wire:model="customer_name" placeholder="مثال: محمد أحمد"></label>
-                    @if($canDiscount)<label><span>خصم رسمي</span><div class="wg-pos-money-input"><input type="number" min="0" step="0.01" wire:model.blur="discount_value"><span>{{ $cartCurrency }}</span></div></label>@endif
+                    @if($canDiscount)<label><span>خصم رسمي</span><div class="wg-pos-money-input"><input type="number" min="0" step="0.01" wire:model.blur="discount_value"><span x-text="cartCurrency()">{{ $cartCurrency }}</span></div></label>@endif
                 </div>
             </details>
 
-            <div class="wg-sales-total-box"><div><span>الإجمالي</span><strong>{{ number_format($cartSubtotal,0) }} {{ $cartCurrency }}</strong></div>@if($cartDiscount>0)<div><span>الخصم</span><strong class="is-orange">- {{ number_format($cartDiscount,0) }} {{ $cartCurrency }}</strong></div>@endif<div class="is-total"><span>المبلغ المطلوب</span><strong>{{ number_format($cartTotal,0) }} {{ $cartCurrency }}</strong></div></div>
-            <button type="button" wire:click="completeSale" wire:loading.attr="disabled" wire:target="completeSale,payment_proof" class="wg-sales-pay-button" @disabled(empty($cart))>
+            <div class="wg-sales-total-box">
+                <div>
+                    <span>الإجمالي</span>
+                    <strong><span x-text="formatMoney(cartSubtotal())">{{ number_format($cartSubtotal,0) }}</span> <span x-text="cartCurrency()">{{ $cartCurrency }}</span></strong>
+                </div>
+                <div x-show="cartDiscount() > 0" x-cloak>
+                    <span>الخصم</span>
+                    <strong class="is-orange">- <span x-text="formatMoney(cartDiscount())"></span> <span x-text="cartCurrency()">{{ $cartCurrency }}</span></strong>
+                </div>
+                <div class="is-total">
+                    <span>المبلغ المطلوب</span>
+                    <strong><span x-text="formatMoney(cartTotal())">{{ number_format($cartTotal,0) }}</span> <span x-text="cartCurrency()">{{ $cartCurrency }}</span></strong>
+                </div>
+            </div>
+            <button type="button" wire:click="completeSale" wire:loading.attr="disabled" wire:target="completeSale,payment_proof" class="wg-sales-pay-button" :disabled="cartCount() === 0">
                 <span wire:loading.remove wire:target="completeSale,payment_proof">إصدار الفاتورة وتأكيد البيع</span>
                 <span wire:loading wire:target="completeSale">جارٍ إصدار الفاتورة...</span>
                 <span wire:loading wire:target="payment_proof">جارٍ رفع السند...</span>

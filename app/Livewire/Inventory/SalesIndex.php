@@ -129,10 +129,17 @@ class SalesIndex extends Component
     public function addProduct(int $productId): void
     {
         abort_unless($this->canCreate, 403);
-        $product = Product::query()->where('status', 'active')->findOrFail($productId);
 
-        if ((int) $product->current_quantity <= 0) {
-            $this->addError('cart', 'المنتج «'.$product->name.'» غير متوفر حالياً.');
+        $key = (string) $productId;
+        if (isset($this->cart[$key])) {
+            $this->increaseQuantity($productId);
+
+            return;
+        }
+
+        $product = Product::query()->where('status', 'active')->find($productId);
+        if (! $product || (int) $product->current_quantity <= 0) {
+            $this->addError('cart', 'المنتج «'.($product ? $product->name : '').'» غير متوفر حالياً.');
 
             return;
         }
@@ -144,26 +151,16 @@ class SalesIndex extends Component
             return;
         }
 
-        $key = (string) $product->id;
-        if (isset($this->cart[$key])) {
-            if ((int) $this->cart[$key]['quantity'] >= (int) $product->current_quantity) {
-                $this->addError('cart', 'وصلت إلى كامل الكمية المتاحة من «'.$product->name.'».');
-
-                return;
-            }
-            $this->cart[$key]['quantity']++;
-        } else {
-            $this->cart[$key] = [
-                'id' => $product->id,
-                'name' => $product->name,
-                'barcode' => (string) ($product->barcode ?? ''),
-                'currency' => $product->currency,
-                'price' => (float) $product->selling_price,
-                'stock' => (int) $product->current_quantity,
-                'quantity' => 1,
-                'image_path' => $product->image_path,
-            ];
-        }
+        $this->cart[$key] = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'barcode' => (string) ($product->barcode ?? ''),
+            'currency' => $product->currency,
+            'price' => (float) $product->selling_price,
+            'stock' => (int) $product->current_quantity,
+            'quantity' => 1,
+            'image_path' => $product->image_path,
+        ];
 
         $this->resetErrorBag('cart');
     }
@@ -175,13 +172,17 @@ class SalesIndex extends Component
             return;
         }
 
-        $product = Product::query()->where('status', 'active')->find($productId);
-        if (! $product || (int) $this->cart[$key]['quantity'] >= (int) $product->current_quantity) {
-            $this->addError('cart', 'لا توجد كمية إضافية متاحة.');
+        $stock = (int) ($this->cart[$key]['stock'] ?? 0);
+        $currentQty = (int) ($this->cart[$key]['quantity'] ?? 0);
+
+        if ($currentQty >= $stock) {
+            $this->addError('cart', 'وصلت إلى كامل الكمية المتاحة من «'.($this->cart[$key]['name'] ?? 'المنتج').'».');
 
             return;
         }
+
         $this->cart[$key]['quantity']++;
+        $this->resetErrorBag('cart');
     }
 
     public function decreaseQuantity(int $productId): void
@@ -190,17 +191,20 @@ class SalesIndex extends Component
         if (! isset($this->cart[$key])) {
             return;
         }
+
         if ((int) $this->cart[$key]['quantity'] <= 1) {
             unset($this->cart[$key]);
-
-            return;
+        } else {
+            $this->cart[$key]['quantity']--;
         }
-        $this->cart[$key]['quantity']--;
+
+        $this->resetErrorBag('cart');
     }
 
     public function removeProduct(int $productId): void
     {
         unset($this->cart[(string) $productId]);
+        $this->resetErrorBag('cart');
     }
 
     public function clearCart(): void

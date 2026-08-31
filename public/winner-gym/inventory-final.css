@@ -269,7 +269,9 @@ html.wg-light .wg-inventory-page,html[data-wg-theme="light"] .wg-inventory-page{
 .wg-body-inventory .wg-sales-page .wg-sales-cart-items{min-height:220px;max-height:340px}
 .wg-body-inventory .wg-sales-cart-row{min-height:82px;grid-template-columns:minmax(0,1fr) 100px 105px 30px;gap:9px}
 .wg-body-inventory .wg-sales-cart-row strong{font-size:12.5px}.wg-body-inventory .wg-sales-cart-row small{font-size:9.8px;line-height:1.45}.wg-body-inventory .wg-sales-cart-row>b{font-size:11.5px}
-.wg-body-inventory .wg-sales-page .wg-pos-qty button{width:30px;height:32px;font-size:17px}.wg-body-inventory .wg-sales-page .wg-pos-qty span{min-width:34px;font-size:12px}
+.wg-pos-qty input{width:38px;height:28px;border:0;background:transparent;color:#fff;font-size:11px;font-weight:850;text-align:center;outline:0;padding:0 2px;-moz-appearance:textfield}
+.wg-pos-qty input::-webkit-outer-spin-button,.wg-pos-qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.wg-body-inventory .wg-sales-page .wg-pos-qty button{width:30px;height:32px;font-size:17px}.wg-body-inventory .wg-sales-page .wg-pos-qty span{min-width:34px;font-size:12px}.wg-body-inventory .wg-sales-page .wg-pos-qty input{width:42px;height:32px;font-size:13px;color:#fff}
 .wg-body-inventory .wg-pos-payment-choice{gap:9px;margin-top:14px;padding-top:14px}.wg-body-inventory .wg-pos-payment-choice>span{font-size:11px}.wg-body-inventory .wg-pos-payment-choice button{height:43px;font-size:12px}
 .wg-body-inventory .wg-pos-transfer-field span,.wg-body-inventory .wg-sales-checkout-fields label>span{font-size:10.5px}
 .wg-body-inventory .wg-pos-transfer-field input,.wg-body-inventory .wg-sales-checkout-fields input,.wg-body-inventory .wg-sales-checkout-fields select{height:44px;font-size:11.5px}
