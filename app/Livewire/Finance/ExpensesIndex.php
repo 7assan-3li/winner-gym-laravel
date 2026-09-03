@@ -7,6 +7,7 @@ use App\Models\ExpenseCategory;
 use App\Services\ExpenseService;
 use App\Services\PaymentPolicy;
 use App\Services\PermissionService;
+use App\Support\NumberFormatter;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
@@ -143,6 +144,8 @@ class ExpensesIndex extends Component
     public function create(ExpenseService $service, PaymentPolicy $paymentPolicy): void
     {
         abort_unless(app(PermissionService::class)->allows(auth()->user(), 'expenses.manage'), 403);
+
+        $this->amount = NumberFormatter::clean($this->amount);
 
         $validated = $this->validate([
             'category_id' => ['nullable', 'integer', 'exists:expense_categories,id'],

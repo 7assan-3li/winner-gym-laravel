@@ -237,7 +237,7 @@
                 <div class="wg-sales-checkout-fields">
                     <label><span>عضو النادي</span><select wire:model="member_id"><option value="">عميل عادي / غير عضو</option>@foreach($members as $member)<option value="{{ data_get($member, 'id') }}">{{ data_get($member, 'full_name') }} · {{ data_get($member, 'membership_code') }}</option>@endforeach</select></label>
                     <label><span>اسم المشتري</span><input type="text" wire:model="customer_name" placeholder="مثال: محمد أحمد"></label>
-                    @if($canDiscount)<label><span>خصم رسمي</span><div class="wg-pos-money-input"><input type="number" min="0" step="0.01" wire:model.blur="discount_value"><span x-text="cartCurrency()">{{ $cartCurrency }}</span></div></label>@endif
+                    @if($canDiscount)<label><span>خصم رسمي</span><div class="wg-pos-money-input"><input type="text" inputmode="decimal" x-money wire:model.blur="discount_value" placeholder="0"><span x-text="cartCurrency()">{{ $cartCurrency }}</span></div></label>@endif
                 </div>
             </details>
 

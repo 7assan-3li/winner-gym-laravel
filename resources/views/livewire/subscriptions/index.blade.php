@@ -27,7 +27,12 @@
             this.$wire.$set('package_id',this.packageId,false); this.syncSuggestedPayment();
         },
         setCurrency(value){ this.currency=value; this.$wire.$set('currency',value,false); this.syncSuggestedPayment() },
-        setDiscount(value){ this.discount=Math.max(0,Number(value)||0); this.$wire.$set('discount_amount',String(this.discount),false); this.syncSuggestedPayment() },
+        setDiscount(value){
+            const clean = window.wgCleanMoney ? window.wgCleanMoney(value) : String(value).replace(/,/g, '');
+            this.discount = Math.max(0, Number(clean) || 0);
+            this.$wire.$set('discount_amount', String(this.discount), false);
+            this.syncSuggestedPayment();
+        },
         setPlan(value){
             this.paymentPlan=value; this.$wire.$set('payment_plan',value,false);
             if(value==='full'){ this.installmentCount=1; this.dueDates=[]; this.$wire.$set('installment_count',1,false); this.$wire.$set('installment_due_dates',[],false) }
@@ -42,9 +47,14 @@
         },
         syncSuggestedPayment(){
             const value=this.paymentPlan==='full' ? this.finalPrice() : this.minimumPayment();
-            this.firstPayment=value.toFixed(2); this.$wire.$set('first_payment_amount',this.firstPayment,false);
+            this.firstPayment=window.wgFormatMoney ? window.wgFormatMoney(value.toFixed(2)) : value.toFixed(2);
+            this.$wire.$set('first_payment_amount', value.toFixed(2), false);
         },
-        setFirstPayment(value){ this.firstPayment=value; this.$wire.$set('first_payment_amount',value,false) },
+        setFirstPayment(value){
+            const clean = window.wgCleanMoney ? window.wgCleanMoney(value) : String(value).replace(/,/g, '');
+            this.firstPayment = clean;
+            this.$wire.$set('first_payment_amount', clean, false);
+        },
         setPaymentMethod(value){ this.paymentMethod=value; this.$wire.$set('payment_method',value,false) },
         choosePackage(value){ this.setPackage(value); this.createOpen=true; this.createStep=1 }
     }"
@@ -458,7 +468,7 @@
 
                         <div class="wg-three" style="margin-top:12px">
                             <div><label class="wg-label">السعر الأصلي</label><div class="wg-field" style="display:flex;align-items:center" dir="ltr" x-text="money(basePrice())"></div></div>
-                            <div><label class="wg-label">الخصم</label><input x-model="discount" x-on:input.debounce.150ms="setDiscount($event.target.value)" type="number" min="0" step="0.01" class="wg-field"></div>
+                            <div><label class="wg-label">الخصم</label><input x-model="discount" x-on:input.debounce.150ms="setDiscount($event.target.value)" type="text" inputmode="decimal" x-money class="wg-field wg-money-input" placeholder="0"></div>
                             <div><label class="wg-label">السعر النهائي</label><div class="wg-field wg-green" style="display:flex;align-items:center;font-weight:800" dir="ltr" x-text="money(finalPrice())"></div></div>
                         </div>
 
@@ -476,7 +486,7 @@
                         <div class="wg-three" style="margin-top:12px">
                             <div>
                                 <label class="wg-label">مبلغ الدفعة الأولى *</label>
-                                <input x-model="firstPayment" x-on:input.debounce.150ms="setFirstPayment($event.target.value)" type="number" step="0.01" class="wg-field">
+                                <input x-model="firstPayment" x-on:input.debounce.150ms="setFirstPayment($event.target.value)" type="text" inputmode="decimal" x-money class="wg-field wg-money-input" placeholder="0">
                                 <button type="button" class="wg-btn wg-btn-sm" style="margin-top:6px" x-on:click="syncSuggestedPayment()"><span x-text="paymentPlan==='full' ? 'استخدام السعر النهائي' : 'استخدام الحد الأدنى 50%'"></span></button>
                             </div>
                             <div x-show="paymentPlan==='installments'" x-cloak><label class="wg-label">عدد الأقساط *</label><input x-model="installmentCount" x-on:change="resizeDueDates()" x-bind:disabled="paymentPlan!=='installments'" type="number" min="2" max="24" class="wg-field"></div>
@@ -575,7 +585,7 @@
                     <div class="wg-sub-collection-grid">
                         <label>
                             <span>مبلغ القسط *</span>
-                            <input type="number" min="0.01" step="0.01" wire:model="collectionAmount" class="wg-field" inputmode="decimal">
+                            <input type="text" inputmode="decimal" x-money wire:model="collectionAmount" class="wg-field wg-money-input" placeholder="0">
                             <small>يجب أن يطابق قيمة القسط المستحق.</small>
                             @error('collectionAmount')<b class="wg-sub-field-error">{{ $message }}</b>@enderror
                             @error('collectionInstallmentId')<b class="wg-sub-field-error">{{ $message }}</b>@enderror

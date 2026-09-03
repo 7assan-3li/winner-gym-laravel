@@ -188,7 +188,7 @@
                 </div>
                 <div class="fin-form-group">
                     <label class="fin-label">المبلغ <span class="fin-required">*</span></label>
-                    <input class="fin-field" type="number" min="0.01" step="0.01" wire:model="amount" placeholder="0" required>
+                    <input class="fin-field wg-money-input" type="text" inputmode="decimal" x-money wire:model="amount" placeholder="0" required>
                 </div>
 
                 <div class="fin-form-group full fin-category-builder">

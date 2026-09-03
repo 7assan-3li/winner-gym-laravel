@@ -8,6 +8,7 @@ use App\Models\ProductCategory;
 use App\Services\AuditService;
 use App\Services\InventoryService;
 use App\Services\PermissionService;
+use App\Support\NumberFormatter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -164,6 +165,9 @@ class ProductsIndex extends Component
             403
         );
 
+        $this->purchase_cost = NumberFormatter::clean($this->purchase_cost);
+        $this->selling_price = NumberFormatter::clean($this->selling_price);
+
         $validated = $this->validate($this->createRules(), $this->validationMessages());
         $category = $this->resolveCategory($validated);
         $imagePath = $this->product_image?->store('product-images', 'public');
@@ -240,6 +244,8 @@ class ProductsIndex extends Component
         );
 
         $product = Product::findOrFail($this->editingProductId);
+        $this->selling_price = NumberFormatter::clean($this->selling_price);
+
         $validated = $this->validate([
             'category_id' => ['nullable', 'required_without:new_category_name', 'integer', 'exists:product_categories,id'],
             'new_category_name' => ['nullable', 'required_without:category_id', 'string', 'max:100'],

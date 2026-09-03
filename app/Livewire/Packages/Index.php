@@ -3,6 +3,7 @@
 namespace App\Livewire\Packages;
 
 use App\Models\Package;
+use App\Support\NumberFormatter;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -56,6 +57,9 @@ class Index extends Component
 
     public function create(): void
     {
+        $this->price_yer = $this->price_yer !== null ? NumberFormatter::clean($this->price_yer) : null;
+        $this->price_sar = $this->price_sar !== null ? NumberFormatter::clean($this->price_sar) : null;
+
         $d = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'duration_value' => ['required', 'integer', 'min:1'],

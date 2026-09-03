@@ -20,6 +20,7 @@ use App\Services\PaymentService;
 use App\Services\PermissionService;
 use App\Services\ReportService;
 use App\Services\SubscriptionService;
+use App\Support\NumberFormatter;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -366,6 +367,9 @@ class Index extends Component
     {
         abort_unless($permissions->allows(auth()->user(), 'subscriptions.create') || $permissions->allows(auth()->user(), 'subscriptions.manage'), 403);
 
+        $this->sub_discount_amount = NumberFormatter::clean($this->sub_discount_amount);
+        $this->sub_first_payment_amount = NumberFormatter::clean($this->sub_first_payment_amount);
+
         $data = $this->validate([
             'sub_member_id' => ['required', 'exists:members,id'],
             'sub_package_id' => ['required', 'exists:packages,id'],
@@ -481,6 +485,8 @@ class Index extends Component
     {
         abort_unless($permissions->allows(auth()->user(), 'payments.create'), 403);
 
+        $this->payment_amount = NumberFormatter::clean($this->payment_amount);
+
         $data = $this->validate([
             'payment_member_id' => ['required', 'exists:members,id'],
             'payment_installment_id' => ['required', 'exists:subscription_installments,id'],
@@ -521,6 +527,8 @@ class Index extends Component
     {
         abort_unless($permissions->allows(auth()->user(), 'expenses.manage'), 403);
 
+        $this->expense_amount = NumberFormatter::clean($this->expense_amount);
+
         $data = $this->validate([
             'expense_category_id' => ['required', 'exists:expense_categories,id'],
             'expense_title' => ['required', 'string', 'max:255'],
@@ -558,6 +566,9 @@ class Index extends Component
     public function createProduct(PermissionService $permissions, AuditService $audit): void
     {
         abort_unless($permissions->allows(auth()->user(), 'products.manage'), 403);
+
+        $this->product_purchase_cost = NumberFormatter::clean($this->product_purchase_cost);
+        $this->product_selling_price = NumberFormatter::clean($this->product_selling_price);
 
         $data = $this->validate([
             'product_category_id' => ['required', 'exists:product_categories,id'],

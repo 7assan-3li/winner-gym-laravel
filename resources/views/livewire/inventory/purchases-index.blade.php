@@ -13,20 +13,29 @@
             'cost' => (float) $product->purchase_cost,
         ])->values()),
         freshRow() { return { product_id: '', quantity: 1, unit_cost: 0 }; },
-        syncRows() { $wire.set('items', JSON.parse(JSON.stringify(this.rows)), false); },
+        syncRows() {
+            const cleaned = this.rows.map(r => ({
+                product_id: r.product_id,
+                quantity: r.quantity,
+                unit_cost: window.wgCleanMoney ? window.wgCleanMoney(r.unit_cost) : String(r.unit_cost || 0).replace(/,/g, '')
+            }));
+            $wire.set('items', cleaned, false);
+        },
         resetRows() { this.rows = [this.freshRow()]; this.syncRows(); },
         addRow() { this.rows.push(this.freshRow()); this.syncRows(); },
         removeRow(index) { this.rows.splice(index, 1); if (!this.rows.length) this.rows.push(this.freshRow()); this.syncRows(); },
         availableProducts() { return this.productOptions.filter(product => product.currency === this.currency); },
         pickProduct(row) {
             const product = this.productOptions.find(option => String(option.id) === String(row.product_id));
-            if (product && (!row.unit_cost || Number(row.unit_cost) === 0)) row.unit_cost = product.cost;
+            if (product && (!row.unit_cost || Number(row.unit_cost) === 0)) {
+                row.unit_cost = window.wgFormatMoney ? window.wgFormatMoney(product.cost) : product.cost;
+            }
             this.syncRows();
         },
         subtotal() {
             return this.rows.reduce((sum, row) => {
                 const q = parseFloat(row.quantity) || 0;
-                const c = parseFloat(row.unit_cost) || 0;
+                const c = parseFloat(window.wgCleanMoney ? window.wgCleanMoney(row.unit_cost) : String(row.unit_cost || 0).replace(/,/g, '')) || 0;
                 return sum + (q * c);
             }, 0);
         },
@@ -150,7 +159,7 @@
                             <div class="wg-purchase-item-row">
                                 <label><span>المنتج <b>*</b></span><select x-model="row.product_id" x-on:change="pickProduct(row)"><option value="">اختر المنتج</option><template x-for="product in availableProducts()" x-bind:key="product.id"><option x-bind:value="product.id" x-text="product.name + ' · المخزون ' + product.stock"></option></template></select></label>
                                 <label><span>الكمية <b>*</b></span><input type="number" min="1" x-model.number="row.quantity" x-on:input="syncRows()"></label>
-                                <label><span>تكلفة الوحدة <b>*</b></span><div class="wg-pos-money-input"><input type="number" min="0" step="0.01" x-model.number="row.unit_cost" x-on:input="syncRows()"><span x-text="currency"></span></div></label>
+                                <label><span>تكلفة الوحدة <b>*</b></span><div class="wg-pos-money-input"><input type="text" inputmode="decimal" x-money x-model="row.unit_cost" x-on:input="syncRows()"><span x-text="currency"></span></div></label>
                                 <button type="button" x-on:click="removeRow(index)" title="حذف السطر">×</button>
                             </div>
                         </template>

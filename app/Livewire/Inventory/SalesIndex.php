@@ -8,6 +8,7 @@ use App\Models\Sale;
 use App\Services\InventoryService;
 use App\Services\PaymentPolicy;
 use App\Services\PermissionService;
+use App\Support\NumberFormatter;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -217,6 +218,8 @@ class SalesIndex extends Component
     public function completeSale(InventoryService $service, PaymentPolicy $paymentPolicy): void
     {
         abort_unless($this->canCreate, 403);
+
+        $this->discount_value = NumberFormatter::clean($this->discount_value);
 
         $this->validate([
             'member_id' => ['nullable', 'integer', 'exists:members,id'],

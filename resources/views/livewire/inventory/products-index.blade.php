@@ -218,13 +218,13 @@
 
                 <div class="fin-form-group">
                     <label class="fin-label">تكلفة شراء الوحدة <span class="fin-required">*</span></label>
-                    <input class="fin-field" wire:model="purchase_cost" type="number" step="0.01" min="0" @readonly($showEditModal) required>
+                    <input class="fin-field wg-money-input" wire:model="purchase_cost" type="text" inputmode="decimal" x-money @readonly($showEditModal) placeholder="0" required>
                     <div class="wg-product-fin-help">{{ $showEditModal ? 'يحسبها النظام تلقائياً عند اعتماد المشتريات.' : 'المبلغ المدفوع للحصول على وحدة واحدة.' }}</div>
                 </div>
 
                 <div class="fin-form-group">
                     <label class="fin-label">سعر بيع الوحدة <span class="fin-required">*</span></label>
-                    <input class="fin-field" wire:model="selling_price" type="number" step="0.01" min="0" required>
+                    <input class="fin-field wg-money-input" wire:model="selling_price" type="text" inputmode="decimal" x-money placeholder="0" required>
                     <div class="wg-product-fin-help">السعر الذي يدفعه العميل عند البيع.</div>
                 </div>
 

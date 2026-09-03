@@ -244,6 +244,9 @@ class Index extends Component
     {
         abort_unless($p->allows(auth()->user(), 'subscriptions.create') || $p->allows(auth()->user(), 'subscriptions.manage'), 403);
 
+        $this->discount_amount = NumberFormatter::clean($this->discount_amount);
+        $this->first_payment_amount = NumberFormatter::clean($this->first_payment_amount);
+
         if ($this->payment_plan === 'full') {
             $this->syncFullPaymentAmount();
         }
@@ -372,6 +375,8 @@ class Index extends Component
     public function receiveCollection(PaymentService $service, PermissionService $permissions): void
     {
         abort_unless($permissions->allows(auth()->user(), 'payments.create'), 403);
+
+        $this->collectionAmount = NumberFormatter::clean($this->collectionAmount);
 
         $validated = $this->validate([
             'collectionInstallmentId' => ['required', 'integer', 'exists:subscription_installments,id'],

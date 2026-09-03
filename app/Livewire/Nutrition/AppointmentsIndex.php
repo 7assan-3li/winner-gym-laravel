@@ -12,6 +12,7 @@ use App\Services\AppointmentService;
 use App\Services\AuditService;
 use App\Services\PaymentPolicy;
 use App\Services\PermissionService;
+use App\Support\NumberFormatter;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -349,6 +350,8 @@ class AppointmentsIndex extends Component
         abort_unless($this->canCreateAppointments, 403);
         $user = auth()->user();
 
+        $this->price = NumberFormatter::clean($this->price);
+
         $validated = $this->validate($this->bookingRules());
         $this->normalizeClientSelection($validated);
 
@@ -399,6 +402,9 @@ class AppointmentsIndex extends Component
     {
         abort_unless($this->canManageAppointments, 403);
         $appointment = $this->appointmentForActor((int) $this->selectedAppointmentId);
+
+        $this->price = NumberFormatter::clean($this->price);
+
         $validated = $this->validate($this->bookingRules());
         $this->normalizeClientSelection($validated);
 

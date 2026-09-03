@@ -7,6 +7,7 @@ use App\Models\Purchase;
 use App\Services\InventoryService;
 use App\Services\PermissionService;
 use App\Services\PurchaseService;
+use App\Support\NumberFormatter;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -127,6 +128,13 @@ class PurchasesIndex extends Component
     public function create(PurchaseService $service): void
     {
         abort_unless($this->canManage, 403);
+
+        foreach ($this->items as &$item) {
+            if (isset($item['unit_cost'])) {
+                $item['unit_cost'] = NumberFormatter::clean($item['unit_cost']);
+            }
+        }
+        unset($item);
 
         $validated = $this->validate([
             'purchase_date' => ['required', 'date'],

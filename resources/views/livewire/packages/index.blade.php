@@ -68,8 +68,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div><label class="wg-label">السعر YER</label><input wire:model="price_yer" type="number" step="0.01" class="wg-field" placeholder="0"></div>
-                        <div><label class="wg-label">السعر SAR</label><input wire:model="price_sar" type="number" step="0.01" class="wg-field" placeholder="0"></div>
+                        <div><label class="wg-label">السعر YER</label><input wire:model="price_yer" type="text" inputmode="decimal" x-money class="wg-field wg-money-input" placeholder="0"></div>
+                        <div><label class="wg-label">السعر SAR</label><input wire:model="price_sar" type="text" inputmode="decimal" x-money class="wg-field wg-money-input" placeholder="0"></div>
                     </div>
                     <div style="margin-top:12px">
                         <label class="wg-label">الوصف (اختياري)</label>
