@@ -329,7 +329,7 @@
   new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
-<script src="{{ asset('winner-gym/money-formatter.js') }}?v=20260902-1"></script>
+<script src="{{ asset('winner-gym/money-formatter.js') }}?v=20260903-1"></script>
 @livewireScripts
 @fluxScripts
 </body>
