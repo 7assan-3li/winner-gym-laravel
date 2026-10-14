@@ -37,7 +37,7 @@ docker compose exec app npm run build
 echo ""
 echo "========================================="
 echo "  WINNER GYM is now RUNNING!"
-echo "  URL: http://localhost:8000"
+echo "  URL: http://127.0.0.1:8001 (Proxied via Nginx/Reverse Proxy)"
 echo "========================================="
 echo ""
 echo "To create an Owner account, run:"
