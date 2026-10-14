@@ -26,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
+        if (str_starts_with((string) config('app.url'), 'https://') || app()->isProduction()) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         Gate::before(function ($user, $ability) {
             return $user->role === 'owner' ? true : null;
         });
