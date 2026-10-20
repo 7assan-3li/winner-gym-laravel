@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -27,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
 
         if (str_starts_with((string) config('app.url'), 'https://') || app()->isProduction()) {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+            URL::forceScheme('https');
         }
 
         Gate::before(function ($user, $ability) {
