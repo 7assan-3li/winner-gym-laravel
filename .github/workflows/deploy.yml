@@ -1,0 +1,77 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  # المرحلة الأولى: فحص الجودة والاختبارات التلقائية
+  test:
+    name: Run Automated Tests & Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_sqlite, sqlite3, pdo_pgsql, pgsql, bcmath, gd, zip, pcntl, redis
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Application & Dependencies
+        run: composer setup
+
+      - name: Run CI Checks (Pint, PHPStan, PHPUnit)
+        run: composer ci:check
+
+  # المرحلة الثانية: النشر التلقائي على السيرفر (فقط عند الـ Push في main ونجاح الاختبارات)
+  deploy:
+    name: Deploy to Production VPS
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script_stop: true
+          script: |
+            cd /home/hasan/apps/winner-gym
+            git pull origin main
+            chmod +x deploy.sh
+            ./deploy.sh
+
+      - name: Verify Application Health Check
+        run: |
+          echo "Waiting 5 seconds for web server to settle..."
+          sleep 5
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://winnergym1.com/up || echo "000")
+          echo "Health check HTTP status: $STATUS"
+          if [ "$STATUS" -ne 200 ]; then
+            echo "❌ Health check failed with status $STATUS"
+            exit 1
+          fi
+          echo "✅ Application is live, healthy, and responding with 200 OK!"
