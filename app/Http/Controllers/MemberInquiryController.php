@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
-use App\Models\Subscription;
+use App\Services\MemberPortalService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class MemberInquiryController extends Controller
 {
+    public function __construct(private MemberPortalService $portalService) {}
+
     public function show(): View
     {
         return view('public.member-inquiry');
@@ -17,57 +18,35 @@ class MemberInquiryController extends Controller
 
     public function lookup(Request $request): View|RedirectResponse
     {
-        $validated = $request->validate([
-            'membership_code' => ['required', 'string', 'max:30'],
-        ]);
+        $hasDirectCode = filled($request->input('membership_code')) && blank($request->input('phone'));
 
-        $member = Member::query()
-            ->where('membership_code', trim($validated['membership_code']))
-            ->first();
+        if ($hasDirectCode) {
+            $validated = $request->validate([
+                'membership_code' => ['required', 'string', 'max:50'],
+            ], [
+                'membership_code.required' => 'كود العضوية مطلوب للاستعلام.',
+            ]);
+        } else {
+            $validated = $request->validate([
+                'phone' => ['required', 'string', 'max:30'],
+                'verification_key' => ['required', 'string', 'max:50'],
+            ], [
+                'phone.required' => 'رقم الهاتف المسجل مطلوب.',
+                'verification_key.required' => 'رمز التحقق (كود العضوية أو آخر 4 أرقام من الهوية) مطلوب.',
+            ]);
+        }
 
-        if (! $member) {
+        $result = $this->portalService->lookup($validated);
+
+        if (! $result) {
+            $errorMsg = 'لم يتم العثور على اشتراك يطابق البيانات المدخلة. يرجى التأكد من صحة المدخلات والمحاولة مجدداً.';
+            $errorKey = $hasDirectCode ? 'membership_code' : 'phone';
+
             return redirect()->route('member.inquiry')
-                ->withErrors(['membership_code' => 'كود العضوية غير صحيح أو غير موجود.'])
+                ->withErrors([$errorKey => $errorMsg, 'error' => $errorMsg])
                 ->withInput();
         }
 
-        $subscription = Subscription::query()
-            ->where('member_id', $member->id)
-            ->latest('end_date')
-            ->first();
-
-        $result = [
-            'name' => $this->abbreviate($member->full_name),
-            'membership_code' => $member->membership_code,
-            'member_status' => $member->status,
-            'subscription_status' => $subscription->status ?? 'لا يوجد اشتراك',
-            'package' => $subscription->package_name_snapshot ?? '-',
-            'start_date' => $subscription?->start_date->format('Y-m-d'),
-            'end_date' => $subscription?->end_date->format('Y-m-d'),
-            'days_remaining' => $subscription
-                ? max(0, (int) now('Asia/Aden')->startOfDay()->diffInDays($subscription->end_date, false))
-                : 0,
-            'paid' => $subscription
-                ? (float) $subscription->payments()->whereIn('status', ['completed', 'paid'])->sum('amount')
-                : 0,
-            'remaining' => 0,
-            'currency' => $subscription?->currency,
-        ];
-
-        if ($subscription) {
-            $result['remaining'] = max(0, round((float) $subscription->final_price - $result['paid'], 2));
-        }
-
         return view('public.member-inquiry', compact('result'));
-    }
-
-    private function abbreviate(string $name): string
-    {
-        $parts = preg_split('/\s+/', trim($name)) ?: [];
-        if (count($parts) <= 2) {
-            return $name;
-        }
-
-        return $parts[0].' '.mb_substr($parts[1], 0, 1).'. '.$parts[count($parts) - 1];
     }
 }

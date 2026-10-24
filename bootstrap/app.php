@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [EnsureUserIsActive::class]);
         $middleware->validateCsrfTokens(except: [
             'member-inquiry',
+            'portal',
             'login',
             'logout',
         ]);

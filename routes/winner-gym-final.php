@@ -19,9 +19,19 @@ Route::get('/member-inquiry', [MemberInquiryController::class, 'show'])
     ->middleware('throttle:30,1')
     ->name('member.inquiry');
 
+Route::get('/portal', [MemberInquiryController::class, 'show'])
+    ->middleware('throttle:30,1')
+    ->name('member.portal');
+
+Route::get('/my-subscription', [MemberInquiryController::class, 'show'])
+    ->middleware('throttle:30,1');
+
 Route::post('/member-inquiry', [MemberInquiryController::class, 'lookup'])
     ->middleware('throttle:10,1')
     ->name('member.inquiry.lookup');
+
+Route::post('/portal', [MemberInquiryController::class, 'lookup'])
+    ->middleware('throttle:10,1');
 
 Route::middleware('auth')->group(function () {
     Route::livewire('/gym-dashboard', DashboardIndex::class)->name('gym.dashboard');
