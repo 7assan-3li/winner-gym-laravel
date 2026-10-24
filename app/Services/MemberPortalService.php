@@ -127,7 +127,7 @@ class MemberPortalService
             ->first();
 
         // Branch and Period information
-        $branchName = $member->branch?->name ?? 'الفرع الرئيسي';
+        $branchName = $member->branch->name ?? 'الفرع الرئيسي';
         $periodLabel = $member->assigned_period === 'women' ? 'فترة النساء' : 'فترة الرجال';
         $workingHours = $this->getWorkingHoursForPeriod($member->assigned_period);
 

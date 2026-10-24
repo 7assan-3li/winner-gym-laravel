@@ -88,4 +88,10 @@ class Member extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    /** @return BelongsTo<Branch, $this> */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }
