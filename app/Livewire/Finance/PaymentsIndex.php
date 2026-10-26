@@ -5,6 +5,7 @@ namespace App\Livewire\Finance;
 use App\Models\Subscription;
 use App\Models\SubscriptionInstallment;
 use App\Models\SubscriptionPayment;
+use App\Models\User;
 use App\Services\PaymentPolicy;
 use App\Services\PaymentService;
 use App\Services\PermissionService;
@@ -33,6 +34,8 @@ class PaymentsIndex extends Component
     public string $filterStatus = 'all';
 
     public string $filterMethod = 'all';
+
+    public ?int $filterCashier = null;
 
     public string $fromDate = '';
 
@@ -137,6 +140,11 @@ class PaymentsIndex extends Component
         $this->resetPage();
     }
 
+    public function updatedFilterCashier(): void
+    {
+        $this->resetPage();
+    }
+
     public function updatedFromDate(): void
     {
         $this->resetPage();
@@ -149,7 +157,7 @@ class PaymentsIndex extends Component
 
     public function resetFilters(): void
     {
-        $this->reset(['search', 'filterStatus', 'filterMethod', 'fromDate', 'toDate']);
+        $this->reset(['search', 'filterStatus', 'filterMethod', 'filterCashier', 'fromDate', 'toDate']);
         $this->filterCurrency = 'YER';
         $this->currency = 'YER';
         $this->resetPage();
@@ -336,6 +344,7 @@ class PaymentsIndex extends Component
             ->where('currency', $currency)
             ->when($this->filterStatus !== 'all', fn (Builder $q) => $q->where('status', $this->filterStatus))
             ->when($this->filterMethod !== 'all', fn (Builder $q) => $q->where('payment_method', $this->filterMethod))
+            ->when($this->filterCashier, fn (Builder $q) => $q->where('created_by', $this->filterCashier))
             ->when($this->fromDate !== '', fn (Builder $q) => $q->whereDate('paid_at', '>=', $this->fromDate))
             ->when($this->toDate !== '', fn (Builder $q) => $q->whereDate('paid_at', '<=', $this->toDate))
             ->when(trim($this->search) !== '', function (Builder $q) {
@@ -400,8 +409,14 @@ class PaymentsIndex extends Component
                 ->get();
         }
 
+        $cashiers = User::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'username', 'role']);
+
         return view('livewire.finance.payments-index', [
             'payments' => $paymentsQuery->latest('paid_at')->paginate(10),
+            'cashiers' => $cashiers,
             'installments' => $installments,
             'selectorInstallments' => $selectorInstallments,
             'refundableSubscriptions' => $refundableSubscriptions,

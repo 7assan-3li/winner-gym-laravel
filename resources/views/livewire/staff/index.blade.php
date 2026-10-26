@@ -8,9 +8,9 @@
     @if(session('success'))<div class="wg-flash">{{ session('success') }}</div>@endif
     @if($errors->has('staff'))<div class="wg-errors">{{ $errors->first('staff') }}</div>@endif
 
-    <div class="wg-grid-stats">
+    <div class="wg-grid-stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
         @php($cards = [
-            ['إجمالي الحسابات',$stats['total'],'wg-blue'],['نشط',$stats['active'],'wg-green'],['موقوف',$stats['inactive'],'wg-red'],['الإدارة',$stats['managers'],'wg-purple'],['اختصاصيو التغذية',$stats['nutritionists'],'wg-orange'],['الاستقبال',$stats['reception'],'wg-blue'],
+            ['إجمالي الحسابات',$stats['total'],'wg-blue'],['حسابات نشطة',$stats['active'],'wg-green'],['حسابات موقوفة',$stats['inactive'],'wg-red'],
         ])
         @foreach($cards as [$label,$value,$color])<div class="wg-card wg-stat"><small>{{ $label }}</small><strong class="{{ $color }}">{{ $value }}</strong><div class="wg-stat-note">حساب</div></div>@endforeach
     </div>

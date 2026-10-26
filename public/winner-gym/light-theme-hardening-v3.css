@@ -290,6 +290,138 @@
   font-weight: 700 !important;
 }
 
+/* 8b. Table Action Buttons, Mini Buttons & Quick Tools (Zero Dark Backgrounds) */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-icon-btn, .wg-att-row-action, .wg-sub-actions button, .wg-sub-actions a,
+  .wg-members-actions>button, .wg-members-more-wrap>button, .wg-nut-row-actions button,
+  .wg-nut-measurement-actions a, .wg-nut-measurement-actions button:not(.wg-nut-btn-primary),
+  .wg-att-pagination button:not(.is-active), .wg-sub-pagination button:not(.is-active),
+  .wg-att-actions-card a, .wg-att-actions-card button,
+  .fin-table-actions button, .fin-table-actions a,
+  .wg-nut-more-actions, .wg-att-camera-inline, .wg-att-camera-button,
+  .wg-quick-attendance-actions .is-camera
+) {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1e293b !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-icon-btn, .wg-att-row-action, .wg-sub-actions button, .wg-sub-actions a,
+  .wg-members-actions>button, .wg-members-more-wrap>button, .wg-nut-row-actions button,
+  .wg-nut-measurement-actions a, .wg-nut-measurement-actions button:not(.wg-nut-btn-primary),
+  .wg-att-pagination button:not(.is-active):hover, .wg-sub-pagination button:not(.is-active):hover,
+  .wg-att-actions-card a:hover, .wg-att-actions-card button:hover,
+  .fin-table-actions button:hover, .fin-table-actions a:hover,
+  .wg-nut-more-actions:hover, .wg-att-camera-inline:hover, .wg-att-camera-button:hover,
+  .wg-quick-attendance-actions .is-camera:hover
+):hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #1d4ed8 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-icon-btn.danger:hover, .wg-btn-danger:hover
+) {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+/* 8c. KPI Stat Icons & Containers (Pastel Surfaces with Balanced Contrast) */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-iconbox, .wg-dash-stat__icon, .att-kpi-icon, .wg-members-stat-icon, .wg-sub-summary-icon,
+  .wg-nut-kpi>i, .wg-inv-pos-hero-icon, .wg-inv-quick-product-icon, .wg-att-fingerprint,
+  .wg-quick-attendance-mark, .wg-att-success-icon
+) {
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  color: #1d4ed8 !important;
+  box-shadow: 0 2px 6px -1px rgba(37, 99, 235, 0.08) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-iconbox.green, .wg-dash-stat--green .wg-dash-stat__icon, .tone-green .wg-members-stat-icon,
+  .tone-green .wg-sub-summary-icon, .wg-nut-kpi>i.is-green, .wg-nut-upcoming-list i.is-green,
+  .wg-nut-measure-grid article.is-green>i
+) {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #059669 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-iconbox.red, .wg-dash-stat--red .wg-dash-stat__icon, .tone-red .wg-members-stat-icon,
+  .tone-red .wg-sub-summary-icon, .wg-nut-kpi>i.is-red, .wg-nut-upcoming-list i.is-red,
+  .wg-nut-measure-grid article.is-red>i
+) {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #dc2626 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-iconbox.orange, .wg-dash-stat--orange .wg-dash-stat__icon, .tone-orange .wg-members-stat-icon,
+  .tone-orange .wg-sub-summary-icon, .wg-nut-kpi>i.is-orange, .wg-nut-upcoming-list i.is-orange,
+  .wg-nut-measure-grid article.is-orange>i
+) {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #d97706 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .fin-iconbox.purple, .wg-dash-stat--purple .wg-dash-stat__icon, .tone-purple .wg-members-stat-icon,
+  .tone-purple .wg-sub-summary-icon, .wg-nut-kpi>i.is-purple, .wg-nut-upcoming-list i.is-purple,
+  .wg-nut-measure-grid article.is-purple>i
+) {
+  background: #faf5ff !important;
+  border-color: #e9d5ff !important;
+  color: #7c3aed !important;
+}
+
+/* 8d. Action Menu, Directory & In-List Icon Badges */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-nut-action-menu i, .wg-nut-directory-client i, .wg-nut-team-list>div>i,
+  .wg-nut-upcoming-list i, .wg-nut-measure-grid article>i, .wg-att-mini-stats i
+) {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1d4ed8 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-nut-action-menu i.is-blue, .wg-nut-directory-client i, .wg-nut-team-list>div>i,
+  .wg-att-mini-stats i.is-blue
+) {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+  color: #1d4ed8 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-nut-action-menu i.is-green, .wg-att-mini-stats i.is-green
+) {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #059669 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-nut-action-menu i.is-purple, .wg-att-mini-stats i.is-purple
+) {
+  background: #faf5ff !important;
+  border-color: #e9d5ff !important;
+  color: #7c3aed !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-nut-action-menu i.is-orange, .wg-att-mini-stats i.is-orange
+) {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #d97706 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-att-mini-stats i.is-red
+) {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #dc2626 !important;
+}
+
 /* 9. Badges & Status Pills (High Contrast & Legible) */
 :is(html.wg-light, html[data-wg-theme="light"]) :is(.wg-badge-green, .wg-pill.is-green, .att-pill.is-green, .fin-pill.is-green, .fin-badge.green, .wg-nut-pill.is-green) {
   background: #ecfdf5 !important;
@@ -373,7 +505,19 @@
   border-top: 1px solid #e2e8f0 !important;
 }
 
-/* 11. Overcoming Inline Styles in Legacy Templates */
+/* 11. Overcoming Inline Styles & Dynamic Auto Surfaces in Light Mode */
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-light-auto-surface {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(i, span).wg-light-auto-surface {
+  background-color: #f1f5f9 !important;
+  background-image: none !important;
+  border-color: #cbd5e1 !important;
+  color: #1d4ed8 !important;
+}
 :is(html.wg-light, html[data-wg-theme="light"]) body.wg-body [style*="color:#fff"]:not(.wg-btn-primary):not(.fin-btn.primary):not(.is-active):not(.wg-nut-step-num.is-active),
 :is(html.wg-light, html[data-wg-theme="light"]) body.wg-body [style*="color: #fff"]:not(.wg-btn-primary):not(.fin-btn.primary):not(.is-active):not(.wg-nut-step-num.is-active) {
   color: #0f172a !important;

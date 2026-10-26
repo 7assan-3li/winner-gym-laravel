@@ -18,19 +18,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     {{-- Load the accepted module styles on EVERY authenticated request.
          This prevents Livewire/browser-cache differences between owner and newly-created staff accounts. --}}
-    <link rel="stylesheet" href="{{ asset('winner-gym/dashboard-final-polish.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/members-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/role-consistency-hotfix.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/system-rtl-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/unified-design-v1.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/quick-actions-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/theme-system-final.css') }}?v=20261026-4">
-    <link rel="stylesheet" href="{{ asset('winner-gym/light-theme-hardening-v3.css') }}?v=20261026-4">
+    <link rel="stylesheet" href="{{ asset('winner-gym/dashboard-final-polish.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/members-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/role-consistency-hotfix.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/system-rtl-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/unified-design-v1.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/quick-actions-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/theme-system-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/light-theme-hardening-v3.css') }}?v=20261026-5">
 </head>
 @php
     $wgBodyClass = match (true) {
@@ -322,8 +322,8 @@
       if(el.matches('img,svg,path,circle,line,polyline,polygon,use,canvas,video')||el.matches(skipSelector)||el.closest('.wg-nav a.is-active'))return;
       const cs=getComputedStyle(el), c=rgb(cs.backgroundColor), rect=el.getBoundingClientRect();
       const surface=(c&&c[3]>.25&&lum(c)<68)||darkGradient(cs.backgroundImage);
-      if(!surface||rect.width<24||rect.height<18)return;
-      const interactive=/^(A|BUTTON|INPUT|SELECT|TEXTAREA|TD|TH)$/.test(el.tagName);
+      if(!surface||rect.width<10||rect.height<10)return;
+      const interactive=/^(A|BUTTON|INPUT|SELECT|TEXTAREA|TD|TH|I|SPAN|DIV)$/.test(el.tagName);
       const rounded=parseFloat(cs.borderRadius||'0')>0;
       if(interactive||rounded)el.classList.add('wg-light-auto-surface');
     });

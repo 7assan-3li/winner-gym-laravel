@@ -61,7 +61,7 @@
         </div>
     @endif
 
-    <div class="fin-kpis fin-kpis-payments">
+    <div class="fin-kpis fin-kpis-payments" style="grid-template-columns: repeat(5, minmax(0, 1fr))">
         <section class="fin-card fin-kpi payment-primary">
             <div class="fin-kpi-copy"><div class="fin-kpi-label">إجمالي دفعات الاشتراكات</div><div class="fin-kpi-value">{{ number_format($metrics['totalReceived'],0) }} <small>{{ $filterCurrency }}</small></div><div class="fin-kpi-sub green">{{ number_format($metrics['completedPayments']) }} دفعة مكتملة</div></div>
             <div class="fin-iconbox green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M17 9h2v2"/></svg></div>
@@ -82,10 +82,6 @@
             <div class="fin-kpi-copy"><div class="fin-kpi-label">أقساط متأخرة</div><div class="fin-kpi-value">{{ number_format($metrics['overdueAmount'],0) }} <small>{{ $filterCurrency }}</small></div><div class="fin-kpi-sub red">{{ number_format($metrics['overdueCount']) }} قسط يحتاج متابعة</div></div>
             <div class="fin-iconbox red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 17h.01"/></svg></div>
         </section>
-        <section class="fin-card fin-kpi">
-            <div class="fin-kpi-copy"><div class="fin-kpi-label">دفعات معكوسة</div><div class="fin-kpi-value">{{ number_format($metrics['reversedPayments']) }}</div><div class="fin-kpi-sub red">محفوظة مع سبب العكس</div></div>
-            <div class="fin-iconbox red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v6h6M20 12a8 8 0 0 0-14-5M20 20v-6h-6M4 12a8 8 0 0 0 14 5"/></svg></div>
-        </section>
     </div>
 
     <section class="fin-card fin-toolbar payments-toolbar">
@@ -93,6 +89,12 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
             <input id="finance-search" class="fin-field" type="search" wire:model.live.debounce.350ms="search" placeholder="ابحث بالعضو، كود العضوية، الإيصال أو مرجع التحويل...">
         </div>
+        <select class="fin-select" wire:model.live="filterCashier">
+            <option value="">كل المحاسبين</option>
+            @foreach($cashiers as $c)
+                <option value="{{ $c->id }}">{{ $c->name }}</option>
+            @endforeach
+        </select>
         <select class="fin-select" wire:model.live="filterStatus"><option value="all">كل الحالات</option><option value="completed">مكتملة</option><option value="reversed">معكوسة</option></select>
         <select class="fin-select" wire:model.live="filterMethod"><option value="all">كل طرق الدفع</option><option value="cash">نقدي</option><option value="transfer">تحويل / صرافة</option></select>
         <select class="fin-select" wire:model.live="filterCurrency"><option value="YER">YER — ريال يمني</option><option value="SAR">SAR — ريال سعودي</option></select>

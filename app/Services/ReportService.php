@@ -2,7 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\AppointmentPayment;
+use App\Models\Expense;
+use App\Models\Sale;
+use App\Models\SubscriptionPayment;
+use App\Models\User;
+use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class ReportService
@@ -219,6 +226,282 @@ class ReportService
             'attendance_count' => (int) $row->attendance_count,
             'appointments_count' => (int) $row->appointments_count,
             'new_members_count' => (int) $row->new_members_count,
+        ];
+    }
+
+    /**
+     * Cashier Shift Reconciliation & Cash Handover Summary
+     *
+     * @return array{
+     *     currency: string,
+     *     date: string,
+     *     cashier_id: int|null,
+     *     cashier_name: string,
+     *     subscription_cash: float,
+     *     subscription_transfer: float,
+     *     nutrition_cash: float,
+     *     nutrition_transfer: float,
+     *     sales_cash: float,
+     *     sales_transfer: float,
+     *     cash_expenses: float,
+     *     total_cash_in: float,
+     *     total_transfer_in: float,
+     *     total_collected: float,
+     *     net_cash_handover: float,
+     *     transactions_count: int,
+     *     transactions: array<int, array<string, mixed>>,
+     *     comparison: array<int, array<string, mixed>>
+     * }
+     */
+    public function cashierShiftSummary(?int $cashierId, string $date, string $currency = 'YER'): array
+    {
+        $currency = strtoupper($currency);
+        abort_unless(in_array($currency, ['YER', 'SAR'], true), 422);
+
+        $tz = config('app.timezone', 'Asia/Aden');
+        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
+        $fromDt = CarbonImmutable::parse($date, $tz)->startOfDay();
+        $toExclusiveDt = CarbonImmutable::parse($date, $tz)->addDay()->startOfDay();
+
+        $fromUtc = $isSqlite ? $fromDt->format('Y-m-d H:i:s') : $fromDt->utc();
+        $toExclusiveUtc = $isSqlite ? $toExclusiveDt->format('Y-m-d H:i:s') : $toExclusiveDt->utc();
+
+        $selectedUser = $cashierId ? User::find($cashierId) : null;
+        $cashierName = $selectedUser ? ($selectedUser->name ?: $selectedUser->username) : 'كل المحاسبين والكاشيرات';
+
+        // 1. Subscription Payments
+        $subPayments = SubscriptionPayment::query()
+            ->with(['creator', 'subscription.member'])
+            ->where('currency', $currency)
+            ->where('status', 'completed')
+            ->where('paid_at', '>=', $fromUtc)
+            ->where('paid_at', '<', $toExclusiveUtc)
+            ->when($cashierId, fn (Builder $q) => $q->where('created_by', $cashierId))
+            ->get();
+
+        // 2. Sales
+        $sales = Sale::query()
+            ->with(['creator', 'member'])
+            ->where('currency', $currency)
+            ->where('status', 'completed')
+            ->where('sold_at', '>=', $fromUtc)
+            ->where('sold_at', '<', $toExclusiveUtc)
+            ->when($cashierId, fn (Builder $q) => $q->where('created_by', $cashierId))
+            ->get();
+
+        // 3. Nutrition Payments
+        $nutPayments = AppointmentPayment::query()
+            ->with(['creator', 'appointment.member', 'appointment.nutritionClient'])
+            ->where('currency', $currency)
+            ->where('status', 'paid')
+            ->where('paid_at', '>=', $fromUtc)
+            ->where('paid_at', '<', $toExclusiveUtc)
+            ->when($cashierId, fn (Builder $q) => $q->where('created_by', $cashierId))
+            ->get();
+
+        // 4. Expenses
+        $expenses = Expense::query()
+            ->with(['creator', 'category'])
+            ->where('currency', $currency)
+            ->where('status', 'approved')
+            ->whereDate('expense_date', $date)
+            ->when($cashierId, fn (Builder $q) => $q->where('created_by', $cashierId))
+            ->get();
+
+        $subCash = round((float) $subPayments->where('payment_method', 'cash')->sum('amount'), 2);
+        $subTransfer = round((float) $subPayments->where('payment_method', 'transfer')->sum('amount'), 2);
+
+        $salesCash = round((float) $sales->where('payment_method', 'cash')->sum('total_amount'), 2);
+        $salesTransfer = round((float) $sales->where('payment_method', 'transfer')->sum('total_amount'), 2);
+
+        $nutCash = round((float) $nutPayments->where('payment_method', 'cash')->sum('amount'), 2);
+        $nutTransfer = round((float) $nutPayments->where('payment_method', 'transfer')->sum('amount'), 2);
+
+        $cashExpenses = round((float) $expenses->where('payment_method', 'cash')->sum('amount'), 2);
+
+        $totalCashIn = round($subCash + $salesCash + $nutCash, 2);
+        $totalTransferIn = round($subTransfer + $salesTransfer + $nutTransfer, 2);
+        $totalCollected = round($totalCashIn + $totalTransferIn, 2);
+        $netCashHandover = round(max(0, $totalCashIn - $cashExpenses), 2);
+
+        // Build chronological list of transactions
+        $transactions = collect();
+
+        foreach ($subPayments as $p) {
+            $transactions->push([
+                'id' => 'SUB-'.$p->id,
+                'time' => $p->paid_at ? Carbon::parse($p->paid_at)->timezone($tz) : now($tz),
+                'time_formatted' => $p->paid_at ? Carbon::parse($p->paid_at)->timezone($tz)->format('h:i A') : '—',
+                'type' => 'subscription',
+                'type_label' => 'قسط اشتراك',
+                'reference' => $p->receipt_number ?: ('SP-#'.$p->id),
+                'client' => $p->subscription?->member->full_name ?? 'عضو نادي',
+                'cashier' => $p->creator ? ($p->creator->name ?: $p->creator->username) : '—',
+                'cashier_id' => $p->created_by,
+                'method' => $p->payment_method,
+                'method_label' => $p->payment_method === 'cash' ? 'نقدي' : 'تحويل بنكي',
+                'transfer_details' => $p->payment_method === 'transfer' ? trim(($p->transfer_service ?: '').' '.($p->transfer_reference ?: '')) : null,
+                'amount' => (float) $p->amount,
+                'is_out' => false,
+            ]);
+        }
+
+        foreach ($sales as $s) {
+            $transactions->push([
+                'id' => 'SALE-'.$s->id,
+                'time' => $s->sold_at->timezone($tz),
+                'time_formatted' => $s->sold_at->timezone($tz)->format('h:i A'),
+                'type' => 'sale',
+                'type_label' => 'مبيعات متجر',
+                'reference' => $s->sale_number ?: ('S-#'.$s->id),
+                'client' => $s->customer_name ?: ($s->member->full_name ?? 'زبون نقدي'),
+                'cashier' => $s->creator ? ($s->creator->name ?: $s->creator->username) : '—',
+                'cashier_id' => $s->created_by,
+                'method' => $s->payment_method,
+                'method_label' => $s->payment_method === 'cash' ? 'نقدي' : 'تحويل بنكي',
+                'transfer_details' => $s->payment_method === 'transfer' ? trim(($s->transfer_service ?: '').' '.($s->transfer_reference ?: '')) : null,
+                'amount' => (float) $s->total_amount,
+                'is_out' => false,
+            ]);
+        }
+
+        foreach ($nutPayments as $np) {
+            $cName = $np->appointment ? ($np->appointment->member->full_name ?? ($np->appointment->nutritionClient->full_name ?? 'عميل تغذية')) : 'عميل تغذية';
+            $transactions->push([
+                'id' => 'NUT-'.$np->id,
+                'time' => $np->paid_at ? Carbon::parse($np->paid_at)->timezone($tz) : now($tz),
+                'time_formatted' => $np->paid_at ? Carbon::parse($np->paid_at)->timezone($tz)->format('h:i A') : '—',
+                'type' => 'nutrition',
+                'type_label' => 'جلسة تغذية',
+                'reference' => 'NUT-#'.$np->id,
+                'client' => $cName,
+                'cashier' => $np->creator ? ($np->creator->name ?: $np->creator->username) : '—',
+                'cashier_id' => $np->created_by,
+                'method' => $np->payment_method,
+                'method_label' => $np->payment_method === 'cash' ? 'نقدي' : 'تحويل بنكي',
+                'transfer_details' => $np->payment_method === 'transfer' ? trim(($np->transfer_service ?: '').' '.($np->transfer_reference ?: '')) : null,
+                'amount' => (float) $np->amount,
+                'is_out' => false,
+            ]);
+        }
+
+        foreach ($expenses as $e) {
+            $transactions->push([
+                'id' => 'EXP-'.$e->id,
+                'time' => $e->created_at ? $e->created_at->timezone($tz) : now($tz),
+                'time_formatted' => $e->created_at ? $e->created_at->timezone($tz)->format('h:i A') : '—',
+                'type' => 'expense',
+                'type_label' => 'مصروف صندوق',
+                'reference' => 'EXP-#'.$e->id,
+                'client' => $e->title ?: ($e->category ? $e->category->name : 'مصروف تشغيلي'),
+                'cashier' => $e->creator ? ($e->creator->name ?: $e->creator->username) : '—',
+                'cashier_id' => $e->created_by,
+                'method' => $e->payment_method,
+                'method_label' => $e->payment_method === 'cash' ? 'صرف نقدي' : 'تحويل',
+                'transfer_details' => $e->transfer_service ? trim($e->transfer_service.' '.($e->transfer_reference ?: '')) : null,
+                'amount' => (float) $e->amount,
+                'is_out' => true,
+            ]);
+        }
+
+        $sortedTransactions = $transactions->sortByDesc('time')->values()->all();
+
+        // 5. Cashier comparison breakdown (for all active staff who processed anything today)
+        $comparison = [];
+        $activeStaff = User::query()->where('is_active', true)->orderBy('name')->get();
+
+        foreach ($activeStaff as $staff) {
+            $sSubs = SubscriptionPayment::query()
+                ->where('currency', $currency)
+                ->where('status', 'completed')
+                ->where('paid_at', '>=', $fromUtc)
+                ->where('paid_at', '<', $toExclusiveUtc)
+                ->where('created_by', $staff->id)
+                ->get();
+
+            $sSales = Sale::query()
+                ->where('currency', $currency)
+                ->where('status', 'completed')
+                ->where('sold_at', '>=', $fromUtc)
+                ->where('sold_at', '<', $toExclusiveUtc)
+                ->where('created_by', $staff->id)
+                ->get();
+
+            $sNut = AppointmentPayment::query()
+                ->where('currency', $currency)
+                ->where('status', 'paid')
+                ->where('paid_at', '>=', $fromUtc)
+                ->where('paid_at', '<', $toExclusiveUtc)
+                ->where('created_by', $staff->id)
+                ->get();
+
+            $sExp = Expense::query()
+                ->where('currency', $currency)
+                ->where('status', 'approved')
+                ->whereDate('expense_date', $date)
+                ->where('created_by', $staff->id)
+                ->get();
+
+            $sCashIn = round(
+                (float) $sSubs->where('payment_method', 'cash')->sum('amount') +
+                (float) $sSales->where('payment_method', 'cash')->sum('total_amount') +
+                (float) $sNut->where('payment_method', 'cash')->sum('amount'),
+                2
+            );
+
+            $sTransferIn = round(
+                (float) $sSubs->where('payment_method', 'transfer')->sum('amount') +
+                (float) $sSales->where('payment_method', 'transfer')->sum('total_amount') +
+                (float) $sNut->where('payment_method', 'transfer')->sum('amount'),
+                2
+            );
+
+            $sCashOut = round((float) $sExp->where('payment_method', 'cash')->sum('amount'), 2);
+            $sNetHandover = round(max(0, $sCashIn - $sCashOut), 2);
+            $sCount = $sSubs->count() + $sSales->count() + $sNut->count() + $sExp->count();
+
+            if ($sCount > 0 || $staff->id === $cashierId) {
+                $comparison[] = [
+                    'id' => $staff->id,
+                    'name' => $staff->name ?: $staff->username,
+                    'username' => $staff->username,
+                    'role' => match ($staff->role) {
+                        'owner' => 'المالك',
+                        'manager' => 'المدير',
+                        'accountant' => 'المحاسب',
+                        'reception' => 'الاستقبال',
+                        'nutritionist' => 'اختصاصي تغذية',
+                        default => $staff->role,
+                    },
+                    'period' => $staff->gymPeriod ? $staff->gymPeriod->name : ($staff->work_period === 'both' ? 'الفترتان' : ($staff->work_period === 'women' ? 'نساء' : 'رجال')),
+                    'cash_in' => $sCashIn,
+                    'transfer_in' => $sTransferIn,
+                    'cash_out' => $sCashOut,
+                    'net_handover' => $sNetHandover,
+                    'transactions_count' => $sCount,
+                ];
+            }
+        }
+
+        return [
+            'currency' => $currency,
+            'date' => $date,
+            'cashier_id' => $cashierId,
+            'cashier_name' => $cashierName,
+            'subscription_cash' => $subCash,
+            'subscription_transfer' => $subTransfer,
+            'nutrition_cash' => $nutCash,
+            'nutrition_transfer' => $nutTransfer,
+            'sales_cash' => $salesCash,
+            'sales_transfer' => $salesTransfer,
+            'cash_expenses' => $cashExpenses,
+            'total_cash_in' => $totalCashIn,
+            'total_transfer_in' => $totalTransferIn,
+            'total_collected' => $totalCollected,
+            'net_cash_handover' => $netCashHandover,
+            'transactions_count' => count($sortedTransactions),
+            'transactions' => $sortedTransactions,
+            'comparison' => $comparison,
         ];
     }
 }
