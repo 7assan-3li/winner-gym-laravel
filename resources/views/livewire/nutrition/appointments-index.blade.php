@@ -161,7 +161,7 @@
                         <select wire:model.live="nutritionistFilter">
                             <option value="">كل الأخصائيين</option>
                             @foreach($nutritionists as $n)
-                                <option value="{{ $n->id }}">{{ $n->name ?: $n->username }}</option>
+                                <option value="{{ $n->id }}">{{ $n->name ?: $n->username }} @if($n->specialization) — {{ $n->specialization }} @endif</option>
                             @endforeach
                         </select>
                     @endif
@@ -206,7 +206,12 @@
                                     <small>{{ $clientType($a) }} • {{ $visitTypeMeta[$a->visit_type ?? 'in_person'] ?? 'حضوري' }}</small>
                                 </span>
                             </td>
-                            <td>{{ $nutritionistName($a) }}</td>
+                            <td>
+                                <div style="font-weight:700">{{ $nutritionistName($a) }}</div>
+                                @if($a->nutritionist?->specialization)
+                                    <div class="wg-subline" style="color:#60a5fa;font-size:11.5px">{{ $a->nutritionist->specialization }}</div>
+                                @endif
+                            </td>
                             <td>{{ $a->duration_minutes }} د</td>
                             <td class="wg-nut-money">
                                 <strong>{{ number_format((float)$a->price, $a->currency === 'SAR' ? 2 : 0) }}</strong>
@@ -413,7 +418,10 @@
                         <p>الحسابات النشطة وفترات عمل اليوم.</p>
                     </div>
                     @if(auth()->user()->role === 'owner')
-                        <a href="{{ route('staff.index', ['new' => 1, 'role' => 'nutritionist']) }}" wire:navigate>إضافة اختصاصي</a>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap">
+                            <a href="{{ route('staff.index', ['role' => 'nutritionist']) }}" class="wg-subline" style="font-size:12px;color:#60a5fa" wire:navigate>إدارة الأطباء</a>
+                            <a href="{{ route('staff.index', ['new' => 1, 'role' => 'nutritionist']) }}" wire:navigate>＋ إضافة اختصاصي</a>
+                        </div>
                     @endif
                 </div>
                 <div class="wg-nut-team-list">
@@ -423,6 +431,9 @@
                             <i>{{ mb_substr($n->name ?: $n->username,0,1) }}</i>
                             <span>
                                 <strong>{{ $n->name ?: $n->username }}</strong>
+                                @if($n->specialization)
+                                    <span style="display:block;font-size:11.5px;color:#60a5fa;font-weight:700">{{ $n->specialization }}</span>
+                                @endif
                                 <small>
                                     @if($specialistSchedules->isNotEmpty())
                                         {{ $specialistSchedules->map(fn($s) => substr((string)$s->start_time,0,5).' - '.substr((string)$s->end_time,0,5))->join('، ') }}
@@ -581,9 +592,9 @@
                     <div class="fin-form-group">
                         <label class="fin-label">اختصاصي التغذية <span class="fin-required">*</span></label>
                         <select class="fin-select" wire:model.live="nutritionist_id" {{ auth()->user()->role === 'nutritionist' ? 'disabled' : '' }}>
-                            <option value="">اختر الأخصائي</option>
+                            <option value="">اختر الأخصائي / الطبيب</option>
                             @foreach($nutritionists as $n)
-                                <option value="{{ $n->id }}">{{ $n->name ?: $n->username }}</option>
+                                <option value="{{ $n->id }}">{{ $n->name ?: $n->username }} @if($n->specialization) — {{ $n->specialization }} @endif</option>
                             @endforeach
                         </select>
                     </div>
@@ -647,6 +658,9 @@
                                 <div>
                                     <span style="color:#7f93aa;display:block">الأخصائي المعالج:</span>
                                     <strong style="color:#fff">{{ $nutritionists->firstWhere('id', (int)$nutritionist_id)?->name ?? 'الأخصائي المحدد' }}</strong>
+                                    @if($docSpec = $nutritionists->firstWhere('id', (int)$nutritionist_id)?->specialization)
+                                        <span style="display:block;font-size:11.5px;color:#60a5fa;margin-top:2px">{{ $docSpec }}</span>
+                                    @endif
                                 </div>
                                 <div style="background:#09241b;padding:8px 12px;border-radius:8px;border:1px solid #16563c">
                                     <span style="color:#74c79f;display:block">السعر المحدد من الإدارة:</span>
@@ -733,7 +747,7 @@
             </div>
             @if($errors->any() && $showScheduleModal)<div class="fin-errors">{{ $errors->first() }}</div>@endif
             <div class="fin-form-grid">
-                <div class="fin-form-group full"><label class="fin-label">الأخصائي <span class="fin-required">*</span></label><select class="fin-select" wire:model="nutritionist_id" {{ auth()->user()->role === 'nutritionist' ? 'disabled' : '' }}><option value="">اختر الأخصائي</option>@foreach($nutritionists as $n)<option value="{{ $n->id }}">{{ $n->name ?: $n->username }}</option>@endforeach</select></div>
+                <div class="fin-form-group full"><label class="fin-label">الأخصائي <span class="fin-required">*</span></label><select class="fin-select" wire:model="nutritionist_id" {{ auth()->user()->role === 'nutritionist' ? 'disabled' : '' }}><option value="">اختر الأخصائي</option>@foreach($nutritionists as $n)<option value="{{ $n->id }}">{{ $n->name ?: $n->username }} @if($n->specialization) — {{ $n->specialization }} @endif</option>@endforeach</select></div>
                 <div class="fin-form-group full"><label class="fin-label">اليوم <span class="fin-required">*</span></label><select class="fin-select" wire:model="schedule_day"><option value="0">الأحد</option><option value="1">الاثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></div>
                 <div class="fin-form-group"><label class="fin-label">من <span class="fin-required">*</span></label><input class="fin-field" wire:model="schedule_start" type="time"></div>
                 <div class="fin-form-group"><label class="fin-label">إلى <span class="fin-required">*</span></label><input class="fin-field" wire:model="schedule_end" type="time"></div>

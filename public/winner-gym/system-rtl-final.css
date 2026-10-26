@@ -43,10 +43,10 @@ html[dir="rtl"],html[dir="rtl"] body{direction:rtl}
 }
 .wg-unified-page{grid-area:page!important;justify-self:start!important;direction:rtl!important;text-align:left!important;min-width:190px!important}
 .wg-unified-page h1{margin:0!important;color:#f8fafc!important;font-size:23px!important;line-height:1.1!important;font-weight:850!important;letter-spacing:0!important}
-.wg-unified-crumb{margin-top:7px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;color:#8495aa!important;font-size:11.5px!important;white-space:nowrap!important}
+.wg-unified-crumb{margin-top:7px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;color:#8495aa!important;font-size:13px!important;white-space:nowrap!important}
 .wg-unified-crumb i{font-style:normal!important;color:#1680ff!important}
 .wg-body .wg-unified-search{grid-area:search!important;justify-self:center!important;width:100%!important;max-width:420px!important;height:44px!important;margin:0!important;padding:0 14px!important;border:1px solid #1a2a40!important;border-radius:9px!important;background:#050d18!important;color:#718199!important;cursor:pointer!important;display:flex!important;align-items:center!important;gap:10px!important;direction:rtl!important}
-.wg-body .wg-unified-search span{flex:1!important;text-align:right!important;font-size:12px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.wg-body .wg-unified-search span{flex:1!important;text-align:right!important;font-size:13px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 .wg-body .wg-unified-search svg{flex:0 0 19px!important;color:#c9d3df!important}
 .wg-body .wg-unified-tools{grid-area:tools!important;justify-self:end!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;direction:ltr!important;min-width:max-content!important;height:100%!important}
 .wg-body .wg-unified-tools .wg-top-icon{position:relative!important;width:43px!important;height:43px!important;border-radius:9px!important;cursor:pointer!important;display:grid!important;place-items:center!important;color:#d2dbe6!important}
@@ -55,10 +55,10 @@ html[dir="rtl"],html[dir="rtl"] body{direction:rtl}
 .wg-body .wg-unified-tools .wg-user-menu{top:62px!important;right:0!important;left:auto!important;z-index:100!important}
 .wg-body .wg-unified-tools .wg-avatar{width:42px!important;height:42px!important;flex:0 0 42px!important}
 .wg-body .wg-unified-tools .wg-user-name{font-size:13.5px!important;color:#fff!important;font-weight:800!important}
-.wg-body .wg-unified-tools .wg-user-role{font-size:10.5px!important;color:#8292a7!important}
+.wg-body .wg-unified-tools .wg-user-role{font-size:12.5px!important;color:#8292a7!important}
 .wg-body .wg-top-separator{width:1px!important;height:27px!important;background:#17283d!important;display:block!important;margin:0 4px!important}
 .wg-body .wg-notification-icon{position:relative!important}
-.wg-body .wg-notification-count{position:absolute!important;top:2px!important;right:0!important;min-width:17px!important;height:17px!important;padding:0 4px!important;border-radius:999px!important;background:#0d72f3!important;color:#fff!important;font-size:9px!important;display:grid!important;place-items:center!important;border:2px solid #030914!important}
+.wg-body .wg-notification-count{position:absolute!important;top:2px!important;right:0!important;min-width:17px!important;height:17px!important;padding:0 4px!important;border-radius:999px!important;background:#0d72f3!important;color:#fff!important;font-size:12px!important;display:grid!important;place-items:center!important;border:2px solid #030914!important}
 
 /* Theme icon visibility cannot depend on stale Livewire head state. */
 html[data-wg-theme="dark"] .wg-theme-moon,html:not(.wg-light) .wg-theme-moon{display:none!important}
@@ -294,7 +294,7 @@ html body.wg-body .wg-main{
     width:100%!important;
     max-width:none!important;
     height:40px!important;
-    font-size:11.5px!important;
+    font-size:13px!important;
   }
 
   .wg-body .wg-sidebar-scrim{
@@ -313,7 +313,7 @@ html body.wg-body .wg-main{
     gap:6px!important;
   }
   html body.wg-body .wg-unified-page h1{font-size:16px!important}
-  html body.wg-body .wg-unified-search{height:34px!important;font-size:11px!important}
+  html body.wg-body .wg-unified-search{height:34px!important;font-size:13px!important}
   .wg-body .wg-sidebar-mobile-bar{padding:8px 12px!important}
   .fin-modal,.wg-nut-fin-modal,.wg-modal{
     max-height:88vh!important;

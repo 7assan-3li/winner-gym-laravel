@@ -45,6 +45,8 @@ class Index extends Component
 
     public string $role = 'reception';
 
+    public string $specialization = '';
+
     public string $work_period = 'both';
 
     public string $branch_id = '';
@@ -101,6 +103,7 @@ class Index extends Component
         $this->username = (string) $u->username;
         $this->email = (string) ($u->email ?? '');
         $this->role = $u->role === 'owner' ? 'manager' : $u->role;
+        $this->specialization = (string) ($u->specialization ?? '');
         $this->work_period = (string) ($u->work_period ?: 'both');
         $this->branch_id = (string) ($u->branch_id ?? '');
         $this->gym_period_id = (string) ($u->gym_period_id ?? '');
@@ -115,6 +118,7 @@ class Index extends Component
             'username' => ['required', 'string', 'min:3', 'max:60', 'regex:/^[A-Za-z0-9._-]+$/', Rule::unique('users', 'username')->ignore($this->editingId)],
             'email' => ['nullable', 'email', 'max:255'],
             'role' => ['required', Rule::in(['manager', 'reception', 'accountant', 'nutritionist'])],
+            'specialization' => ['nullable', 'string', 'max:120'],
             'work_period' => ['required', Rule::in(['men', 'women', 'both'])],
             'branch_id' => ['nullable', 'integer', 'exists:branches,id'],
             'gym_period_id' => ['nullable', 'integer', 'exists:gym_periods,id'],
@@ -183,6 +187,7 @@ class Index extends Component
         $this->email = '';
         $this->password = '';
         $this->role = 'reception';
+        $this->specialization = '';
         $this->work_period = 'both';
         $this->branch_id = '';
         $this->gym_period_id = '';

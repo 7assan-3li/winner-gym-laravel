@@ -28,12 +28,19 @@
                 <tbody>
                 @forelse($users as $u)
                     <tr>
-                        <td><div style="font-weight:800;color:#fff">{{ $u->name }}</div><div class="wg-muted" style="font-size:9px;margin-top:3px">{{ $u->email ?: 'بدون بريد' }}</div></td>
-                        <td dir="ltr">{{ $u->username }}</td>
-                        <td><span class="wg-badge {{ $u->role === 'owner' ? 'wg-badge-blue' : ($u->role === 'nutritionist' ? 'wg-badge-purple' : 'wg-badge-orange') }}">{{ match($u->role){'owner'=>'المالك','manager'=>'المدير','reception'=>'الاستقبال','accountant'=>'المحاسب','nutritionist'=>'اختصاصي التغذية',default=>$u->role} }}</span></td>
+                        <td><div style="font-weight:800;color:#fff;font-size:13.5px">{{ $u->name }}</div><div class="wg-muted" style="font-size:12px;margin-top:3px">{{ $u->email ?: 'بدون بريد' }}</div></td>
+                        <td dir="ltr" style="font-size:13px">{{ $u->username }}</td>
+                        <td>
+                            <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">
+                                <span class="wg-badge {{ $u->role === 'owner' ? 'wg-badge-blue' : ($u->role === 'nutritionist' ? 'wg-badge-purple' : 'wg-badge-orange') }}">{{ match($u->role){'owner'=>'المالك','manager'=>'المدير','reception'=>'الاستقبال','accountant'=>'المحاسب','nutritionist'=>'اختصاصي التغذية',default=>$u->role} }}</span>
+                                @if($u->specialization)
+                                    <span class="wg-badge wg-badge-blue" style="font-size:11.5px;background:rgba(22,127,255,0.14);color:#93c5fd;border:1px solid rgba(59,130,246,0.35);font-weight:600">{{ $u->specialization }}</span>
+                                @endif
+                            </div>
+                        </td>
                         <td>{{ $u->branch?->name ?: 'كل الفروع' }}</td>
                         <td>
-                            @if($u->gymPeriod)<div style="font-weight:700">{{ $u->gymPeriod->name }}</div><div class="wg-muted" style="font-size:9px;margin-top:2px" dir="ltr">{{ $u->gymPeriod->start_time ? substr((string)$u->gymPeriod->start_time,0,5).' - '.substr((string)$u->gymPeriod->end_time,0,5) : 'غير محدد' }}</div>
+                            @if($u->gymPeriod)<div style="font-weight:700">{{ $u->gymPeriod->name }}</div><div class="wg-muted" style="font-size:12px;margin-top:2px" dir="ltr">{{ $u->gymPeriod->start_time ? substr((string)$u->gymPeriod->start_time,0,5).' - '.substr((string)$u->gymPeriod->end_time,0,5) : 'غير محدد' }}</div>
                             @else{{ $u->work_period === 'both' ? 'مرن / الفترتان' : ($u->work_period === 'women' ? 'نساء' : 'رجال') }}@endif
                         </td>
                         <td>{{ $u->last_login_at ? $u->last_login_at->diffForHumans() : 'لم يسجل' }}</td>
@@ -65,7 +72,12 @@
                         <div><label class="wg-label">اسم المستخدم *</label><input wire:model="username" class="wg-field" dir="ltr"></div>
                         <div><label class="wg-label">البريد الإلكتروني</label><input wire:model="email" class="wg-field" dir="ltr"></div>
                         @if(!$editingId)<div><label class="wg-label">كلمة مرور مؤقتة *</label><input wire:model="password" type="password" class="wg-field" dir="ltr"></div>@endif
-                        <div><label class="wg-label">الدور *</label><select wire:model="role" class="wg-select"><option value="manager">مدير</option><option value="reception">استقبال</option><option value="accountant">محاسب</option><option value="nutritionist">اختصاصي تغذية</option></select></div>
+                        <div><label class="wg-label">الدور الوظيفي *</label><select wire:model.live="role" class="wg-select"><option value="manager">مدير</option><option value="reception">استقبال</option><option value="accountant">محاسب</option><option value="nutritionist">اختصاصي تغذية / طبيب</option></select></div>
+                        <div>
+                            <label class="wg-label">اختصاص الطبيب / التخصص المهني @if($role === 'nutritionist')<span style="color:#60a5fa;font-weight:700">(مهم لاختصاصي التغذية)</span>@endif</label>
+                            <input wire:model="specialization" class="wg-field" placeholder="مثال: استشاري تغذية علاجية، تغذية رياضية، سمنة ونحافة">
+                            <div class="wg-muted" style="font-size:11.5px;margin-top:3px">يحدد مجال وخبرة الطبيب ويظهر للزبائن وعند حجز المواعيد.</div>
+                        </div>
                         <div><label class="wg-label">الفرع</label><select wire:model.live="branch_id" class="wg-select"><option value="">كل الفروع / الإدارة العامة</option>@foreach($branches as $branch)<option value="{{ $branch->id }}">{{ $branch->name }}</option>@endforeach</select></div>
                         <div><label class="wg-label">الفترة المحددة</label><select wire:model="gym_period_id" class="wg-select"><option value="">بدون فترة محددة</option>@foreach($periods as $period)@if($branch_id === '' || (string)$period->branch_id === $branch_id)<option value="{{ $period->id }}">{{ $period->name }} — {{ $period->branch?->name }}</option>@endif @endforeach</select></div>
                         <div><label class="wg-label">نطاق العمل عند عدم تحديد فترة</label><select wire:model="work_period" class="wg-select"><option value="both">مرن / رجال ونساء</option><option value="men">فترات الرجال</option><option value="women">فترات النساء</option></select></div>
@@ -81,7 +93,7 @@
     <div class="wg-modal-backdrop">
         <div class="wg-modal" dir="rtl">
             <div class="wg-modal-head"><h2 class="wg-section-title">إعادة تعيين كلمة المرور</h2><button wire:click="$set('showPassword',false)" class="wg-modal-x">×</button></div>
-            <form wire:submit="resetPassword"><div class="wg-modal-body"><label class="wg-label">كلمة المرور المؤقتة الجديدة *</label><input wire:model="new_password" type="password" class="wg-field" dir="ltr"><div class="wg-muted" style="font-size:10px;margin-top:8px">سيطلب النظام من الموظف تغييرها بعد تسجيل الدخول.</div>@error('new_password')<div class="wg-red" style="font-size:10px;margin-top:6px">{{ $message }}</div>@enderror</div><div class="wg-modal-foot"><button class="wg-btn wg-btn-primary">حفظ كلمة المرور</button><button type="button" wire:click="$set('showPassword',false)" class="wg-btn">إلغاء</button></div></form>
+            <form wire:submit="resetPassword"><div class="wg-modal-body"><label class="wg-label">كلمة المرور المؤقتة الجديدة *</label><input wire:model="new_password" type="password" class="wg-field" dir="ltr"><div class="wg-muted" style="font-size:12px;margin-top:8px">سيطلب النظام من الموظف تغييرها بعد تسجيل الدخول.</div>@error('new_password')<div class="wg-red" style="font-size:12px;margin-top:6px">{{ $message }}</div>@enderror</div><div class="wg-modal-foot"><button class="wg-btn wg-btn-primary">حفظ كلمة المرور</button><button type="button" wire:click="$set('showPassword',false)" class="wg-btn">إلغاء</button></div></form>
         </div>
     </div>
     @endif

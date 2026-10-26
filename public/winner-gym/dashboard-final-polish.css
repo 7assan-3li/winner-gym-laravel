@@ -67,7 +67,7 @@
 .wg-body-dashboard .wg-topbar-dashboard .wg-search{height:44px!important;font-size:12.5px!important}
 .wg-body-dashboard .wg-topbar-tools .wg-top-icon{width:44px!important;height:44px!important;border-radius:9px!important;cursor:pointer}
 .wg-body-dashboard .wg-user-name{font-size:13.5px!important}
-.wg-body-dashboard .wg-user-role{font-size:10.5px!important}
+.wg-body-dashboard .wg-user-role{font-size:12.5px!important}
 .wg-body-dashboard .wg-avatar{width:42px!important;height:42px!important}
 
 /* Dashboard spacing */
@@ -78,30 +78,30 @@
 .wg-body-dashboard .wg-dash-stat__copy{left:17px!important;top:24px!important;right:80px!important}
 .wg-body-dashboard .wg-dash-stat__label{font-size:12.5px!important}
 .wg-body-dashboard .wg-dash-stat__copy strong{font-size:27px!important;margin-top:8px!important}
-.wg-body-dashboard .wg-dash-stat__copy small{font-size:10.5px!important;margin-top:10px!important}
+.wg-body-dashboard .wg-dash-stat__copy small{font-size:12.5px!important;margin-top:10px!important}
 .wg-body-dashboard .wg-dash-stat__icon{width:56px!important;height:56px!important;right:17px!important;top:28px!important}
 .wg-body-dashboard .wg-dash-stat__icon svg{width:33px!important;height:33px!important;stroke-width:1.8!important}
 
 .wg-body-dashboard .wg-dash-panel{border-radius:12px!important}
 .wg-body-dashboard .wg-dash-panel__head{height:52px!important;padding-inline:17px!important}
 .wg-body-dashboard .wg-dash-panel__head h2{font-size:14.5px!important}
-.wg-body-dashboard .wg-dash-panel__head a{font-size:11px!important}
-.wg-body-dashboard .wg-dash-select{height:31px!important;font-size:10.5px!important}
+.wg-body-dashboard .wg-dash-panel__head a{font-size:13px!important}
+.wg-body-dashboard .wg-dash-select{height:31px!important;font-size:12.5px!important}
 .wg-body-dashboard .wg-dash-money-title strong{font-size:12px!important}
 .wg-body-dashboard .wg-dash-money-cols span,
-.wg-body-dashboard .wg-dash-money-net span{font-size:10px!important}
+.wg-body-dashboard .wg-dash-money-net span{font-size:12.5px!important}
 .wg-body-dashboard .wg-dash-money-cols strong{font-size:16px!important}
 .wg-body-dashboard .wg-dash-money-net strong{font-size:18px!important}
-.wg-body-dashboard .wg-dash-quick-list a{min-height:39px!important;font-size:11.5px!important;padding-inline:11px!important}
+.wg-body-dashboard .wg-dash-quick-list a{min-height:39px!important;font-size:13px!important;padding-inline:11px!important}
 .wg-body-dashboard .wg-dash-quick-list svg{width:19px!important;height:19px!important}
-.wg-body-dashboard .wg-dash-list-row{min-height:47px!important;font-size:11px!important}
-.wg-body-dashboard .wg-list-main strong{font-size:11px!important}
-.wg-body-dashboard .wg-list-main span{font-size:9.8px!important}
+.wg-body-dashboard .wg-dash-list-row{min-height:47px!important;font-size:13px!important}
+.wg-body-dashboard .wg-list-main strong{font-size:13px!important}
+.wg-body-dashboard .wg-list-main span{font-size:12px!important}
 .wg-body-dashboard .wg-list-avatar{width:30px!important;height:30px!important}
-.wg-body-dashboard .wg-list-status{font-size:9px!important}
+.wg-body-dashboard .wg-list-status{font-size:12px!important}
 .wg-body-dashboard .wg-dash-alert-list a{min-height:52px!important}
-.wg-body-dashboard .wg-dash-alert-list p{font-size:10.5px!important}
-.wg-body-dashboard .wg-dash-alert-list strong{font-size:9.5px!important}
+.wg-body-dashboard .wg-dash-alert-list p{font-size:12.5px!important}
+.wg-body-dashboard .wg-dash-alert-list strong{font-size:12px!important}
 .wg-body-dashboard .wg-alert-icon svg{width:19px!important;height:19px!important}
 
 /* Theme switch visual state */

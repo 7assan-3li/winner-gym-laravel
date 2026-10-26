@@ -30,6 +30,7 @@ class StaffService
             'email' => $data['email'] ?: null,
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
+            'specialization' => ! empty($data['specialization']) ? trim((string) $data['specialization']) : null,
             'work_period' => $workPeriod,
             'branch_id' => $data['branch_id'] ?: null,
             'gym_period_id' => $data['gym_period_id'] ?: null,
@@ -54,12 +55,13 @@ class StaffService
             throw ValidationException::withMessages(['username' => 'اسم المستخدم مستخدم مسبقًا.']);
         }
 
-        $old = $staff->only(['name', 'username', 'email', 'role', 'work_period', 'branch_id', 'gym_period_id', 'is_active']);
+        $old = $staff->only(['name', 'username', 'email', 'role', 'specialization', 'work_period', 'branch_id', 'gym_period_id', 'is_active']);
         $staff->update([
             'name' => $data['name'],
             'username' => $username,
             'email' => $data['email'] ?: null,
             'role' => $staff->role === 'owner' ? 'owner' : $data['role'],
+            'specialization' => ! empty($data['specialization']) ? trim((string) $data['specialization']) : null,
             'work_period' => $staff->role === 'owner' ? 'both' : $this->resolveWorkPeriod($data),
             'branch_id' => $data['branch_id'] ?: null,
             'gym_period_id' => $data['gym_period_id'] ?: null,

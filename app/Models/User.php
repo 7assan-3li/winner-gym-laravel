@@ -22,6 +22,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $email
  * @property string $username
  * @property string $role
+ * @property string|null $specialization
  * @property string $work_period
  * @property bool $is_active
  * @property int|null $created_by
@@ -42,6 +43,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
     'password',
     'username',
     'role',
+    'specialization',
     'work_period',
     'branch_id',
     'gym_period_id',

@@ -23,7 +23,7 @@ body.wg-body-members .wg-main{margin-right:196px!important;margin-left:0!importa
 }
 .wg-members-final-page{direction:rtl!important;text-align:left!important}
 .wg-members-final-page h1{margin:0!important;color:#f8fafc!important;font-size:23px!important;line-height:1.1!important;font-weight:850!important}
-.wg-members-final-page>div{margin-top:8px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#8797ac!important;font-size:11.5px!important}
+.wg-members-final-page>div{margin-top:8px!important;display:flex!important;align-items:center!important;gap:9px!important;color:#8797ac!important;font-size:13px!important}
 .wg-members-final-page i{font-style:normal!important;color:#4e5d72!important}
 .wg-topbar-members-final .wg-members-final-search{width:100%!important;height:45px!important;margin:0!important;border-radius:9px!important;border-color:#1a2a40!important;background:#050d18!important;padding:0 14px!important;direction:rtl!important;cursor:pointer!important;color:#718199!important;font-size:12px!important;justify-content:space-between!important}
 .wg-topbar-members-final .wg-members-final-search span{flex:1!important;text-align:right!important}
@@ -33,7 +33,7 @@ body.wg-body-members .wg-main{margin-right:196px!important;margin-left:0!importa
 .wg-members-final-tools .wg-user summary{gap:10px!important;min-width:185px!important}
 .wg-members-final-tools .wg-avatar{width:42px!important;height:42px!important;font-size:12px!important}
 .wg-members-final-tools .wg-user-name{font-size:13.5px!important}
-.wg-members-final-tools .wg-user-role{font-size:10.5px!important}
+.wg-members-final-tools .wg-user-role{font-size:12.5px!important}
 .wg-members-final-tools .wg-user-menu{top:62px!important;right:0!important;left:auto!important}
 
 .wg-members-content{padding:20px 24px 34px!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
@@ -42,7 +42,7 @@ body.wg-body-members .wg-main{margin-right:196px!important;margin-left:0!importa
 .wg-members-stat{min-height:130px!important;padding:16px!important;border-radius:12px!important;box-sizing:border-box!important}
 .wg-members-stat-label{font-size:13px!important}
 .wg-members-stat strong{font-size:26px!important}
-.wg-members-stat small{font-size:10.5px!important}
+.wg-members-stat small{font-size:12.5px!important}
 .wg-members-stat-icon{width:54px!important;height:54px!important}
 .wg-members-stat-icon svg{width:28px!important;height:28px!important}
 .wg-members-summary-actions{display:grid!important;gap:10px!important}
@@ -53,17 +53,17 @@ body.wg-body-members .wg-main{margin-right:196px!important;margin-left:0!importa
 body.wg-body-members .wg-members-filter-panel .wg-members-select-control select{height:31px!important;min-height:31px!important;max-height:31px!important;padding:0!important;line-height:31px!important;border-radius:0!important;box-sizing:border-box!important;position:relative!important;top:-3px!important}
 .wg-members-select-control>span{line-height:13px!important;position:relative!important;z-index:1!important}
 .wg-members-select-control select{height:31px!important;min-height:31px!important;padding:0 0 1px!important;line-height:31px!important;border-radius:0!important;box-sizing:border-box!important}
-.wg-members-table th{font-size:11.5px!important;padding:14px 13px!important}
+.wg-members-table th{font-size:13px!important;padding:14px 13px!important}
 .wg-members-table td{font-size:12px!important;padding:13px!important}
 .wg-members-person strong{font-size:12.5px!important}
-.wg-members-person span{font-size:10px!important}
+.wg-members-person span{font-size:12.5px!important}
 
 /* Primary row actions */
 .wg-members-actions-cell{position:relative!important;overflow:visible!important}
 .wg-members-actions{display:flex!important;gap:7px!important;align-items:center!important;position:relative!important;overflow:visible!important}
 .wg-members-actions>button,.wg-members-actions>.wg-members-quick-subscribe:not(.has-label),.wg-members-more-wrap>button{width:36px!important;height:36px!important;min-height:36px!important;border-radius:7px!important}
 .wg-members-quick-subscribe{display:grid!important;place-items:center!important;background:#07131f!important;border:1px solid #165d42!important;color:#24df85!important;text-decoration:none!important;flex:0 0 auto!important}
-.wg-members-quick-subscribe.has-label{min-height:36px!important;padding:0 12px!important;display:flex!important;align-items:center!important;gap:7px!important;border-radius:7px!important;direction:rtl!important;white-space:nowrap!important;font-size:11.5px!important;font-weight:750!important}
+.wg-members-quick-subscribe.has-label{min-height:36px!important;padding:0 12px!important;display:flex!important;align-items:center!important;gap:7px!important;border-radius:7px!important;direction:rtl!important;white-space:nowrap!important;font-size:13px!important;font-weight:750!important}
 .wg-members-quick-subscribe:hover{background:#09271b!important;border-color:#24a76c!important;color:#38ee98!important}
 .wg-members-actions svg{width:19px!important;height:19px!important}
 .wg-members-more-wrap{position:relative!important;display:block!important}
@@ -75,7 +75,7 @@ body.wg-body-members .wg-members-filter-panel .wg-members-select-control select{
 .wg-members-more-menu button,.wg-members-more-menu a{
     width:100%!important;min-height:39px!important;padding:0 10px!important;border:0!important;border-radius:7px!important;
     display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;
-    background:transparent!important;color:#d9e3f0!important;text-decoration:none!important;font-size:11.5px!important;font-weight:650!important;cursor:pointer!important;
+    background:transparent!important;color:#d9e3f0!important;text-decoration:none!important;font-size:13px!important;font-weight:650!important;cursor:pointer!important;
 }
 .wg-members-more-menu button:hover,.wg-members-more-menu a:hover{background:#0c2035!important;color:#fff!important}
 .wg-members-more-menu svg{width:17px!important;height:17px!important;fill:none!important;stroke:#2388ff!important;stroke-width:1.8!important;flex:0 0 auto!important}
@@ -89,22 +89,22 @@ body.wg-body-members .wg-members-filter-panel .wg-members-select-control select{
 
 /* Active subscription with its nearest scheduled renewal in one member row */
 .wg-members-next-sub{margin-top:8px!important;padding-top:7px!important;border-top:1px dashed #24405f!important;display:grid!important;gap:2px!important}
-.wg-members-next-sub .wg-members-next-label{color:#a883ff!important;font-size:8.5px!important;font-weight:850!important}
-.wg-members-next-sub strong{color:#e5dcff!important;font-size:10.5px!important}
-.wg-members-next-sub>span:last-child,.wg-members-next-date{display:block!important;color:#9d8bc5!important;font-size:8.8px!important;margin-top:3px!important}
+.wg-members-next-sub .wg-members-next-label{color:#a883ff!important;font-size:11.5px!important;font-weight:850!important}
+.wg-members-next-sub strong{color:#e5dcff!important;font-size:12.5px!important}
+.wg-members-next-sub>span:last-child,.wg-members-next-date{display:block!important;color:#9d8bc5!important;font-size:11.5px!important;margin-top:3px!important}
 .wg-members-next-date b{color:#b398ef!important;font-weight:800!important}
 .wg-members-status-stack{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important}
-.wg-members-renewed-badge{display:inline-flex!important;align-items:center!important;min-height:22px!important;padding:0 8px!important;border-radius:999px!important;background:#1c1538!important;color:#b798ff!important;font-size:8.5px!important;font-weight:850!important}
+.wg-members-renewed-badge{display:inline-flex!important;align-items:center!important;min-height:22px!important;padding:0 8px!important;border-radius:999px!important;background:#1c1538!important;color:#b798ff!important;font-size:11.5px!important;font-weight:850!important}
 .wg-members-upcoming-card{border-top:2px solid #7555cb!important}
 /* Detail modal: stronger hierarchy and action footer */
 .wg-members-modal-form{width:min(860px,calc(100vw - 32px))!important}
 .wg-members-modal-head h3{font-size:23px!important}
-.wg-members-modal-head p{font-size:11.5px!important}
+.wg-members-modal-head p{font-size:13px!important}
 .wg-members-profile-summary{padding:15px!important}
 .wg-members-profile-avatar{width:52px!important;height:52px!important;font-size:18px!important}
 .wg-members-profile-summary strong{font-size:16px!important}
 .wg-members-detail-grid>div,.wg-members-subscription-card>div{padding:13px 14px!important}
-.wg-members-detail-grid span,.wg-members-subscription-card span,.wg-members-notes-box span{font-size:10px!important}
+.wg-members-detail-grid span,.wg-members-subscription-card span,.wg-members-notes-box span{font-size:12.5px!important}
 .wg-members-detail-grid strong,.wg-members-subscription-card strong{font-size:12.5px!important}
 .wg-members-detail-actions{justify-content:flex-start!important;flex-wrap:wrap!important}
 .wg-members-detail-actions .wg-members-primary,.wg-members-detail-actions .wg-members-secondary{min-width:150px!important;min-height:45px!important}

@@ -13,21 +13,24 @@
         })();
     </script>
     @include('partials.head')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     {{-- Load the accepted module styles on EVERY authenticated request.
          This prevents Livewire/browser-cache differences between owner and newly-created staff accounts. --}}
-    <link rel="stylesheet" href="{{ asset('winner-gym/dashboard-final-polish.css') }}">
-    <link rel="stylesheet" href="{{ asset('winner-gym/members-final.css') }}?v=20260827-1">
-    <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20260813-2">
-    <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}">
-    <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}?v=20260823-1">
-    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20260823-2">
-    <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}?v=20261026-1">
-    <link rel="stylesheet" href="{{ asset('winner-gym/role-consistency-hotfix.css') }}?v=20261026-1">
-    <link rel="stylesheet" href="{{ asset('winner-gym/system-rtl-final.css') }}?v=20261026-1">
-    <link rel="stylesheet" href="{{ asset('winner-gym/theme-system-final.css') }}?v=20260811-3">
-    <link rel="stylesheet" href="{{ asset('winner-gym/light-theme-hardening-v3.css') }}?v=20260811-1">
-    <link rel="stylesheet" href="{{ asset('winner-gym/unified-design-v1.css') }}?v=20260812-5">
-    <link rel="stylesheet" href="{{ asset('winner-gym/quick-actions-final.css') }}?v=20260813-1">
+    <link rel="stylesheet" href="{{ asset('winner-gym/dashboard-final-polish.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/members-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/role-consistency-hotfix.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/system-rtl-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/theme-system-final.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/light-theme-hardening-v3.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/unified-design-v1.css') }}?v=20261026-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/quick-actions-final.css') }}?v=20261026-3">
 </head>
 @php
     $wgBodyClass = match (true) {

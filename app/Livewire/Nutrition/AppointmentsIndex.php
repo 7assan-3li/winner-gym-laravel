@@ -887,7 +887,7 @@ class AppointmentsIndex extends Component
             ->where('role', 'nutritionist')
             ->where('is_active', true)
             ->orderByRaw('COALESCE(name, username)')
-            ->get(['id', 'name', 'username']);
+            ->get(['id', 'name', 'username', 'specialization']);
 
         $latestMeasurement = $this->latestMeasurementData();
 
