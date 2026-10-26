@@ -15,6 +15,20 @@
         <div style="display:grid;gap:12px">
             <div class="wg-card wg-card-pad"><h2 class="wg-section-title">سياسة الدفع</h2><div style="display:grid;gap:12px;margin-top:13px"><label class="wg-finance-box" style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:11px">مرجع التحويل</strong><div class="wg-muted" style="font-size:9px;margin-top:4px">إلزام رقم مرجع عند الدفع بتحويل</div></div><input wire:model="require_transfer_reference" type="checkbox"></label><label class="wg-finance-box" style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:11px">إثبات الدفع</strong><div class="wg-muted" style="font-size:9px;margin-top:4px">إلزام رفع صورة الإيصال</div></div><input wire:model="require_payment_proof" type="checkbox"></label></div></div>
             <div class="wg-card wg-card-pad"><h2 class="wg-section-title">التكاملات والخدمات</h2><div style="display:grid;gap:12px;margin-top:13px"><label class="wg-finance-box" style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:11px">واتساب</strong><div class="wg-muted" style="font-size:9px;margin-top:4px">تفعيل قواعد ورسائل واتساب</div></div><input wire:model="whatsapp_enabled" type="checkbox"></label><label class="wg-finance-box" style="display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:11px">استعلام العضو</strong><div class="wg-muted" style="font-size:9px;margin-top:4px">السماح بصفحة الاستعلام العامة</div></div><input wire:model="member_inquiry_enabled" type="checkbox"></label></div></div>
+            <div class="wg-card wg-card-pad">
+                <h2 class="wg-section-title">تسعيرة خدمات التغذية المعتمدة (من قبل الإدارة)</h2>
+                <div class="wg-muted" style="font-size:10px;margin-top:3px">تحدد الإدارة هنا الأسعار الرسمية لمواعيد التغذية ليتم تطبيقها تلقائياً عند الحجز بدون إدخال يدوي.</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+                    <div><label class="wg-label">استشارة أولية (YER)</label><input wire:model="nutrition_consultation_yer" type="number" class="wg-field"></div>
+                    <div><label class="wg-label">استشارة أولية (SAR)</label><input wire:model="nutrition_consultation_sar" type="number" class="wg-field"></div>
+                    <div><label class="wg-label">جلسة متابعة (YER)</label><input wire:model="nutrition_follow_up_yer" type="number" class="wg-field"></div>
+                    <div><label class="wg-label">جلسة متابعة (SAR)</label><input wire:model="nutrition_follow_up_sar" type="number" class="wg-field"></div>
+                    <div><label class="wg-label">خطة غذائية (YER)</label><input wire:model="nutrition_meal_plan_yer" type="number" class="wg-field"></div>
+                    <div><label class="wg-label">خطة غذائية (SAR)</label><input wire:model="nutrition_meal_plan_sar" type="number" class="wg-field"></div>
+                    <div><label class="wg-label">تحليل الجسم (YER)</label><input wire:model="nutrition_body_analysis_yer" type="number" class="wg-field"></div>
+                    <div><label class="wg-label">تحليل الجسم (SAR)</label><input wire:model="nutrition_body_analysis_sar" type="number" class="wg-field"></div>
+                </div>
+            </div>
         </div>
     </form>
     <div class="wg-card wg-card-pad"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><h2 class="wg-section-title">فترات الرجال والنساء</h2><div class="wg-muted" style="font-size:10px;margin-top:4px">تم فصل الفترات عن الإعدادات العامة حتى تدير فترتين للرجال وفترتين للنساء لكل فرع.</div></div><a href="{{ route('admin.periods') }}" wire:navigate class="wg-btn">فتح إدارة الفترات</a></div></div>

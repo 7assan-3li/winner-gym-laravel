@@ -12,6 +12,7 @@ use App\Services\AppointmentService;
 use App\Services\AuditService;
 use App\Services\PaymentPolicy;
 use App\Services\PermissionService;
+use App\Services\SettingsService;
 use App\Support\NumberFormatter;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Storage;
@@ -55,6 +56,8 @@ class AppointmentsIndex extends Component
     public bool $showReverseModal = false;
 
     public bool $showEditModal = false;
+
+    public int $bookingStep = 1;
 
     public string $client_type = 'member';
 
@@ -175,6 +178,40 @@ class AppointmentsIndex extends Component
         if (request()->boolean('new') && $this->canCreateAppointments) {
             $this->showBookingModal = true;
         }
+
+        $this->updatePriceFromManagement();
+    }
+
+    public function updatePriceFromManagement(): void
+    {
+        $settings = app(SettingsService::class);
+        $curr = strtolower($this->currency) === 'sar' ? 'sar' : 'yer';
+        $service = match ($this->service_type) {
+            'follow_up' => 'follow_up',
+            'body_analysis' => 'body_analysis',
+            'meal_plan' => 'meal_plan',
+            default => 'consultation',
+        };
+
+        $defaultPrice = match ($service) {
+            'follow_up' => ($curr === 'sar' ? 30 : 3000),
+            'body_analysis' => ($curr === 'sar' ? 25 : 2500),
+            'meal_plan' => ($curr === 'sar' ? 40 : 4000),
+            default => ($curr === 'sar' ? 50 : 5000),
+        };
+
+        $key = "nutrition.pricing.{$service}_{$curr}";
+        $this->price = (string) $settings->get($key, $defaultPrice);
+    }
+
+    public function updatedServiceType(): void
+    {
+        $this->updatePriceFromManagement();
+    }
+
+    public function updatedCurrency(): void
+    {
+        $this->updatePriceFromManagement();
     }
 
     public function updatedSearch(): void
@@ -230,7 +267,9 @@ class AppointmentsIndex extends Component
     {
         abort_unless($this->canCreateAppointments, 403);
         $this->resetBookingForm();
+        $this->bookingStep = 1;
         $this->appointment_date = $this->selectedDate ?: now('Asia/Aden')->toDateString();
+        $this->updatePriceFromManagement();
         $this->showBookingModal = true;
     }
 
@@ -238,8 +277,46 @@ class AppointmentsIndex extends Component
     {
         $this->showBookingModal = false;
         $this->showEditModal = false;
+        $this->bookingStep = 1;
         $this->resetValidation();
         $this->resetBookingForm();
+    }
+
+    public function nextBookingStep(): void
+    {
+        if ($this->bookingStep === 1) {
+            $this->validate([
+                'client_type' => ['required', Rule::in(['member', 'external'])],
+                'member_id' => [Rule::requiredIf($this->client_type === 'member'), 'nullable', 'integer', 'exists:members,id'],
+                'nutrition_client_id' => [Rule::requiredIf($this->client_type === 'external'), 'nullable', 'integer', 'exists:nutrition_clients,id'],
+                'service_type' => ['required', Rule::in(['consultation', 'follow_up', 'body_analysis', 'meal_plan', 'measurement'])],
+                'visit_type' => ['required', Rule::in(['in_person', 'remote'])],
+                'currency' => ['required', Rule::in(['YER', 'SAR'])],
+            ], [
+                'member_id.required' => 'يرجى اختيار العضو من القائمة.',
+                'nutrition_client_id.required' => 'يرجى اختيار عميل التغذية أو إضافة عميل خاص جديد.',
+            ]);
+            $this->updatePriceFromManagement();
+            $this->bookingStep = 2;
+        } elseif ($this->bookingStep === 2) {
+            $this->validate([
+                'nutritionist_id' => ['required', 'integer', 'exists:users,id'],
+                'appointment_date' => ['required', 'date', 'after_or_equal:'.now('Asia/Aden')->toDateString()],
+                'start_time' => ['required', 'date_format:H:i'],
+                'duration_minutes' => ['required', 'integer', 'min:10', 'max:240'],
+            ], [
+                'nutritionist_id.required' => 'يرجى اختيار اختصاصي التغذية.',
+                'appointment_date.required' => 'يرجى تحديد تاريخ الموعد.',
+                'start_time.required' => 'يرجى اختيار وقت بدء الموعد من الأوقات المتاحة.',
+            ]);
+            $this->updatePriceFromManagement();
+            $this->bookingStep = 3;
+        }
+    }
+
+    public function prevBookingStep(): void
+    {
+        $this->bookingStep = max(1, $this->bookingStep - 1);
     }
 
     public function openClient(): void
@@ -350,6 +427,7 @@ class AppointmentsIndex extends Component
         abort_unless($this->canCreateAppointments, 403);
         $user = auth()->user();
 
+        $this->updatePriceFromManagement();
         $this->price = NumberFormatter::clean($this->price);
 
         $validated = $this->validate($this->bookingRules());
@@ -360,15 +438,40 @@ class AppointmentsIndex extends Component
         }
 
         $appointment = $service->book($validated, $user);
+
+        try {
+            $service->confirm($appointment, $user);
+        } catch (\Throwable) {
+            // Keep default booked status if confirmation cannot be completed immediately
+        }
+
         $this->selectedDate = $appointment->appointment_date->toDateString();
         $this->selectedAppointmentId = $appointment->id;
         $this->statusFilter = '';
         $this->nutritionistFilter = '';
         $this->search = '';
         $this->showBookingModal = false;
+        $this->bookingStep = 1;
         $this->resetBookingForm();
         $this->dispatch('nutrition-appointment-saved');
         session()->flash('success', 'تم حفظ وتأكيد حجز موعد التغذية بنجاح! رقم الموعد: #'.$appointment->id.' - يظهر الآن في الجدول أدناه.');
+    }
+
+    public function deleteAppointment(int $appointmentId, AppointmentService $service): void
+    {
+        abort_unless($this->canManageAppointments, 403);
+        $appointment = $this->appointmentForActor($appointmentId);
+        if ($appointment->payment_status === 'paid') {
+            $this->addError('appointmentAction', 'الموعد مدفوع؛ يرجى عكس الدفعة أولاً قبل إلغاء الحجز.');
+
+            return;
+        }
+
+        $service->cancelUnpaid($appointment, 'تم إلغاء وحذف الحجز بناء على طلب المستخدم', auth()->user());
+        if ($this->selectedAppointmentId === $appointmentId) {
+            $this->selectedAppointmentId = null;
+        }
+        session()->flash('success', 'تم إلغاء وحذف الموعد #'.$appointmentId.' من قائمة الحجوزات بنجاح.');
     }
 
     public function openEdit(int $appointmentId): void

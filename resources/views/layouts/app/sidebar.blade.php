@@ -21,9 +21,9 @@
     <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}">
     <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}?v=20260823-1">
     <link rel="stylesheet" href="{{ asset('winner-gym/inventory-final.css') }}?v=20260823-2">
-    <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}?v=20260823-2">
-    <link rel="stylesheet" href="{{ asset('winner-gym/role-consistency-hotfix.css') }}">
-    <link rel="stylesheet" href="{{ asset('winner-gym/system-rtl-final.css') }}?v=20260811-3">
+    <link rel="stylesheet" href="{{ asset('winner-gym/nutrition-final.css') }}?v=20261026-1">
+    <link rel="stylesheet" href="{{ asset('winner-gym/role-consistency-hotfix.css') }}?v=20261026-1">
+    <link rel="stylesheet" href="{{ asset('winner-gym/system-rtl-final.css') }}?v=20261026-1">
     <link rel="stylesheet" href="{{ asset('winner-gym/theme-system-final.css') }}?v=20260811-3">
     <link rel="stylesheet" href="{{ asset('winner-gym/light-theme-hardening-v3.css') }}?v=20260811-1">
     <link rel="stylesheet" href="{{ asset('winner-gym/unified-design-v1.css') }}?v=20260812-5">
@@ -44,6 +44,10 @@
 <body class="wg-body {{ $wgBodyClass }}">
 <div class="wg-app">
     <aside class="wg-sidebar" dir="rtl">
+        <div class="wg-sidebar-mobile-bar">
+            <span>القائمة الرئيسية</span>
+            <button type="button" class="wg-sidebar-close" onclick="window.wgToggleNavigation && window.wgToggleNavigation(false)" aria-label="إغلاق">✕</button>
+        </div>
         <a class="wg-brand" href="{{ route('gym.dashboard') }}" wire:navigate aria-label="WINNER GYM">
             <img class="wg-logo-dark" src="{{ asset('winner-gym/logo.png') }}" alt="WINNER GYM" style="width:112px;height:auto;display:block;margin:0 auto">
             <img class="wg-logo-light" src="{{ asset('winner-gym/logo-light.png') }}" alt="WINNER GYM" style="width:112px;height:auto;display:none;margin:0 auto">
@@ -130,7 +134,7 @@
                 request()->routeIs('attendance.*') => ['الحضور', 'الحضور', 'ابحث عن عضو، كود عضوية أو رقم الهاتف...'],
                 request()->routeIs('payments.*','expenses.*') => ['المالية', request()->routeIs('expenses.*') ? 'المصروفات' : 'المدفوعات', 'ابحث عن عضو، إيصال، مصروف أو دفعة...'],
                 request()->routeIs('inventory.*') => ['المخزون', 'المخزون', 'ابحث عن منتج، باركود أو عملية مخزون...'],
-                request()->routeIs('nutrition.*') => ['التغذية', request()->routeIs('nutrition.measurements') ? 'القياسات' : 'المواعيد', 'ابحث عن عضو، عميل، موعد أو قياس...'],
+                request()->routeIs('nutrition.*') => ['التغذية', 'المواعيد', 'ابحث عن موعد أو عميل...'],
                 request()->routeIs('reports.*') => ['التقارير', 'التقارير', 'ابحث داخل التقارير...'],
                 request()->routeIs('admin.*','staff.*','audit.*','whatsapp.*','backups.*') => ['الإدارة', 'الإدارة', 'ابحث عن موظف أو إجراء إداري...'],
                 request()->routeIs('gym.settings','settings.*','profile.*','appearance.*','security.*') => ['الإعدادات', 'الإعدادات', 'ابحث في الإعدادات...'],

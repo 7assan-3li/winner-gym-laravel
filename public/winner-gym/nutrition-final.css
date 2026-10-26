@@ -2,8 +2,8 @@
    Professional appointment + payment + measurement workspace. No Vite build required. */
 
 .wg-body-nutrition{overflow-x:hidden;background:#030b15;color:#eef4fc}
-.wg-body-nutrition .wg-sidebar{width:190px}
-.wg-body-nutrition .wg-main{margin-left:190px;width:calc(100% - 190px);max-width:calc(100vw - 190px);overflow-x:hidden}
+.wg-body-nutrition .wg-sidebar{width:184px}
+.wg-body-nutrition .wg-main{margin-right:var(--wg-shell-sidebar,184px);margin-left:0;width:calc(100vw - var(--wg-shell-sidebar,184px));max-width:calc(100vw - var(--wg-shell-sidebar,184px));overflow-x:hidden}
 .wg-body-nutrition .wg-sidebar-art::before{background-size:178px auto}
 
 /* Top bar */
@@ -97,8 +97,8 @@ html.wg-light .wg-body-nutrition{background:#f2f6fb;color:#132238}.wg-light .wg-
   --fin-orange:#ff9f0a;--fin-purple:#855cff;background:var(--fin-bg)!important;color:var(--fin-text)!important
 }
 .wg-body-nutrition .wg-app{width:100%!important;max-width:100vw!important;overflow-x:hidden!important}
-.wg-body-nutrition .wg-sidebar{width:184px!important}
-.wg-body-nutrition .wg-main{margin-left:184px!important;margin-right:0!important;width:calc(100vw - 184px)!important;max-width:calc(100vw - 184px)!important;min-width:0!important}
+.wg-body-nutrition .wg-sidebar{width:184px!important;right:0!important;left:auto!important}
+.wg-body-nutrition .wg-main{margin-right:var(--wg-shell-sidebar,184px)!important;margin-left:0!important;width:calc(100vw - var(--wg-shell-sidebar,184px))!important;max-width:calc(100vw - var(--wg-shell-sidebar,184px))!important;min-width:0!important}
 .wg-body-nutrition .wg-brand{padding:15px 12px 11px!important}.wg-body-nutrition .wg-brand img{width:105px!important;height:auto!important}
 .wg-body-nutrition .wg-nav{padding:0 10px!important;gap:3px!important}.wg-body-nutrition .wg-nav a{min-height:41px!important;padding:0 12px!important;gap:10px!important;border-radius:7px!important;font-size:12.5px!important;font-weight:650!important}
 .wg-body-nutrition .wg-nav-icon{width:18.5px!important;height:18.5px!important;flex:0 0 18.5px!important;stroke-width:1.75!important}
@@ -126,6 +126,29 @@ html.wg-light .wg-body-nutrition{background:#f2f6fb;color:#132238}.wg-light .wg-
 
 :is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-finance-style .wg-nut-card,:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-finance-style .wg-nut-kpi{background:#fff!important;border-color:#d6e2ef!important}:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-option-builder{background:#f7faff;border-color:#d4e0ec}:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-choice-grid button,:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-service-options button,:is(html.wg-light,html[data-wg-theme="light"]) .wg-body-nutrition .wg-nut-duration-options button{background:#fff;border-color:#d4e0ec;color:#536980}
 
-@media(max-width:1320px){.wg-nut-finance-style .wg-nut-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}.wg-nut-service-options{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1180px){.wg-body-nutrition .wg-sidebar{width:78px!important}.wg-body-nutrition .wg-main{margin-left:78px!important;width:calc(100vw - 78px)!important;max-width:calc(100vw - 78px)!important}.wg-topbar-nutrition-final{grid-template-columns:minmax(165px,1fr) minmax(250px,340px) auto!important;padding-inline:15px!important;gap:12px!important}.wg-nut-finance-style .wg-nut-main-grid,.wg-nut-clinic-directory{grid-template-columns:1fr!important}.wg-nut-finance-style .wg-nut-side{grid-template-columns:1fr 1fr}}
-@media(max-width:760px){.wg-body-nutrition .wg-sidebar{display:none!important}.wg-body-nutrition .wg-main{margin-left:0!important;margin-right:0!important;width:100vw!important;max-width:100vw!important}.wg-topbar-nutrition-final{position:relative!important;height:auto!important;min-height:0!important;grid-template-columns:1fr!important;grid-template-areas:"page" "search"!important;padding:14px 12px!important;gap:12px!important}.wg-nutrition-final-page-head{justify-self:stretch!important;min-width:0!important}.wg-nutrition-final-search{width:100%!important;height:43px!important}.wg-nutrition-final-tools{position:absolute!important;left:10px!important;top:10px!important}.wg-nutrition-content{padding:12px!important}.wg-nut-finance-style .wg-nut-commandbar{align-items:stretch!important}.wg-nut-finance-style .wg-nut-tabs{width:100%!important}.wg-nut-finance-style .wg-nut-tabs a{min-width:0!important;flex:1!important;padding:0 9px!important}.wg-nut-primary-actions,.wg-nut-split-action{width:100%}.wg-nut-book-now{flex:1}.wg-nut-action-menu{left:0;right:0;width:100%}.wg-nut-finance-style .wg-nut-kpis{grid-template-columns:1fr!important}.wg-nut-finance-style .wg-nut-side{grid-template-columns:1fr}.wg-nut-service-options{grid-template-columns:1fr 1fr}.wg-nut-choice-grid.two{grid-template-columns:1fr}.wg-nut-duration-options{grid-template-columns:1fr 1fr}.wg-nut-slots-fin{grid-template-columns:1fr}.wg-nut-directory-head{align-items:flex-start;flex-direction:column}.wg-nut-fin-modal .fin-modal-foot .fin-btn{width:100%!important;min-width:0!important}}
+@media(max-width:1320px){.wg-nut-finance-style .wg-nut-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.wg-nut-service-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:992px){
+  .wg-body-nutrition .wg-main{margin:0!important;margin-left:0!important;margin-right:0!important;width:100%!important;max-width:100vw!important}
+  .wg-topbar-nutrition-final{position:relative!important;height:auto!important;min-height:0!important;grid-template-columns:1fr!important;grid-template-areas:"page" "search"!important;padding:12px 14px!important;gap:10px!important}
+  .wg-nutrition-final-page-head{justify-self:stretch!important;min-width:0!important}
+  .wg-nutrition-final-search{width:100%!important;height:42px!important}
+  .wg-nutrition-final-tools{position:absolute!important;left:10px!important;top:10px!important}
+  .wg-nutrition-content{padding:12px!important}
+  .wg-nut-finance-style .wg-nut-commandbar{align-items:stretch!important;flex-direction:column!important}
+  .wg-nut-primary-actions,.wg-nut-split-action{width:100%}
+  .wg-nut-book-now{flex:1}
+  .wg-nut-action-menu{left:0;right:0;width:100%}
+  .wg-nut-finance-style .wg-nut-main-grid,.wg-nut-clinic-directory{grid-template-columns:1fr!important}
+  .wg-nut-finance-style .wg-nut-side{grid-template-columns:1fr}
+  .wg-nut-finance-style .wg-nut-kpis{grid-template-columns:1fr 1fr!important}
+  .wg-nut-service-options{grid-template-columns:1fr 1fr}
+  .wg-nut-choice-grid.two{grid-template-columns:1fr}
+  .wg-nut-duration-options{grid-template-columns:1fr 1fr}
+  .wg-nut-slots-fin{grid-template-columns:1fr}
+  .wg-nut-directory-head{align-items:flex-start;flex-direction:column}
+  .wg-nut-fin-modal .fin-modal-foot .fin-btn{width:100%!important;min-width:0!important}
+}
+@media(max-width:600px){
+  .wg-nut-finance-style .wg-nut-kpis{grid-template-columns:1fr!important}
+  .wg-nut-service-options{grid-template-columns:1fr}
+}

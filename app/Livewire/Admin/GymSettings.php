@@ -37,6 +37,22 @@ class GymSettings extends Component
 
     public bool $member_inquiry_enabled = true;
 
+    public string $nutrition_consultation_yer = '5000';
+
+    public string $nutrition_consultation_sar = '50';
+
+    public string $nutrition_follow_up_yer = '3000';
+
+    public string $nutrition_follow_up_sar = '30';
+
+    public string $nutrition_meal_plan_yer = '4000';
+
+    public string $nutrition_meal_plan_sar = '40';
+
+    public string $nutrition_body_analysis_yer = '2500';
+
+    public string $nutrition_body_analysis_sar = '25';
+
     public function mount(): void
     {
         abort_unless(auth()->user()?->role === 'owner', 403);
@@ -54,6 +70,14 @@ class GymSettings extends Component
         $this->require_transfer_reference = (bool) $this->setting('payments.require_transfer_reference', true);
         $this->require_payment_proof = (bool) $this->setting('payments.require_proof', false);
         $this->member_inquiry_enabled = (bool) $this->setting('member_inquiry.enabled', true);
+        $this->nutrition_consultation_yer = (string) $this->setting('nutrition.pricing.consultation_yer', '5000');
+        $this->nutrition_consultation_sar = (string) $this->setting('nutrition.pricing.consultation_sar', '50');
+        $this->nutrition_follow_up_yer = (string) $this->setting('nutrition.pricing.follow_up_yer', '3000');
+        $this->nutrition_follow_up_sar = (string) $this->setting('nutrition.pricing.follow_up_sar', '30');
+        $this->nutrition_meal_plan_yer = (string) $this->setting('nutrition.pricing.meal_plan_yer', '4000');
+        $this->nutrition_meal_plan_sar = (string) $this->setting('nutrition.pricing.meal_plan_sar', '40');
+        $this->nutrition_body_analysis_yer = (string) $this->setting('nutrition.pricing.body_analysis_yer', '2500');
+        $this->nutrition_body_analysis_sar = (string) $this->setting('nutrition.pricing.body_analysis_sar', '25');
     }
 
     public function save(AuditService $audit): void
@@ -73,6 +97,14 @@ class GymSettings extends Component
             'require_transfer_reference' => ['boolean'],
             'require_payment_proof' => ['boolean'],
             'member_inquiry_enabled' => ['boolean'],
+            'nutrition_consultation_yer' => ['required', 'numeric', 'min:0'],
+            'nutrition_consultation_sar' => ['required', 'numeric', 'min:0'],
+            'nutrition_follow_up_yer' => ['required', 'numeric', 'min:0'],
+            'nutrition_follow_up_sar' => ['required', 'numeric', 'min:0'],
+            'nutrition_meal_plan_yer' => ['required', 'numeric', 'min:0'],
+            'nutrition_meal_plan_sar' => ['required', 'numeric', 'min:0'],
+            'nutrition_body_analysis_yer' => ['required', 'numeric', 'min:0'],
+            'nutrition_body_analysis_sar' => ['required', 'numeric', 'min:0'],
         ]);
 
         $currencies = array_values(array_filter([
@@ -99,6 +131,14 @@ class GymSettings extends Component
         $this->put('payments.require_transfer_reference', $this->require_transfer_reference);
         $this->put('payments.require_proof', $this->require_payment_proof);
         $this->put('member_inquiry.enabled', $this->member_inquiry_enabled);
+        $this->put('nutrition.pricing.consultation_yer', (float) $this->nutrition_consultation_yer);
+        $this->put('nutrition.pricing.consultation_sar', (float) $this->nutrition_consultation_sar);
+        $this->put('nutrition.pricing.follow_up_yer', (float) $this->nutrition_follow_up_yer);
+        $this->put('nutrition.pricing.follow_up_sar', (float) $this->nutrition_follow_up_sar);
+        $this->put('nutrition.pricing.meal_plan_yer', (float) $this->nutrition_meal_plan_yer);
+        $this->put('nutrition.pricing.meal_plan_sar', (float) $this->nutrition_meal_plan_sar);
+        $this->put('nutrition.pricing.body_analysis_yer', (float) $this->nutrition_body_analysis_yer);
+        $this->put('nutrition.pricing.body_analysis_sar', (float) $this->nutrition_body_analysis_sar);
 
         $audit->log(auth()->user(), 'administration', 'settings.updated', null);
         session()->flash('success', 'تم حفظ إعدادات النظام.');

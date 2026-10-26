@@ -6,7 +6,6 @@ use App\Livewire\Inventory\ProductsIndex;
 use App\Livewire\Inventory\PurchasesIndex;
 use App\Livewire\Inventory\SalesIndex;
 use App\Livewire\Nutrition\AppointmentsIndex;
-use App\Livewire\Nutrition\MeasurementsIndex;
 use App\Models\AppointmentPayment;
 use App\Models\Expense;
 use App\Models\Product;
@@ -115,5 +114,5 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/inventory/sales', SalesIndex::class)->middleware('gym.any:sales.view,sales.create,sales.cancel,inventory.manage')->name('inventory.sales');
 
     Route::livewire('/nutrition/appointments', AppointmentsIndex::class)->middleware('gym.any:appointments.view,appointments.create,appointments.manage,appointments.update_unpaid,appointments.own,appointments.complete_own,appointments.cancel_unpaid_own,nutrition.view')->name('nutrition.appointments');
-    Route::livewire('/nutrition/measurements', MeasurementsIndex::class)->middleware('gym.any:measurements.own,appointments.manage,nutrition.view')->name('nutrition.measurements');
+    Route::get('/nutrition/measurements', fn () => redirect()->route('nutrition.appointments'))->name('nutrition.measurements');
 });
