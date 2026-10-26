@@ -21,7 +21,7 @@
         <div style="display:grid;gap:14px">
             @foreach($abilities as $group=>$items)
                 <div>
-                    <div style="font-weight:800;color:#fff;font-size:11px;margin-bottom:8px">{{ $group }}</div>
+                    <div style="font-weight:800;font-size:12px;margin-bottom:8px">{{ $group }}</div>
                     <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px">
                         @foreach($items as $ability=>$label)
                             @php($allowed = (bool) (($permissions->get($selectedRole, collect())->get($ability)?->allowed) ?? false))
@@ -49,7 +49,7 @@
         <div class="wg-card">
             <div class="wg-card-pad"><h2 class="wg-section-title">آخر الاستثناءات</h2></div>
             @forelse($overrides as $ov)
-                <div class="wg-alert"><div><div style="font-weight:700;color:#fff">{{ $ov->user?->name }}</div><div class="wg-muted" dir="ltr" style="font-size:9px;margin-top:3px">{{ $ov->ability }}</div></div><div style="display:flex;gap:6px;align-items:center"><span class="wg-badge {{ $ov->allowed ? 'wg-badge-green' : 'wg-badge-red' }}">{{ $ov->allowed ? 'سماح' : 'منع' }}</span><button wire:click="removeOverride({{ $ov->id }})" class="wg-btn wg-btn-sm">إزالة</button></div></div>
+                <div class="wg-alert"><div><div style="font-weight:700">{{ $ov->user?->name }}</div><div class="wg-muted" dir="ltr" style="font-size:11px;margin-top:3px">{{ $ov->ability }}</div></div><div style="display:flex;gap:6px;align-items:center"><span class="wg-badge {{ $ov->allowed ? 'wg-badge-green' : 'wg-badge-red' }}">{{ $ov->allowed ? 'سماح' : 'منع' }}</span><button wire:click="removeOverride({{ $ov->id }})" class="wg-btn wg-btn-sm">إزالة</button></div></div>
             @empty<div class="wg-card-pad wg-muted" style="font-size:10px">لا توجد استثناءات خاصة.</div>@endforelse
         </div>
     </div>

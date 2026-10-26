@@ -555,16 +555,16 @@ html[data-wg-theme="light"] .wg-body input[type="date"] { color-scheme: light; }
 
 /* Light theme uses the same geometry and a single color language. */
 :is(html.wg-light, html[data-wg-theme="light"]) {
-  --wg-bg: #f5f9fe;
+  --wg-bg: #eef2f6;
   --wg-panel: #ffffff;
-  --wg-panel-2: #f8fbff;
-  --wg-border: #d9e5f0;
-  --wg-border-strong: #c6d7e7;
-  --wg-text: #14263d;
-  --wg-muted: #6f8299;
+  --wg-panel-2: #f8fafc;
+  --wg-border: #cbd5e1;
+  --wg-border-strong: #94a3b8;
+  --wg-text: #0f172a;
+  --wg-muted: #475569;
 }
 :is(html.wg-light, html[data-wg-theme="light"]) body.wg-body {
-  background: linear-gradient(180deg, #fbfdff, #f4f8fd) !important;
+  background: #eef2f6 !important;
   color: var(--wg-text) !important;
 }
 :is(html.wg-light, html[data-wg-theme="light"]) .wg-body :is(.wg-modal, .wg-members-modal, .att-modal, .fin-modal, .wg-inv-modal, .wg-nut-modal) {

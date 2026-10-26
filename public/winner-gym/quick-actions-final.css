@@ -21,6 +21,22 @@
 .wg-quick-attendance-success,.wg-quick-attendance-errors{margin-bottom:13px;padding:11px 12px;border-radius:9px}.wg-quick-attendance-success{display:flex;align-items:center;gap:9px;border:1px solid #17604e;color:#a6efdf;background:#082b24}.wg-quick-attendance-success>span{font-size:20px;color:#16dfb8}.wg-quick-attendance-success strong,.wg-quick-attendance-success small{display:block}.wg-quick-attendance-success strong{font-size:13px}.wg-quick-attendance-success small{margin-top:4px;color:#7fc6b8;font-size:12px}.wg-quick-attendance-errors{border:1px solid #6c2932;color:#ff9ba4;background:#2a0e14;font-size:12.5px}
 .wg-quick-attendance-camera{display:none;padding:0 18px 18px}.wg-quick-attendance-camera.is-open{display:block}.wg-quick-attendance-camera-head{height:40px;display:flex;align-items:center;justify-content:space-between}.wg-quick-attendance-camera-head strong{font-size:12.5px}.wg-quick-attendance-camera-head button{border:0;color:#fff;background:transparent;font-size:20px;cursor:pointer}.wg-quick-attendance-camera video{width:100%;max-height:280px;border:1px solid #255060;border-radius:10px;background:#02070c}.wg-quick-attendance-camera p{margin:7px 0 0;color:#8195a4;font-size:12px;text-align:center}
 html.wg-light .wg-quick-attendance-dialog{color:#132637;background:#fff;border-color:#b8d5d5}.wg-light .wg-quick-attendance-input-wrap{background:#f5fbfb}.wg-light .wg-quick-attendance-input-wrap input{color:#132637}.wg-light .wg-quick-attendance-head{border-color:#dbe8e8}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body .wg-unified-tools .wg-theme-toggle{color:#d97706!important;border-color:#cbd5e1!important;background:#f8fafc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body .wg-unified-tools .wg-theme-toggle:hover{background:#f1f5f9!important;border-color:#94a3b8!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body .wg-unified-tools .wg-quick-cart{color:#0284c7!important;border-color:#bae6fd!important;background:#f0f9ff!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body .wg-unified-tools .wg-quick-cart:hover{background:#e0f2fe!important;border-color:#7dd3fc!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body .wg-unified-tools .wg-quick-attendance-trigger{color:#059669!important;border-color:#bbf7d0!important;background:#f0fdf4!important;box-shadow:0 2px 8px rgba(16,185,129,.12)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-body .wg-unified-tools .wg-quick-attendance-trigger:hover{background:#dcfce7!important;border-color:#86efac!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-backdrop{background:rgba(15,23,42,.5)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-dialog{color:#0f172a!important;background:#fff!important;border-color:#cbd5e1!important;box-shadow:0 25px 50px -12px rgba(15,23,42,.25)!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-head{background:#f8fafc!important;border-bottom:1px solid #e2e8f0!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-title h2{color:#0f172a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-title p{color:#64748b!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-close{background:#f1f5f9!important;border-color:#cbd5e1!important;color:#475569!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-input-wrap{background:#f8fafc!important;border-color:#cbd5e1!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-input-wrap input{color:#0f172a!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-actions .is-camera{background:#f8fafc!important;border-color:#cbd5e1!important;color:#334155!important}
+:is(html.wg-light,html[data-wg-theme="light"]) .wg-quick-attendance-form>label{color:#334155!important}
 @media(max-width:1250px){.wg-body .wg-unified-tools .wg-quick-member{width:43px;padding:0}.wg-body .wg-unified-tools .wg-quick-member span{display:none}.wg-body .wg-unified-tools .wg-user summary{min-width:150px!important}}
 @media(max-width:900px){.wg-body .wg-unified-tools .wg-quick-cart{display:none!important}.wg-body .wg-unified-tools .wg-quick-member{display:none!important}}
 @media(max-width:600px){.wg-body .wg-unified-tools .wg-user{display:none!important}.wg-quick-attendance-actions{grid-template-columns:1fr}.wg-quick-attendance-dialog{width:calc(100vw - 16px)}}

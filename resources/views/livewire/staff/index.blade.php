@@ -28,7 +28,7 @@
                 <tbody>
                 @forelse($users as $u)
                     <tr>
-                        <td><div style="font-weight:800;color:#fff;font-size:13.5px">{{ $u->name }}</div><div class="wg-muted" style="font-size:12px;margin-top:3px">{{ $u->email ?: 'بدون بريد' }}</div></td>
+                        <td><div style="font-weight:800;font-size:13.5px">{{ $u->name }}</div><div class="wg-muted" style="font-size:12px;margin-top:3px">{{ $u->email ?: 'بدون بريد' }}</div></td>
                         <td dir="ltr" style="font-size:13px">{{ $u->username }}</td>
                         <td>
                             <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">

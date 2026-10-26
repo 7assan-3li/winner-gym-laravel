@@ -370,7 +370,7 @@
 
     {{-- Collapsible Clinic Directory (Satisfies test and keeps screen clean) --}}
     <div class="wg-nut-directory-collapsible" style="margin-top:14px">
-        <button type="button" class="wg-nut-toggle-directories" x-on:click="showDirectories = !showDirectories" style="width:100%;padding:11px 16px;border:1px solid #1a3048;border-radius:10px;background:#06121f;color:#94a6bb;font-size:12px;font-weight:750;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+        <button type="button" class="wg-nut-toggle-directories" x-on:click="showDirectories = !showDirectories">
             <span style="display:flex;align-items:center;gap:8px">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 دليل العيادة: عملاء التغذية وطاقم الأخصائيين
@@ -475,19 +475,19 @@
 
             {{-- Sequential Wizard Stepper Header --}}
             @if(!$showEditModal)
-                <div class="wg-nut-stepper" style="display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;background:#050f1a;border-bottom:1px solid #162a3f">
-                    <div class="wg-nut-step-item" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:750" :style="step >= 1 ? 'color:#3b9dff' : 'color:#5f758d'">
-                        <span style="width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px" :style="step >= 1 ? 'background:#147dff;color:#fff' : 'background:#142335;color:#8599ad'">1</span>
+                <div class="wg-nut-stepper">
+                    <div class="wg-nut-step-item" :class="{ 'is-active': step >= 1 }">
+                        <span class="wg-nut-step-num" :class="{ 'is-active': step >= 1 }">1</span>
                         <span>العميل والخدمة</span>
                     </div>
-                    <span style="color:#2a4563">⟵</span>
-                    <div class="wg-nut-step-item" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:750" :style="step >= 2 ? 'color:#3b9dff' : 'color:#5f758d'">
-                        <span style="width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px" :style="step >= 2 ? 'background:#147dff;color:#fff' : 'background:#142335;color:#8599ad'">2</span>
+                    <span class="wg-nut-step-arrow">⟵</span>
+                    <div class="wg-nut-step-item" :class="{ 'is-active': step >= 2 }">
+                        <span class="wg-nut-step-num" :class="{ 'is-active': step >= 2 }">2</span>
                         <span>الأخصائي والموعد</span>
                     </div>
-                    <span style="color:#2a4563">⟵</span>
-                    <div class="wg-nut-step-item" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:750" :style="step >= 3 ? 'color:#3b9dff' : 'color:#5f758d'">
-                        <span style="width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:11px" :style="step >= 3 ? 'background:#147dff;color:#fff' : 'background:#142335;color:#8599ad'">3</span>
+                    <span class="wg-nut-step-arrow">⟵</span>
+                    <div class="wg-nut-step-item" :class="{ 'is-active': step >= 3 }">
+                        <span class="wg-nut-step-num" :class="{ 'is-active': step >= 3 }">3</span>
                         <span>المراجعة والتأكيد</span>
                     </div>
                 </div>
@@ -574,14 +574,14 @@
                     </div>
 
                     {{-- Management Preset Price Notice (NO manual input per user request) --}}
-                    <div class="fin-form-group full" style="background:#051829;border:1px solid #164875;border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:space-between">
+                    <div class="fin-form-group full wg-nut-price-banner">
                         <div>
-                            <span style="font-size:11px;color:#8abde9;font-weight:700">السعر المعتمد من قبل الإدارة لهذه الخدمة:</span>
-                            <div style="font-size:18px;font-weight:850;color:#2ce08d;margin-top:2px">
-                                {{ number_format((float)$price) }} <small style="font-size:12px">{{ $currency }}</small>
+                            <span class="wg-nut-price-label">السعر المعتمد من قبل الإدارة لهذه الخدمة:</span>
+                            <div class="wg-nut-price-value">
+                                {{ number_format((float)$price) }} <small>{{ $currency }}</small>
                             </div>
                         </div>
-                        <span style="font-size:10px;color:#6f92b4;background:#09223a;padding:5px 10px;border-radius:6px;border:1px solid #1c3c5c">
+                        <span class="wg-nut-price-tag">
                             تسعيرة الإدارة الرسمية
                         </span>
                     </div>
@@ -642,29 +642,29 @@
                 {{-- STEP 3: Review & Direct Confirmation (or Edit Details) --}}
                 <div x-show="step === 3 || @js($showEditModal)" class="fin-form-grid wg-nut-booking-grid" style="padding:16px">
                     @if(!$showEditModal)
-                        <div class="fin-form-group full" style="background:#071626;border:1px solid #1a3c61;border-radius:12px;padding:16px">
-                            <h3 style="font-size:14px;font-weight:800;color:#eaf2fb;margin-bottom:12px;border-bottom:1px solid #142f4c;padding-bottom:8px">
+                        <div class="fin-form-group full wg-nut-review-box">
+                            <h3 class="wg-nut-review-title">
                                 ملخص بيانات الحجز قبل الاعتماد:
                             </h3>
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
+                            <div class="wg-nut-review-grid">
                                 <div>
-                                    <span style="color:#7f93aa;display:block">نوع الخدمة والزيارة:</span>
-                                    <strong style="color:#fff">{{ $serviceTypeMeta[$service_type][0] ?? 'استشارة' }} ({{ $visitTypeMeta[$visit_type] ?? 'حضوري' }})</strong>
+                                    <span class="wg-nut-review-label">نوع الخدمة والزيارة:</span>
+                                    <strong class="wg-nut-review-val">{{ $serviceTypeMeta[$service_type][0] ?? 'استشارة' }} ({{ $visitTypeMeta[$visit_type] ?? 'حضوري' }})</strong>
                                 </div>
                                 <div>
-                                    <span style="color:#7f93aa;display:block">تاريخ ووقت الموعد:</span>
-                                    <strong style="color:#fff">{{ $appointment_date }} — الساعة {{ $fmtTime($start_time) }} ({{ $duration_minutes }} دقيقة)</strong>
+                                    <span class="wg-nut-review-label">تاريخ ووقت الموعد:</span>
+                                    <strong class="wg-nut-review-val">{{ $appointment_date }} — الساعة {{ $fmtTime($start_time) }} ({{ $duration_minutes }} دقيقة)</strong>
                                 </div>
                                 <div>
-                                    <span style="color:#7f93aa;display:block">الأخصائي المعالج:</span>
-                                    <strong style="color:#fff">{{ $nutritionists->firstWhere('id', (int)$nutritionist_id)?->name ?? 'الأخصائي المحدد' }}</strong>
+                                    <span class="wg-nut-review-label">الأخصائي المعالج:</span>
+                                    <strong class="wg-nut-review-val">{{ $nutritionists->firstWhere('id', (int)$nutritionist_id)?->name ?? 'الأخصائي المحدد' }}</strong>
                                     @if($docSpec = $nutritionists->firstWhere('id', (int)$nutritionist_id)?->specialization)
-                                        <span style="display:block;font-size:11.5px;color:#60a5fa;margin-top:2px">{{ $docSpec }}</span>
+                                        <span class="wg-nut-review-spec">{{ $docSpec }}</span>
                                     @endif
                                 </div>
-                                <div style="background:#09241b;padding:8px 12px;border-radius:8px;border:1px solid #16563c">
-                                    <span style="color:#74c79f;display:block">السعر المحدد من الإدارة:</span>
-                                    <strong style="font-size:16px;color:#2ce18d">{{ number_format((float)$price) }} {{ $currency }}</strong>
+                                <div class="wg-nut-price-highlight">
+                                    <span class="wg-nut-highlight-label">السعر المحدد من الإدارة:</span>
+                                    <strong class="wg-nut-highlight-val">{{ number_format((float)$price) }} {{ $currency }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -677,7 +677,7 @@
                 </div>
 
                 {{-- Wizard Navigation Footer --}}
-                <div class="fin-modal-foot" style="padding:14px 16px;background:#050d18;border-top:1px solid #132437;display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <div class="fin-modal-foot wg-nut-wizard-foot">
                     <div>
                         <button class="fin-btn" type="button" x-on:click="bookingOpen = false; $wire.closeBooking()">إلغاء</button>
                     </div>

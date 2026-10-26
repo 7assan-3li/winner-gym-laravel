@@ -11,7 +11,7 @@
         @forelse($branches as $branch)
             <div class="wg-card wg-card-pad">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-                    <div><div style="font-weight:800;color:#fff;font-size:14px">{{ $branch->name }}</div><div class="wg-muted" style="font-size:10px;margin-top:4px">{{ $branch->code }} · {{ $branch->address ?: 'العنوان غير محدد' }}</div></div>
+                    <div><div style="font-weight:800;font-size:14px">{{ $branch->name }}</div><div class="wg-muted" style="font-size:12px;margin-top:4px">{{ $branch->code }} · {{ $branch->address ?: 'العنوان غير محدد' }}</div></div>
                     <span class="wg-badge {{ $branch->is_main ? 'wg-badge-blue' : ($branch->is_active ? 'wg-badge-green' : 'wg-badge-red') }}">{{ $branch->is_main ? 'الرئيسي' : ($branch->is_active ? 'نشط' : 'مؤرشف') }}</span>
                 </div>
                 <div class="wg-finance-grid" style="margin-top:14px">

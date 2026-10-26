@@ -1,33 +1,380 @@
-/* WINNER GYM — Light Mode Hardening V3 (loaded last) */
-html.wg-light .wg-logo-dark,html[data-wg-theme="light"] .wg-logo-dark{display:none!important}
-html.wg-light .wg-logo-light,html[data-wg-theme="light"] .wg-logo-light{display:block!important}
-html:not(.wg-light) .wg-logo-light,html[data-wg-theme="dark"] .wg-logo-light{display:none!important}
-html.wg-light .wg-brand,html[data-wg-theme="light"] .wg-brand{background:transparent!important}
-html.wg-light .wg-sidebar-art,html[data-wg-theme="light"] .wg-sidebar-art{background:transparent!important}
-html.wg-light .wg-sidebar-art::before,html[data-wg-theme="light"] .wg-sidebar-art::before{
-  background-image:url('/winner-gym/sidebar-athlete.png')!important;
-  filter:invert(.82) grayscale(.85) contrast(1.12)!important;
-  opacity:.72!important;background-color:transparent!important;
+/* ======================================================================
+   WINNER GYM — Master Light Theme Architecture & Color Balance (V3)
+   Loaded LAST to ensure complete, authoritative visual consistency.
+   Soft slate background to eliminate glare; crisp white elevated cards;
+   deep slate typography (#0f172a); balanced contrast and grand presence.
+   ====================================================================== */
+
+/* 1. Global CSS Variables in Light Mode */
+:is(html.wg-light, html[data-wg-theme="light"]) {
+  color-scheme: light !important;
+  --wg-bg: #eef2f6 !important;
+  --wg-bg-2: #f1f5f9 !important;
+  --wg-panel: #ffffff !important;
+  --wg-panel-2: #f8fafc !important;
+  --wg-border: #cbd5e1 !important;
+  --wg-border-strong: #94a3b8 !important;
+  --wg-border-subtle: #e2e8f0 !important;
+  --wg-text: #0f172a !important;
+  --wg-heading-color: #0f172a !important;
+  --wg-muted: #475569 !important;
+  --wg-primary: #1d4ed8 !important;
+  --wg-primary-strong: #1e40af !important;
+  --wg-success: #059669 !important;
+  --wg-warning: #d97706 !important;
+  --wg-danger: #dc2626 !important;
+  --fin-bg: #eef2f6 !important;
+  --fin-panel: #ffffff !important;
+  --fin-panel2: #f8fafc !important;
+  --fin-line: #cbd5e1 !important;
+  --fin-line2: #94a3b8 !important;
+  --fin-text: #0f172a !important;
+  --fin-muted: #475569 !important;
 }
-html.wg-light .wg-sidebar-art::after,html[data-wg-theme="light"] .wg-sidebar-art::after{
-  content:""!important;position:absolute!important;inset:0!important;pointer-events:none!important;
-  background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.2) 18%,rgba(255,255,255,.08) 82%,#fff 100%),linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,0) 50%,rgba(247,250,254,.58) 100%)!important;
+
+/* 2. Page Canvas & Body (Glare Elimination) */
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body {
+  background: #eef2f6 !important;
+  color: #0f172a !important;
 }
-/* Exact dashboard issue shown in screenshot */
-html.wg-light body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn,
-html[data-wg-theme="light"] body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn{
-  background:#fff!important;background-image:none!important;border-color:#d8e4ef!important;color:#40566f!important;box-shadow:none!important;
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-app,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-main,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-dashboard-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-members-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-subscriptions-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-attendance-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-finance-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-nutrition-content,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-system-content {
+  background: transparent !important;
+  color: #0f172a !important;
 }
-html.wg-light body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn:hover,
-html[data-wg-theme="light"] body.wg-body.wg-body-dashboard .wg-quick>a.wg-btn:hover{background:#f2f8ff!important;border-color:#bfd6ed!important;color:#0e69dc!important}
-/* Shared controls: no dark islands in light mode */
-html.wg-light body.wg-body :is(.wg-btn,.fin-reset,.fin-icon-btn,.fin-quick-link,.fin-due-action,.wg-inv-btn,.wg-inv-modal-cancel,.wg-nut-btn):not(.wg-btn-primary):not(.fin-btn.primary):not(.wg-inv-btn-primary):not(.wg-nut-btn-primary),
-html[data-wg-theme="light"] body.wg-body :is(.wg-btn,.fin-reset,.fin-icon-btn,.fin-quick-link,.fin-due-action,.wg-inv-btn,.wg-inv-modal-cancel,.wg-nut-btn):not(.wg-btn-primary):not(.fin-btn.primary):not(.wg-inv-btn-primary):not(.wg-nut-btn-primary){background:#fff!important;background-image:none!important;border-color:#d8e4ef!important;color:#40566f!important;box-shadow:none!important}
-/* Runtime safety class catches legacy dark surfaces and dynamically opened dialogs */
-html.wg-light body.wg-body .wg-light-auto-surface,html[data-wg-theme="light"] body.wg-body .wg-light-auto-surface{
-  background:#fff!important;background-image:none!important;border-color:#dce6f0!important;color:#314760!important;box-shadow:none!important;
+
+/* 3. Top Navigation Bar */
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-topbar-unified,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-topbar-members-final,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-topbar-subscriptions-final,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-topbar-attendance-final,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-topbar-finance-final,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-topbar-inventory-final,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-topbar-nutrition-final {
+  background: #ffffff !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04) !important;
 }
-html.wg-light body.wg-body .wg-light-auto-surface:hover,html[data-wg-theme="light"] body.wg-body .wg-light-auto-surface:hover{background:#f5f9fe!important}
-/* Keep semantic filled controls intact */
-html.wg-light body.wg-body :is(.wg-btn-primary,.fin-btn.primary,.wg-inv-btn-primary,.wg-inv-modal-save,.wg-inv-open-pos,.wg-nut-btn-primary,.wg-nav a.is-active),
-html[data-wg-theme="light"] body.wg-body :is(.wg-btn-primary,.fin-btn.primary,.wg-inv-btn-primary,.wg-inv-modal-save,.wg-inv-open-pos,.wg-nut-btn-primary,.wg-nav a.is-active){color:#fff!important}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-unified-page h1,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-topbar-unified h1 {
+  color: #0f172a !important;
+  font-weight: 850 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-unified-crumb {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-unified-crumb i {
+  color: #1d4ed8 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-unified-search,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-members-final-search,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-sub-final-search,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-att-final-search,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-finance-final-search,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-inventory-final-search,
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-nutrition-final-search {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-unified-search:hover {
+  border-color: #94a3b8 !important;
+  background: #ffffff !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-user summary {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 999px !important;
+  padding: 4px 12px 4px 6px !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-user-name {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-user-role {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-top-icon {
+  border: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-unified-tools .wg-top-icon:hover {
+  background: #ffffff !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+/* 4. Sidebar Navigation */
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body .wg-sidebar {
+  background: #ffffff !important;
+  border-left: 1px solid #cbd5e1 !important;
+  border-right: 0 !important;
+  box-shadow: -4px 0 24px rgba(15, 23, 42, 0.04) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-logo-dark { display: none !important; }
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-logo-light { display: block !important; }
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-sidebar-art::before {
+  opacity: 0.06 !important;
+  filter: grayscale(1) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-nav a {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-nav a:hover {
+  background: #f1f5f9 !important;
+  color: #1d4ed8 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-nav a.is-active {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+  color: #ffffff !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-nav a.is-active .wg-nav-icon {
+  color: #ffffff !important;
+}
+
+/* 5. Elevated Cards & Panels (The "ضخم وواضح" Distinction) */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-card, .wg-stat, .wg-dash-stat, .wg-chart-card,
+  .wg-members-stat, .wg-members-filters, .wg-members-table-card,
+  .wg-sub-card, .wg-sub-stat, .wg-sub-table-card, .wg-sub-aside-card, .wg-sub-distribution-card,
+  .att-card, .att-kpi, .wg-att-scan-card, .wg-att-table-card, .wg-att-side-card,
+  .fin-card, .fin-kpi, .fin-table-card, .fin-side-card, .payment-summary-card, .expense-summary-card,
+  .wg-inv-card, .wg-inv-kpi, .wg-inv-products-card, .wg-inv-chart-card, .wg-inv-alert-card, .wg-purchase-card, .wg-sales-card,
+  .wg-nut-card, .wg-nut-kpi, .wg-nut-table-card, .wg-nut-history-card, .wg-nut-clients-card, .wg-nut-team-card,
+  .wg-panel, .rounded-2xl.border, .rounded-xl.border, form.rounded-2xl
+) {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 4px 16px -2px rgba(15, 23, 42, 0.04) !important;
+  color: #0f172a !important;
+}
+
+/* Card Titles, Section Titles, and Headings */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-title, .wg-section-title, .fin-section-title, .wg-att-table-title, .wg-inv-products-head h2, .wg-nut-table-top h2,
+  h1, h2, h3, h4, strong:not(.is-badge):not(.wg-badge)
+) {
+  color: #0f172a !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-subtitle, .wg-muted, small, .fin-muted, .wg-inv-notes, .fin-label, .wg-label, .wg-subline
+) {
+  color: #475569 !important;
+}
+
+/* 6. High-Contrast Tables across ALL Modules */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-table-wrap, .wg-members-table-shell, .wg-sub-table-wrap, .att-table-wrap,
+  .fin-table-wrap, .wg-inv-table-wrap, .wg-nut-table-scroll, .wg-client-directory-table
+) {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  table, .wg-table, .wg-members-table, .wg-sub-table, .att-table,
+  .fin-table, .wg-inv-table, .wg-nut-table
+) th {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+  font-weight: 850 !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+  border-top: 0 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  table, .wg-table, .wg-members-table, .wg-sub-table, .att-table,
+  .fin-table, .wg-inv-table, .wg-nut-table
+) td {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  border-top: 1px solid #f1f5f9 !important;
+  border-bottom: 0 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  table, .wg-table, .wg-members-table, .wg-sub-table, .att-table,
+  .fin-table, .wg-inv-table, .wg-nut-table
+) tbody tr:hover td {
+  background: #f8fafc !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  table, .wg-table, .wg-members-table, .wg-sub-table, .att-table,
+  .fin-table, .wg-inv-table, .wg-nut-table
+) tbody tr.is-selected td {
+  background: #eff6ff !important;
+}
+
+/* 7. Form Controls, Inputs, and Selects */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select, textarea, .wg-field, .wg-select, .wg-textarea, .fin-field, .fin-select, .fin-textarea
+) {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(input, select, textarea):focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16) !important;
+  outline: none !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(input, select, textarea)::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* 8. Buttons & Actions */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-btn, .fin-btn, .wg-inv-btn, .wg-nut-btn,
+  .wg-members-secondary, .wg-members-reset, .fin-reset, .att-btn
+):not(.wg-btn-primary):not(.fin-btn.primary):not(.wg-inv-btn-primary):not(.wg-nut-btn-primary):not(.wg-btn-danger):not(.wg-btn-success) {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-btn, .fin-btn, .wg-inv-btn, .wg-nut-btn
+):not(.wg-btn-primary):not(.fin-btn.primary):not(.wg-inv-btn-primary):not(.wg-nut-btn-primary):hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-btn-primary, .fin-btn.primary, .wg-inv-btn-primary, .wg-nut-btn-primary,
+  .wg-inv-modal-save, .wg-inv-open-pos
+) {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+  border: 1px solid #1d4ed8 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-btn-primary, .fin-btn.primary, .wg-inv-btn-primary, .wg-nut-btn-primary
+):hover {
+  background: linear-gradient(135deg, #1e40af, #1d4ed8) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-btn-danger {
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-btn-danger:hover {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) .wg-btn-success {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #059669 !important;
+  font-weight: 700 !important;
+}
+
+/* 9. Badges & Status Pills (High Contrast & Legible) */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(.wg-badge-green, .wg-pill.is-green, .att-pill.is-green, .fin-pill.is-green, .fin-badge.green, .wg-nut-pill.is-green) {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #047857 !important;
+  font-weight: 750 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(.wg-badge-red, .wg-pill.is-red, .att-pill.is-red, .fin-pill.is-red, .fin-badge.red, .wg-nut-pill.is-red) {
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  color: #b91c1c !important;
+  font-weight: 750 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(.wg-badge-orange, .wg-pill.is-orange, .att-pill.is-orange, .fin-pill.is-orange, .fin-badge.orange, .wg-nut-pill.is-orange) {
+  background: #fffbeb !important;
+  border: 1px solid #fde68a !important;
+  color: #b45309 !important;
+  font-weight: 750 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(.wg-badge-blue, .wg-pill.is-blue, .att-pill.is-blue, .fin-pill.is-blue, .fin-badge.blue, .wg-nut-pill.is-blue) {
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  color: #1d4ed8 !important;
+  font-weight: 750 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(.wg-badge-purple, .wg-pill.is-purple, .att-pill.is-purple, .fin-pill.is-purple, .fin-badge.purple, .wg-nut-pill.is-purple) {
+  background: #faf5ff !important;
+  border: 1px solid #e9d5ff !important;
+  color: #6b21a8 !important;
+  font-weight: 750 !important;
+}
+
+/* 10. Modals & Dialogs (Clean Elevation) */
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-modal-backdrop, .wg-members-modal-backdrop, .att-modal-backdrop,
+  .fin-modal-backdrop, .wg-inv-modal-backdrop, .wg-nut-fin-backdrop, .wg-action-backdrop
+) {
+  background: rgba(15, 23, 42, 0.55) !important;
+  backdrop-filter: blur(8px) !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-modal, .wg-members-modal, .att-modal, .fin-modal,
+  .wg-inv-modal, .wg-nut-fin-modal, .wg-action-modal
+) {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3) !important;
+  border-radius: 14px !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-modal-head, .fin-modal-head, .wg-inv-modal-head, .wg-nut-fin-modal .fin-modal-head
+) {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-modal-head h2, .fin-modal-title, .wg-section-title
+) {
+  color: #0f172a !important;
+  font-weight: 850 !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-modal-x, .fin-close
+) {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  border-radius: 8px !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-modal-x:hover, .fin-close:hover
+) {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+:is(html.wg-light, html[data-wg-theme="light"]) :is(
+  .wg-modal-foot, .fin-modal-foot, .wg-inv-modal-foot
+) {
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+/* 11. Overcoming Inline Styles in Legacy Templates */
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body [style*="color:#fff"]:not(.wg-btn-primary):not(.fin-btn.primary):not(.is-active):not(.wg-nut-step-num.is-active),
+:is(html.wg-light, html[data-wg-theme="light"]) body.wg-body [style*="color: #fff"]:not(.wg-btn-primary):not(.fin-btn.primary):not(.is-active):not(.wg-nut-step-num.is-active) {
+  color: #0f172a !important;
+}

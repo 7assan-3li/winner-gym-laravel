@@ -6,27 +6,25 @@
 
 :is(html.wg-light,html[data-wg-theme="light"]){
   color-scheme:light!important;
-  --wg-bg:#f7faff;
-  --wg-bg-2:#f1f6fc;
+  --wg-bg:#eef2f6;
+  --wg-bg-2:#f1f5f9;
   --wg-panel:#ffffff;
-  --wg-panel-2:#f8fbff;
-  --wg-border:#dbe6f2;
-  --wg-border-2:#cbd9e8;
-  --wg-text:#12233d;
-  --wg-muted:#71839a;
-  --wg-blue:#1478f2;
-  --wg-blue-2:#0865e7;
-  --wg-green:#08a95e;
-  --wg-red:#ef3349;
-  --wg-orange:#ef8d00;
-  --wg-purple:#7654ec;
-  background:#f7faff!important;
+  --wg-panel-2:#f8fafc;
+  --wg-border:#cbd5e1;
+  --wg-border-2:#94a3b8;
+  --wg-text:#0f172a;
+  --wg-muted:#475569;
+  --wg-blue:#1d4ed8;
+  --wg-blue-2:#2563eb;
+  --wg-green:#059669;
+  --wg-red:#dc2626;
+  --wg-orange:#d97706;
+  --wg-purple:#7c3aed;
+  background:#eef2f6!important;
 }
 
 :is(html.wg-light,html[data-wg-theme="light"]) body.wg-body{
-  background:
-    radial-gradient(circle at 72% -12%,rgba(39,132,255,.055),transparent 32rem),
-    linear-gradient(180deg,#fbfdff 0%,#f5f9fe 48%,#f7faff 100%)!important;
+  background:#eef2f6!important;
   color:var(--wg-text)!important;
 }
 :is(html.wg-light,html[data-wg-theme="light"]) body.wg-body,
