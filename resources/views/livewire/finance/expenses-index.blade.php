@@ -184,7 +184,7 @@
             <div class="fin-form-grid">
                 <div class="fin-form-group">
                     <label class="fin-label">اسم المصروف <span class="fin-required">*</span></label>
-                    <input class="fin-field" wire:model="title" placeholder="مثال: فاتورة كهرباء" required>
+                    <input class="fin-field" wire:model="title" placeholder="مثال: فاتورة كهرباء" required minlength="3" maxlength="255">
                 </div>
                 <div class="fin-form-group">
                     <label class="fin-label">المبلغ <span class="fin-required">*</span></label>
@@ -236,7 +236,7 @@
                 </div>
                 <div class="fin-form-group" x-show="paymentMethod === 'transfer'" x-cloak>
                     <label class="fin-label">جهة التحويل <span class="fin-required">*</span></label>
-                    <select class="fin-select" wire:model="transfer_service"><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select>
+                    <select class="fin-select" wire:model="transfer_service" x-bind:required="paymentMethod === 'transfer'"><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select>
                 </div>
                 <div class="fin-form-group" x-show="paymentMethod === 'transfer'" x-cloak>
                     <label class="fin-label">رقم مرجع التحويل</label>
@@ -244,7 +244,7 @@
                 </div>
                 <div class="fin-form-group full">
                     <label class="fin-label">سبب وتفاصيل المصروف (اختياري)</label>
-                    <textarea class="fin-field fin-textarea" wire:model="notes" placeholder="مثال: صيانة جهاز المشي رقم 3 وقطع الغيار المستخدمة..."></textarea>
+                    <textarea class="fin-field fin-textarea" wire:model="notes" maxlength="2000" placeholder="مثال: صيانة جهاز المشي رقم 3 وقطع الغيار المستخدمة..."></textarea>
                 </div>
                 <div class="fin-form-group full">
                     <label class="fin-label">الفاتورة أو الإيصال <span class="fin-required">*</span></label>
@@ -269,7 +269,7 @@
         <form class="fin-modal small" wire:submit="cancel">
             <div class="fin-modal-head"><div><div class="fin-modal-title">إلغاء المصروف</div><div class="fin-modal-sub">لن يتم حذف السجل المالي، وسيتم حفظ سبب الإلغاء</div></div><button type="button" class="fin-close" x-on:click="cancelModalOpen = false; $wire.$set('showCancelModal', false)">×</button></div>
             @if($errors->any())<div class="fin-errors">{{ $errors->first() }}</div>@endif
-            <div class="fin-form-group"><label class="fin-label">سبب الإلغاء <span class="fin-required">*</span></label><textarea class="fin-field fin-textarea" wire:model="cancellation_reason" placeholder="اكتب سبب الإلغاء بوضوح..." required></textarea></div>
+            <div class="fin-form-group"><label class="fin-label">سبب الإلغاء <span class="fin-required">*</span></label><textarea class="fin-field fin-textarea" wire:model="cancellation_reason" placeholder="اكتب سبب الإلغاء بوضوح..." required minlength="3" maxlength="1000"></textarea></div>
             <div class="fin-modal-foot"><button class="fin-btn danger" type="submit" wire:loading.attr="disabled" wire:target="cancel"><span wire:loading.remove wire:target="cancel">تأكيد الإلغاء</span><span wire:loading wire:target="cancel">جاري الإلغاء...</span></button><button class="fin-btn" type="button" x-on:click="cancelModalOpen = false; $wire.$set('showCancelModal', false)">رجوع</button></div>
         </form>
     </div>
