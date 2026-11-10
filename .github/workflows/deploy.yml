@@ -60,7 +60,8 @@ jobs:
           script_stop: true
           script: |
             cd /home/hasan/apps/winner-gym
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
             chmod +x deploy.sh
             ./deploy.sh
 
