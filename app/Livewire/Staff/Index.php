@@ -116,7 +116,7 @@ class Index extends Component
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:3', 'max:60', 'regex:/^[A-Za-z0-9._-]+$/', Rule::unique('users', 'username')->ignore($this->editingId)],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->editingId)],
             'role' => ['required', Rule::in(['manager', 'reception', 'accountant', 'nutritionist'])],
             'specialization' => ['nullable', 'string', 'max:120'],
             'work_period' => ['required', Rule::in(['men', 'women', 'both'])],

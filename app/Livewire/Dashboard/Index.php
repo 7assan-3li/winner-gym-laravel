@@ -343,7 +343,7 @@ class Index extends Component
     private function cachedDashboardRecord(string $group, int $id): ?array
     {
         $today = CarbonImmutable::now('Asia/Aden')->toDateString();
-        $common = Cache::store('file')->get('winner-gym:dashboard:'.$this->getId().':common:'.$today, []);
+        $common = Cache::get('winner-gym:dashboard:common:'.$today, []);
 
         if (is_array($common)) {
             $items = $common[$group] ?? [];
@@ -610,12 +610,11 @@ class Index extends Component
 
     private function forgetDashboardCache(): void
     {
-        $cache = Cache::store('file');
         $today = CarbonImmutable::now('Asia/Aden')->toDateString();
 
-        $cache->forget('winner-gym:dashboard:'.$this->getId().':common:'.$today);
+        Cache::forget('winner-gym:dashboard:common:'.$today);
         foreach (['day', 'week', 'month'] as $period) {
-            $cache->forget('winner-gym:dashboard:'.$this->getId().':period:'.$today.':'.$period);
+            Cache::forget('winner-gym:dashboard:period:'.$today.':'.$period);
         }
     }
 
@@ -637,9 +636,8 @@ class Index extends Component
             default => 'هذا الشهر',
         };
 
-        $dashboardCache = Cache::store('file');
-        $dashboardCommon = $dashboardCache->remember(
-            'winner-gym:dashboard:'.$this->getId().':common:'.$today,
+        $dashboardCommon = Cache::remember(
+            'winner-gym:dashboard:common:'.$today,
             now()->addMinutes(30),
             function () use ($today, $yesterday, $expiringEnd) {
                 $row = DB::selectOne(
@@ -691,8 +689,8 @@ class Index extends Component
             'stock_alerts' => (int) $row->stock_alerts,
         ];
 
-        $dashboardPeriodData = $dashboardCache->remember(
-            'winner-gym:dashboard:'.$this->getId().':period:'.$today.':'.$this->dashboardPeriod,
+        $dashboardPeriodData = Cache::remember(
+            'winner-gym:dashboard:period:'.$today.':'.$this->dashboardPeriod,
             now()->addMinutes(30),
             function () use ($reports, $periodStart, $periodEndExclusive) {
                 $finance = [

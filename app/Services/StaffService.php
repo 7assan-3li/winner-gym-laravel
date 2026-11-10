@@ -22,6 +22,11 @@ class StaffService
             throw ValidationException::withMessages(['username' => 'اسم المستخدم مستخدم مسبقًا.']);
         }
 
+        $email = filled($data['email'] ?? null) ? Str::lower(trim((string) $data['email'])) : null;
+        if ($email && User::whereRaw('LOWER(email) = ?', [$email])->exists()) {
+            throw ValidationException::withMessages(['email' => 'البريد الإلكتروني مستخدم مسبقًا.']);
+        }
+
         $workPeriod = $this->resolveWorkPeriod($data);
 
         $user = User::create([
@@ -53,6 +58,11 @@ class StaffService
         $username = Str::lower(trim($data['username']));
         if (User::whereRaw('LOWER(username) = ?', [$username])->whereKeyNot($staff->id)->exists()) {
             throw ValidationException::withMessages(['username' => 'اسم المستخدم مستخدم مسبقًا.']);
+        }
+
+        $email = filled($data['email'] ?? null) ? Str::lower(trim((string) $data['email'])) : null;
+        if ($email && User::whereRaw('LOWER(email) = ?', [$email])->whereKeyNot($staff->id)->exists()) {
+            throw ValidationException::withMessages(['email' => 'البريد الإلكتروني مستخدم مسبقًا.']);
         }
 
         $old = $staff->only(['name', 'username', 'email', 'role', 'specialization', 'work_period', 'branch_id', 'gym_period_id', 'is_active']);

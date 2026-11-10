@@ -106,8 +106,8 @@ class MembershipService
 
     private function forgetMembersCounts(): void
     {
-        Cache::store('file')->forget('winner-gym:members:counts');
-        Cache::store('file')->forget('winner-gym:members:counts:v2');
-        Cache::store('file')->forget('winner-gym:members:counts:v3');
+        Cache::forget('winner-gym:members:counts');
+        Cache::forget('winner-gym:members:counts:v2');
+        Cache::forget('winner-gym:members:counts:v3');
     }
 }

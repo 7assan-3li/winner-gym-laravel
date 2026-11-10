@@ -33,16 +33,21 @@ docker compose run --rm app php artisan route:cache
 docker compose run --rm app php artisan view:cache
 docker compose run --rm app php artisan event:cache
 
-# 6. إعادة تشغيل الـ Queue Workers والمجدول
-echo "🔄 Restarting Queue Workers & Scheduler..."
-docker compose exec -T app php artisan queue:restart || true
-docker compose restart queue scheduler
+# 6. تصحيح الصلاحيات بعد أوامر التثبيت والكاش
+echo "🔒 Fixing storage & cache permissions..."
+docker compose exec -T app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
+docker compose exec -T app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
 
-# 7. إعادة تحميل خادم Nginx بنعومة
+# 7. إعادة تشغيل الـ App و Queue Workers والمجدول
+echo "🔄 Restarting PHP-FPM, Queue Workers & Scheduler..."
+docker compose exec -T app php artisan queue:restart || true
+docker compose restart app queue scheduler
+
+# 8. إعادة تحميل خادم Nginx بنعومة
 echo "🌐 Reloading Web server..."
 docker compose exec -T web nginx -s reload || docker compose restart web
 
-# 8. تنظيف بقايا الدوكر القديمة لتوفير مساحة القرص
+# 9. تنظيف بقايا الدوكر القديمة لتوفير مساحة القرص
 echo "🧹 Pruning unused Docker images..."
 docker image prune -f
 

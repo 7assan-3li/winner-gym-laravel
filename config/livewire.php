@@ -276,7 +276,7 @@ return [
     */
 
     'payload' => [
-        'max_size' => 1024 * 1024,   // 1MB - maximum request payload size in bytes
+        'max_size' => (int) env('LIVEWIRE_MAX_PAYLOAD_SIZE', 35 * 1024 * 1024),   // 35MB - matches upload_max_filesize and client_max_body_size
         'max_nesting_depth' => 10,   // Maximum depth of dot-notation property paths
         'max_calls' => 50,           // Maximum method calls per request
         'max_components' => 200,     // Maximum components per batch request

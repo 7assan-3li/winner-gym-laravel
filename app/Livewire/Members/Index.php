@@ -254,7 +254,7 @@ class Index extends Component
 
     public function render(): View
     {
-        $counts = Cache::store('file')->remember(
+        $counts = Cache::remember(
             'winner-gym:members:counts:v3',
             now()->addHours(6),
             function (): array {
@@ -275,7 +275,7 @@ class Index extends Component
             }
         );
 
-        $packageOptions = Cache::store('file')->remember(
+        $packageOptions = Cache::remember(
             'winner-gym:members:packages:v2',
             now()->addHours(6),
             fn (): array => Package::query()
@@ -524,10 +524,10 @@ class Index extends Component
 
     private function forgetMembersCache(): void
     {
-        Cache::store('file')->forget('winner-gym:members:counts');
-        Cache::store('file')->forget('winner-gym:members:counts:v2');
-        Cache::store('file')->forget('winner-gym:members:counts:v3');
-        Cache::store('file')->forget('winner-gym:members:packages');
-        Cache::store('file')->forget('winner-gym:members:packages:v2');
+        Cache::forget('winner-gym:members:counts');
+        Cache::forget('winner-gym:members:counts:v2');
+        Cache::forget('winner-gym:members:counts:v3');
+        Cache::forget('winner-gym:members:packages');
+        Cache::forget('winner-gym:members:packages:v2');
     }
 }
