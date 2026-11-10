@@ -156,7 +156,7 @@
     @if($canCreate)
     <section class="wg-pos-workspace">
         <article class="wg-inv-card wg-sales-products-panel">
-            <div class="wg-sales-panel-head"><div><h3>منتجات متجر WINNER GYM</h3><span>{{ number_format($products->count()) }} منتج متاح · اضغط على البطاقة لإضافتها إلى الفاتورة</span></div><label class="wg-inv-search-small wg-sales-product-search"><input type="search" wire:model.live.debounce.250ms="productSearch" placeholder="ابحث بالاسم أو امسح الباركود..." autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></label></div>
+            <div class="wg-sales-panel-head"><div><h3>منتجات متجر WINNER GYM</h3><span>{{ number_format($products->count()) }} منتج متاح · اضغط على البطاقة لإضافتها إلى الفاتورة</span></div><label class="wg-inv-search-small wg-sales-product-search"><input type="search" wire:model.live.debounce.350ms="productSearch" placeholder="ابحث بالاسم أو امسح الباركود..." autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></label></div>
             <div class="wg-sales-product-grid">
                 @forelse($products as $product)
                 <button type="button" x-on:click="addProduct({ id: {{ $product->id }}, name: {{ Js::from($product->name) }}, barcode: {{ Js::from($product->barcode ?? '') }}, currency: {{ Js::from($product->currency) }}, price: {{ (float)$product->selling_price }}, stock: {{ (int)$product->current_quantity }}, image_path: {{ Js::from($product->image_path) }} })" class="wg-sales-product-card" aria-label="إضافة {{ $product->name }} إلى الفاتورة">

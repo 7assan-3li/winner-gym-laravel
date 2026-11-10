@@ -13,6 +13,7 @@ use App\Services\SubscriptionService;
 use App\Support\NumberFormatter;
 use Carbon\CarbonImmutable;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -74,15 +75,6 @@ class Index extends Component
     /** @var list<string> */
     public array $installment_due_dates = [];
 
-    /** @var array<int, array<string, mixed>> */
-    public array $member_options = [];
-
-    /** @var array<int, array<string, mixed>> */
-    public array $package_options = [];
-
-    /** @var array<int, array<string, mixed>> */
-    public array $all_package_options = [];
-
     /** @var array<string, int> */
     public array $dashboard_counts = [];
 
@@ -143,7 +135,6 @@ class Index extends Component
             }
         }
 
-        $this->loadReferenceData();
         $this->loadDashboardData();
     }
 
@@ -309,6 +300,7 @@ class Index extends Component
         $d['proof_path'] = $this->payment_proof?->store('subscription-payment-proofs', 'local');
 
         $subscription = $service->create($d, auth()->user());
+        Cache::forget('winner-gym:subscriptions:member_options');
         $this->loadDashboardData();
 
         $this->reset([
@@ -493,11 +485,14 @@ class Index extends Component
             ['path' => request()->url(), 'query' => request()->query(), 'pageName' => 'page'],
         );
 
+        $packages = $this->packageOptions();
+        $members = $this->memberOptions();
+
         return view('livewire.subscriptions.index', [
             'subscriptions' => $subscriptions,
-            'members' => collect($this->member_options)->map(fn (array $item) => (object) $item),
-            'packages' => collect($this->package_options)->map(fn (array $item) => (object) $item),
-            'allPackages' => collect($this->all_package_options)->map(fn (array $item) => (object) $item),
+            'members' => collect($members)->map(fn (array $item) => (object) $item),
+            'packages' => collect($packages['active'])->map(fn (array $item) => (object) $item),
+            'allPackages' => collect($packages['all'])->map(fn (array $item) => (object) $item),
             'counts' => $this->dashboard_counts,
             'currentRevenue' => $this->current_revenue,
             'previousRevenue' => $this->previous_revenue,
@@ -510,39 +505,50 @@ class Index extends Component
         ]);
     }
 
-    private function loadReferenceData(): void
+    /** @return list<array<string, mixed>> */
+    private function memberOptions(): array
     {
-        $this->member_options = Member::query()
-            ->where('status', 'active')
-            ->orderBy('full_name')
-            ->get(['id', 'full_name', 'membership_code', 'assigned_period'])
-            ->map(fn (Member $member) => [
-                'id' => $member->id,
-                'full_name' => $member->full_name,
-                'membership_code' => $member->membership_code,
-                'assigned_period' => $member->assigned_period,
-            ])->all();
+        return Cache::remember('winner-gym:subscriptions:member_options', now()->addMinutes(10), function (): array {
+            return Member::query()
+                ->where('status', 'active')
+                ->orderBy('full_name')
+                ->get(['id', 'full_name', 'membership_code', 'assigned_period'])
+                ->map(fn (Member $member) => [
+                    'id' => $member->id,
+                    'full_name' => $member->full_name,
+                    'membership_code' => $member->membership_code,
+                    'assigned_period' => $member->assigned_period,
+                ])->all();
+        });
+    }
 
-        $allPackages = Package::query()
-            ->orderBy('name')
-            ->get(['id', 'name', 'duration_value', 'duration_unit', 'price_yer', 'price_sar', 'description', 'is_active']);
+    /** @return array{active: list<array<string, mixed>>, all: list<array<string, mixed>>} */
+    private function packageOptions(): array
+    {
+        return Cache::remember('winner-gym:subscriptions:package_options', now()->addMinutes(30), function (): array {
+            $allPackages = Package::query()
+                ->orderBy('name')
+                ->get(['id', 'name', 'duration_value', 'duration_unit', 'price_yer', 'price_sar', 'description', 'is_active']);
 
-        $this->package_options = $allPackages
-            ->where('is_active', true)
-            ->values()
-            ->map(fn (Package $package) => [
-                'id' => $package->id,
-                'name' => $package->name,
-                'duration_value' => $package->duration_value,
-                'duration_unit' => $package->duration_unit,
-                'price_yer' => $package->price_yer,
-                'price_sar' => $package->price_sar,
-                'description' => $package->description,
-            ])->all();
-
-        $this->all_package_options = $allPackages
-            ->map(fn (Package $package) => ['id' => $package->id, 'name' => $package->name])
-            ->all();
+            return [
+                'active' => $allPackages
+                    ->where('is_active', true)
+                    ->values()
+                    ->map(fn (Package $package) => [
+                        'id' => $package->id,
+                        'name' => $package->name,
+                        'duration_value' => $package->duration_value,
+                        'duration_unit' => $package->duration_unit,
+                        'price_yer' => $package->price_yer,
+                        'price_sar' => $package->price_sar,
+                        'description' => $package->description,
+                    ])->all(),
+                'all' => $allPackages
+                    ->values()
+                    ->map(fn (Package $package) => ['id' => $package->id, 'name' => $package->name])
+                    ->all(),
+            ];
+        });
     }
 
     private function loadDashboardData(): void

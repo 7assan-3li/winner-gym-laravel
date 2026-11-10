@@ -391,7 +391,7 @@
                                     <label class="wg-payment-plan {{ $sub_payment_method === 'transfer' ? 'is-selected' : '' }}"><input type="radio" value="transfer" wire:model.live="sub_payment_method"><span><strong>تحويل أو صرافة محلية</strong><small>خدمة أو صرافة معتمدة</small></span></label>
                                 </div>
                                 @if($sub_payment_method === 'transfer')
-                                    <div class="wg-action-grid wg-action-grid--2"><label><span>خدمة التحويل/الصرافة <b>*</b></span><input wire:model.live.debounce.250ms="sub_transfer_service" placeholder="اسم الخدمة أو الصرافة"></label><label><span>رقم مرجع السند @if($requireTransferReference)<b>*</b>@else (اختياري)@endif</span><input wire:model.live.debounce.250ms="sub_transfer_reference" placeholder="أدخل رقم المرجع"></label></div>
+                                    <div class="wg-action-grid wg-action-grid--2"><label><span>خدمة التحويل/الصرافة <b>*</b></span><input wire:model.live.debounce.400ms="sub_transfer_service" placeholder="اسم الخدمة أو الصرافة"></label><label><span>رقم مرجع السند @if($requireTransferReference)<b>*</b>@else (اختياري)@endif</span><input wire:model.live.debounce.400ms="sub_transfer_reference" placeholder="أدخل رقم المرجع"></label></div>
                                 @endif
                                 <div class="wg-action-grid wg-action-grid--2">
                                     <label><span>تاريخ الاستلام</span><input type="date" value="{{ now('Asia/Aden')->toDateString() }}" disabled></label>
@@ -482,7 +482,7 @@
                 </section>
                 <section class="wg-action-modal wg-action-modal--lg" data-wg-modal="search" x-show="$wire.modal === 'search'" x-cloak dir="rtl">
                     <header class="wg-action-head"><div class="wg-action-title"><span class="wg-action-title-icon is-blue">⌕</span><div><h2>البحث العام</h2><p>ابحث في بيانات النظام</p></div></div><button type="button" class="wg-action-close" x-on:click="$wire.$set('modal', '', false)">×</button></header>
-                    <div class="wg-action-body"><div class="wg-global-search-box"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><input type="search" wire:model.live.debounce.250ms="globalSearch" autofocus placeholder="اكتب كلمة البحث..."></div>
+                    <div class="wg-action-body"><div class="wg-global-search-box"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><input type="search" wire:model.live.debounce.400ms="globalSearch" autofocus placeholder="اكتب كلمة البحث..."></div>
                         <div class="wg-search-tabs">
                             <button type="button" class="{{ $globalSearchType === 'all' ? 'is-active' : '' }}" wire:click="setGlobalSearchType('all')">الكل</button>
                             <button type="button" class="{{ $globalSearchType === 'member' ? 'is-active' : '' }}" wire:click="setGlobalSearchType('member')">الأعضاء</button>

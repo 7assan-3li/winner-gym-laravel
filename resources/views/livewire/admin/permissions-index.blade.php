@@ -17,7 +17,7 @@
     </div>
 
     <div class="wg-card wg-card-pad">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><div><h2 class="wg-section-title">مصفوفة {{ $roles[$selectedRole] ?? '' }}</h2><div class="wg-muted" style="font-size:10px;margin-top:4px">انقر على الحالة لتفعيل أو إلغاء الصلاحية.</div></div><input wire:model.live.debounce.250ms="search" class="wg-field" style="max-width:260px" placeholder="ابحث عن صلاحية..."></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><div><h2 class="wg-section-title">مصفوفة {{ $roles[$selectedRole] ?? '' }}</h2><div class="wg-muted" style="font-size:10px;margin-top:4px">انقر على الحالة لتفعيل أو إلغاء الصلاحية.</div></div><input wire:model.live.debounce.400ms="search" class="wg-field" style="max-width:260px" placeholder="ابحث عن صلاحية..."></div>
         <div style="display:grid;gap:14px">
             @foreach($abilities as $group=>$items)
                 <div>

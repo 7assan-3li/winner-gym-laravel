@@ -67,10 +67,67 @@ class Index extends Component
 
         $staffList = User::query()->where('is_active', true)->orderBy('name')->get();
 
+        $data = $this->tab === 'summary'
+            ? $reports->summary($this->from, $this->to, $this->gender, $this->currency)
+            : $this->emptySummaryData();
+
+        $shiftData = $this->tab === 'shifts'
+            ? $reports->cashierShiftSummary($this->shiftCashierId, $this->shiftDate, $this->shiftCurrency)
+            : $this->emptyShiftData();
+
         return view('livewire.reports.index', [
-            'data' => $reports->summary($this->from, $this->to, $this->gender, $this->currency),
-            'shiftData' => $reports->cashierShiftSummary($this->shiftCashierId, $this->shiftDate, $this->shiftCurrency),
+            'data' => $data,
+            'shiftData' => $shiftData,
             'staffList' => $staffList,
         ]);
+    }
+
+    /** @return array<string, mixed> */
+    private function emptySummaryData(): array
+    {
+        return [
+            'currency' => $this->currency,
+            'subscription_gross_revenue' => 0.0,
+            'subscription_refunds' => 0.0,
+            'subscription_revenue' => 0.0,
+            'nutrition_revenue' => 0.0,
+            'product_revenue' => 0.0,
+            'product_cogs' => 0.0,
+            'product_profit' => 0.0,
+            'expenses' => 0.0,
+            'net' => 0.0,
+            'attendance_count' => 0,
+            'appointments_count' => 0,
+            'new_members_count' => 0,
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    private function emptyShiftData(): array
+    {
+        return [
+            'currency' => $this->shiftCurrency,
+            'date' => $this->shiftDate,
+            'cashier_id' => $this->shiftCashierId,
+            'cashier_name' => '',
+            'subscription_cash' => 0.0,
+            'subscription_transfer' => 0.0,
+            'nutrition_cash' => 0.0,
+            'nutrition_transfer' => 0.0,
+            'sales_cash' => 0.0,
+            'sales_transfer' => 0.0,
+            'cash_expenses' => 0.0,
+            'total_cash_in' => 0.0,
+            'total_transfer_in' => 0.0,
+            'total_collected' => 0.0,
+            'net_cash_handover' => 0.0,
+            'transactions_count' => 0,
+            'transactions' => [],
+            'comparison' => [
+                'cash_diff' => 0.0,
+                'transfer_diff' => 0.0,
+                'net_diff' => 0.0,
+            ],
+        ];
     }
 }
