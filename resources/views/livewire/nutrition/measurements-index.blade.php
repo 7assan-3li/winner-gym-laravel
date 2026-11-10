@@ -49,15 +49,15 @@
             <header><i class="is-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 20h16M7 16l3-3 3 2 4-6M18 4v6M15 7h6"/></svg></i><div><h2>تسجيل قياس جديد</h2><p>أدخل القيم المتوفرة فقط. يحسب النظام BMI تلقائياً عند توفر الوزن والطول.</p></div></header>
             <form wire:submit="save">
                 <div class="wg-nut-form-grid">
-                    <label><span>نوع العميل *</span><select wire:model.live="client_type"><option value="member">عضو</option><option value="external">غير عضو</option></select></label>
-                    @if($client_type === 'member')<label><span>العضو *</span><select wire:model="member_id"><option value="">اختر العضو</option>@foreach($members as $m)<option value="{{ $m->id }}">{{ $m->full_name }} — {{ $m->membership_code }}</option>@endforeach</select></label>@else<label><span>عميل التغذية *</span><select wire:model="nutrition_client_id"><option value="">اختر العميل</option>@foreach($clients as $c)<option value="{{ $c->id }}">{{ $c->full_name }} — {{ $c->phone }}</option>@endforeach</select></label>@endif
-                    <label><span>الأخصائي *</span><select wire:model="nutritionist_id" {{ auth()->user()->role === 'nutritionist' ? 'disabled' : '' }}><option value="">اختر الأخصائي</option>@foreach($nutritionists as $n)<option value="{{ $n->id }}">{{ $n->name ?: $n->username }}</option>@endforeach</select></label>
+                    <label><span>نوع العميل *</span><select wire:model.live="client_type" required><option value="member">عضو</option><option value="external">غير عضو</option></select></label>
+                    @if($client_type === 'member')<label><span>العضو *</span><select wire:model="member_id" required><option value="">اختر العضو</option>@foreach($members as $m)<option value="{{ $m->id }}">{{ $m->full_name }} — {{ $m->membership_code }}</option>@endforeach</select></label>@else<label><span>عميل التغذية *</span><select wire:model="nutrition_client_id" required><option value="">اختر العميل</option>@foreach($clients as $c)<option value="{{ $c->id }}">{{ $c->full_name }} — {{ $c->phone }}</option>@endforeach</select></label>@endif
+                    <label><span>الأخصائي *</span><select wire:model="nutritionist_id" required {{ auth()->user()->role === 'nutritionist' ? 'disabled' : '' }}><option value="">اختر الأخصائي</option>@foreach($nutritionists as $n)<option value="{{ $n->id }}">{{ $n->name ?: $n->username }}</option>@endforeach</select></label>
                 </div>
                 @if($appointment_id)<div class="wg-nut-linked-appointment"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v15H4zM8 3v4M16 3v4M4 10h16"/></svg><span>القياس مرتبط بالموعد #{{ $appointment_id }}</span></div>@endif
                 <div class="wg-nut-measure-form-grid">
                     @foreach($types as $type)<label><span>{{ $type->name_ar }} @if($type->unit)<small>{{ $type->unit }}</small>@endif</span><input wire:model="values.{{ $type->code }}" type="number" min="0" step="0.001" placeholder="0"></label>@endforeach
                 </div>
-                <label class="wg-nut-full-label"><span>ملاحظات الأخصائي</span><textarea wire:model="notes" rows="3" placeholder="ملاحظات عن التقدم أو القياسات..."></textarea></label>
+                <label class="wg-nut-full-label"><span>ملاحظات الأخصائي</span><textarea wire:model="notes" rows="3" maxlength="3000" placeholder="ملاحظات عن التقدم أو القياسات..."></textarea></label>
                 <footer><button type="button" class="wg-nut-btn" wire:click="closeMeasurement">إلغاء</button><button class="wg-nut-btn wg-nut-btn-primary" type="submit">حفظ القياسات</button></footer>
             </form>
         </section>

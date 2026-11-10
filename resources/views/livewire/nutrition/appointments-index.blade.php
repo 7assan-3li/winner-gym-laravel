@@ -522,7 +522,7 @@
 
                     <div class="fin-form-group full" x-show="clientType === 'member'" x-cloak>
                         <label class="fin-label">العضو <span class="fin-required">*</span></label>
-                        <select class="fin-select" wire:model="member_id">
+                        <select class="fin-select" wire:model="member_id" x-bind:required="clientType === 'member' && (step === 1 || @js($showEditModal))">
                             <option value="">اختر العضو من القائمة</option>
                             @foreach($members as $m)
                                 <option value="{{ $m->id }}">{{ $m->full_name }} — {{ $m->membership_code }}</option>
@@ -537,7 +537,7 @@
                                 <button type="button" x-on:click="clientOpen = true; $wire.openClient()">+ إضافة عميل خاص جديد</button>
                             @endif
                         </div>
-                        <select class="fin-select" wire:model="nutrition_client_id">
+                        <select class="fin-select" wire:model="nutrition_client_id" x-bind:required="clientType === 'external' && (step === 1 || @js($showEditModal))">
                             <option value="">اختر العميل الخاص</option>
                             @foreach($clients as $c)
                                 <option value="{{ $c->id }}">{{ $c->full_name }} — {{ $c->phone }}</option>
@@ -601,7 +601,7 @@
 
                     <div class="fin-form-group">
                         <label class="fin-label">تاريخ الموعد <span class="fin-required">*</span></label>
-                        <input class="fin-field" wire:model.live="appointment_date" type="date" min="{{ now('Asia/Aden')->toDateString() }}" required>
+                        <input class="fin-field" wire:model.live="appointment_date" type="date" min="{{ now('Asia/Aden')->toDateString() }}" x-bind:required="step === 2 && !@js($showEditModal)">
                     </div>
 
                     <div class="fin-form-group full wg-nut-option-builder">
@@ -617,7 +617,7 @@
 
                     <div class="fin-form-group">
                         <label class="fin-label">وقت بدء الموعد <span class="fin-required">*</span></label>
-                        <input class="fin-field" wire:model="start_time" type="time" required>
+                        <input class="fin-field" wire:model="start_time" type="time" x-bind:required="step === 2 && !@js($showEditModal)">
                     </div>
 
                     <div class="fin-form-group full">
@@ -672,7 +672,7 @@
 
                     <div class="fin-form-group full">
                         <label class="fin-label">ملاحظات الزيارة أو العميل (اختياري)</label>
-                        <textarea class="fin-field fin-textarea" wire:model="notes" placeholder="الهدف الغذائي، أي حساسية أو تاريخ صحي مهم..."></textarea>
+                        <textarea class="fin-field fin-textarea" wire:model="notes" maxlength="3000" placeholder="الهدف الغذائي، أي حساسية أو تاريخ صحي مهم..."></textarea>
                     </div>
                 </div>
 
@@ -720,10 +720,10 @@
             </div>
             @if($errors->any() && $showClientModal)<div class="fin-errors">{{ $errors->first() }}</div>@endif
             <div class="fin-form-grid">
-                <div class="fin-form-group"><label class="fin-label">الاسم الكامل <span class="fin-required">*</span></label><input class="fin-field" wire:model="new_client_name" required></div>
-                <div class="fin-form-group"><label class="fin-label">رقم الهاتف <span class="fin-required">*</span></label><input class="fin-field" wire:model="new_client_phone" dir="ltr" required></div>
-                <div class="fin-form-group full"><label class="fin-label">الجنس <span class="fin-required">*</span></label><select class="fin-select" wire:model="new_client_gender"><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
-                <div class="fin-form-group full"><label class="fin-label">ملاحظات صحية (اختياري)</label><textarea class="fin-field fin-textarea" wire:model="new_client_notes" placeholder="حالة صحية، هدف العميل..."></textarea></div>
+                <div class="fin-form-group"><label class="fin-label">الاسم الكامل <span class="fin-required">*</span></label><input class="fin-field" wire:model="new_client_name" type="text" required minlength="3" maxlength="255"></div>
+                <div class="fin-form-group"><label class="fin-label">رقم الهاتف <span class="fin-required">*</span></label><input class="fin-field" wire:model="new_client_phone" type="tel" dir="ltr" required pattern="^[0-9+\s\-]{7,25}$" minlength="7" maxlength="30"></div>
+                <div class="fin-form-group full"><label class="fin-label">الجنس <span class="fin-required">*</span></label><select class="fin-select" wire:model="new_client_gender" required><option value="male">ذكر</option><option value="female">أنثى</option></select></div>
+                <div class="fin-form-group full"><label class="fin-label">ملاحظات صحية (اختياري)</label><textarea class="fin-field fin-textarea" wire:model="new_client_notes" maxlength="2000" placeholder="حالة صحية، هدف العميل..."></textarea></div>
             </div>
             <div class="fin-modal-foot">
                 <button class="fin-btn primary" type="submit" wire:loading.attr="disabled" wire:target="createClient">
@@ -747,10 +747,10 @@
             </div>
             @if($errors->any() && $showScheduleModal)<div class="fin-errors">{{ $errors->first() }}</div>@endif
             <div class="fin-form-grid">
-                <div class="fin-form-group full"><label class="fin-label">الأخصائي <span class="fin-required">*</span></label><select class="fin-select" wire:model="nutritionist_id" {{ auth()->user()->role === 'nutritionist' ? 'disabled' : '' }}><option value="">اختر الأخصائي</option>@foreach($nutritionists as $n)<option value="{{ $n->id }}">{{ $n->name ?: $n->username }} @if($n->specialization) — {{ $n->specialization }} @endif</option>@endforeach</select></div>
-                <div class="fin-form-group full"><label class="fin-label">اليوم <span class="fin-required">*</span></label><select class="fin-select" wire:model="schedule_day"><option value="0">الأحد</option><option value="1">الاثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></div>
-                <div class="fin-form-group"><label class="fin-label">من <span class="fin-required">*</span></label><input class="fin-field" wire:model="schedule_start" type="time"></div>
-                <div class="fin-form-group"><label class="fin-label">إلى <span class="fin-required">*</span></label><input class="fin-field" wire:model="schedule_end" type="time"></div>
+                <div class="fin-form-group full"><label class="fin-label">الأخصائي <span class="fin-required">*</span></label><select class="fin-select" wire:model="nutritionist_id" required {{ auth()->user()->role === 'nutritionist' ? 'disabled' : '' }}><option value="">اختر الأخصائي</option>@foreach($nutritionists as $n)<option value="{{ $n->id }}">{{ $n->name ?: $n->username }} @if($n->specialization) — {{ $n->specialization }} @endif</option>@endforeach</select></div>
+                <div class="fin-form-group full"><label class="fin-label">اليوم <span class="fin-required">*</span></label><select class="fin-select" wire:model="schedule_day" required><option value="0">الأحد</option><option value="1">الاثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></div>
+                <div class="fin-form-group"><label class="fin-label">من <span class="fin-required">*</span></label><input class="fin-field" wire:model="schedule_start" type="time" required></div>
+                <div class="fin-form-group"><label class="fin-label">إلى <span class="fin-required">*</span></label><input class="fin-field" wire:model="schedule_end" type="time" required></div>
             </div>
             <div class="fin-modal-foot">
                 <button class="fin-btn primary" type="submit" wire:loading.attr="disabled" wire:target="addSchedule">
@@ -800,8 +800,8 @@
             </div>
             @if($payment_method === 'transfer')
                 <div class="fin-form-grid">
-                    <div class="fin-form-group"><label class="fin-label">جهة التحويل <span class="fin-required">*</span></label><select class="fin-select" wire:model="transfer_service"><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select></div>
-                    <div class="fin-form-group"><label class="fin-label">مرجع التحويل</label><input class="fin-field" wire:model="transfer_reference" placeholder="رقم الحوالة أو المرجع"></div>
+                    <div class="fin-form-group"><label class="fin-label">جهة التحويل <span class="fin-required">*</span></label><select class="fin-select" wire:model="transfer_service" required><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select></div>
+                    <div class="fin-form-group"><label class="fin-label">مرجع التحويل</label><input class="fin-field" wire:model="transfer_reference" type="text" maxlength="255" placeholder="رقم الحوالة أو المرجع"></div>
                 </div>
                 <label class="wg-nut-upload">
                     <input wire:model="payment_proof" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf">
@@ -830,7 +830,7 @@
                     <div><h2>إلغاء وحذف الحجز</h2><p>سيتم إلغاء الموعد وحذفه من قائمة المواعيد النشطة.</p></div>
                 </header>
                 <form wire:submit="cancel">
-                    <label class="wg-nut-full-label"><span>سبب الإلغاء *</span><textarea wire:model="cancellation_reason" rows="4" placeholder="اكتب سبب إلغاء الحجز..."></textarea></label>
+                    <label class="wg-nut-full-label"><span>سبب الإلغاء *</span><textarea wire:model="cancellation_reason" rows="4" required minlength="3" maxlength="1000" placeholder="اكتب سبب إلغاء الحجز..."></textarea></label>
                     <footer>
                         <button type="button" class="wg-nut-btn" wire:click="$set('showCancelModal',false)">تراجع</button>
                         <button class="wg-nut-btn wg-nut-btn-danger" type="submit">تأكيد إلغاء وحذف الموعد</button>
@@ -850,7 +850,7 @@
                     <div><h2>عكس دفعة الموعد</h2><p>بعد العكس يعود الموعد إلى غير مدفوع ويمكن إلغاؤه عند الحاجة.</p></div>
                 </header>
                 <form wire:submit="reversePayment">
-                    <label class="wg-nut-full-label"><span>سبب عكس الدفعة *</span><textarea wire:model="reversal_reason" rows="4" placeholder="اكتب سبب العكس..."></textarea></label>
+                    <label class="wg-nut-full-label"><span>سبب عكس الدفعة *</span><textarea wire:model="reversal_reason" rows="4" required minlength="3" maxlength="1000" placeholder="اكتب سبب العكس..."></textarea></label>
                     <footer>
                         <button type="button" class="wg-nut-btn" wire:click="$set('showReverseModal',false)">تراجع</button>
                         <button class="wg-nut-btn wg-nut-btn-warning" type="submit">تأكيد عكس الدفعة</button>

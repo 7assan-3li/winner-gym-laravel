@@ -39,12 +39,12 @@
             <form wire:submit="save"><div class="wg-modal-body">
                 @if($errors->any())<div class="wg-errors" style="margin-bottom:14px">@foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach</div>@endif
                 <div class="wg-two">
-                    <div><label class="wg-label">اسم الفرع *</label><input wire:model="name" class="wg-field"></div>
-                    <div><label class="wg-label">كود الفرع *</label><input wire:model="code" class="wg-field" dir="ltr" placeholder="MAIN / BR-02"></div>
-                    <div><label class="wg-label">الهاتف</label><input wire:model="phone" class="wg-field" dir="ltr"></div>
-                    <div><label class="wg-label">مدير الفرع</label><input wire:model="manager_name" class="wg-field"></div>
-                    <div style="grid-column:1/-1"><label class="wg-label">العنوان</label><input wire:model="address" class="wg-field"></div>
-                    <div style="grid-column:1/-1"><label class="wg-label">ملاحظات</label><textarea wire:model="notes" class="wg-textarea"></textarea></div>
+                    <div><label class="wg-label">اسم الفرع *</label><input wire:model="name" type="text" class="wg-field" required minlength="2" maxlength="100"></div>
+                    <div><label class="wg-label">كود الفرع *</label><input wire:model="code" type="text" class="wg-field" dir="ltr" placeholder="MAIN / BR-02" required minlength="2" maxlength="40" pattern="^[a-zA-Z0-9_\-]+$"></div>
+                    <div><label class="wg-label">الهاتف</label><input wire:model="phone" type="tel" class="wg-field" dir="ltr" pattern="^[0-9+\s\-]{7,25}$" maxlength="30"></div>
+                    <div><label class="wg-label">مدير الفرع</label><input wire:model="manager_name" type="text" class="wg-field" maxlength="100"></div>
+                    <div style="grid-column:1/-1"><label class="wg-label">العنوان</label><input wire:model="address" type="text" class="wg-field" maxlength="255"></div>
+                    <div style="grid-column:1/-1"><label class="wg-label">ملاحظات</label><textarea wire:model="notes" class="wg-textarea" maxlength="1000"></textarea></div>
                 </div>
                 <div style="display:flex;gap:18px;margin-top:14px"><label style="display:flex;align-items:center;gap:7px;font-size:11px"><input wire:model="is_active" type="checkbox"> الفرع نشط</label><label style="display:flex;align-items:center;gap:7px;font-size:11px"><input wire:model="is_main" type="checkbox"> الفرع الرئيسي</label></div>
             </div><div class="wg-modal-foot"><button class="wg-btn wg-btn-primary">حفظ الفرع</button><button type="button" wire:click="$set('showEditor',false)" class="wg-btn">إلغاء</button></div></form>

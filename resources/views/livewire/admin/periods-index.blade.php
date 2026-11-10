@@ -29,13 +29,13 @@
     <div class="wg-modal-backdrop"><div class="wg-modal" dir="rtl"><div class="wg-modal-head"><h2 class="wg-section-title">{{ $editingId ? 'تعديل الفترة' : 'إضافة فترة' }}</h2><button wire:click="$set('showEditor',false)" class="wg-modal-x">×</button></div><form wire:submit="save"><div class="wg-modal-body">
         @if($errors->any())<div class="wg-errors" style="margin-bottom:14px">@foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach</div>@endif
         <div class="wg-two">
-            <div><label class="wg-label">الفرع *</label><select wire:model="branch_id" class="wg-select">@foreach($branches as $branch)<option value="{{ $branch->id }}">{{ $branch->name }}</option>@endforeach</select></div>
-            <div><label class="wg-label">النوع *</label><select wire:model="gender" class="wg-select"><option value="men">رجال</option><option value="women">نساء</option></select></div>
-            <div><label class="wg-label">اسم الفترة *</label><input wire:model="name" class="wg-field"></div>
-            <div><label class="wg-label">رقم الفترة *</label><input wire:model="slot_order" type="number" min="1" max="20" class="wg-field"></div>
+            <div><label class="wg-label">الفرع *</label><select wire:model="branch_id" class="wg-select" required>@foreach($branches as $branch)<option value="{{ $branch->id }}">{{ $branch->name }}</option>@endforeach</select></div>
+            <div><label class="wg-label">النوع *</label><select wire:model="gender" class="wg-select" required><option value="men">رجال</option><option value="women">نساء</option></select></div>
+            <div><label class="wg-label">اسم الفترة *</label><input wire:model="name" type="text" class="wg-field" required minlength="2" maxlength="100"></div>
+            <div><label class="wg-label">رقم الفترة *</label><input wire:model="slot_order" type="number" min="1" max="20" class="wg-field" required></div>
             <div><label class="wg-label">من الساعة</label><input wire:model="start_time" type="time" class="wg-field" dir="ltr"></div>
             <div><label class="wg-label">إلى الساعة</label><input wire:model="end_time" type="time" class="wg-field" dir="ltr"></div>
-            <div style="grid-column:1/-1"><label class="wg-label">ملاحظات</label><textarea wire:model="notes" class="wg-textarea"></textarea></div>
+            <div style="grid-column:1/-1"><label class="wg-label">ملاحظات</label><textarea wire:model="notes" class="wg-textarea" maxlength="1000"></textarea></div>
         </div><label style="display:flex;align-items:center;gap:7px;font-size:11px;margin-top:14px"><input wire:model="is_active" type="checkbox"> الفترة نشطة</label>
     </div><div class="wg-modal-foot"><button class="wg-btn wg-btn-primary">حفظ الفترة</button><button type="button" wire:click="$set('showEditor',false)" class="wg-btn">إلغاء</button></div></form></div></div>
     @endif
