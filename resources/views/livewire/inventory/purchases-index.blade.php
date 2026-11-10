@@ -145,12 +145,12 @@
                     <div class="wg-purchase-draft-state"><i>!</i><div><strong>سيُحفظ كشراء معلق</strong><span>لا تزيد الكميات ولا تتغير تكلفة المخزون إلا بعد اعتماد المدير.</span></div></div>
 
                     <div class="wg-purchase-meta-grid">
-                        <label><span>تاريخ الشراء <b>*</b></span><input type="date" wire:model="purchase_date"></label>
-                        <label><span>اسم المورد <b>*</b></span><input type="text" wire:model="supplier_name" placeholder="مثال: شركة المكملات"></label>
-                        <label><span>رقم فاتورة المورد <b>*</b></span><input type="text" wire:model="supplier_invoice" placeholder="INV-10025"></label>
-                        <label><span>العملة <b>*</b></span><select x-model="currency" x-on:change="resetRows()"><option value="YER">ريال يمني (YER)</option><option value="SAR">ريال سعودي (SAR)</option></select></label>
-                        <label><span>طريقة الدفع <b>*</b></span><select x-model="payment"><option value="cash">نقدي</option><option value="transfer">تحويل / صرافة</option></select></label>
-                        <label x-cloak x-show="payment === 'transfer'"><span>جهة التحويل <b>*</b></span><select wire:model="transfer_service"><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select></label><label x-cloak x-show="payment === 'transfer'"><span>مرجع التحويل <b>*</b></span><input type="text" wire:model="transfer_reference" placeholder="رقم الحوالة أو المرجع"></label>
+                        <label><span>تاريخ الشراء <b>*</b></span><input type="date" wire:model="purchase_date" required></label>
+                        <label><span>اسم المورد <b>*</b></span><input type="text" wire:model="supplier_name" placeholder="مثال: شركة المكملات" required minlength="2" maxlength="255"></label>
+                        <label><span>رقم فاتورة المورد <b>*</b></span><input type="text" wire:model="supplier_invoice" placeholder="INV-10025" required minlength="1" maxlength="100"></label>
+                        <label><span>العملة <b>*</b></span><select x-model="currency" x-on:change="resetRows()" required><option value="YER">ريال يمني (YER)</option><option value="SAR">ريال سعودي (SAR)</option></select></label>
+                        <label><span>طريقة الدفع <b>*</b></span><select x-model="payment" required><option value="cash">نقدي</option><option value="transfer">تحويل / صرافة</option></select></label>
+                        <label x-cloak x-show="payment === 'transfer'"><span>جهة التحويل <b>*</b></span><select wire:model="transfer_service" x-bind:required="payment === 'transfer'"><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select></label><label x-cloak x-show="payment === 'transfer'"><span>مرجع التحويل <b>*</b></span><input type="text" wire:model="transfer_reference" placeholder="رقم الحوالة أو المرجع" x-bind:required="payment === 'transfer'"></label>
                     </div>
 
                     <div class="wg-purchase-items-head"><div><strong>المنتجات المشتراة</strong><span>أضف كل منتج مع الكمية وتكلفة شراء الوحدة الفعلية.</span></div><button type="button" x-on:click="addRow()">+ إضافة سطر منتج</button></div>
@@ -200,7 +200,7 @@
             <button type="button" x-on:click="cancelId = null; $wire.set('cancelPurchaseId', null)">×</button>
             <i class="is-red">!</i><h3>إلغاء عملية الشراء؟</h3>
             <p>يمكن إلغاء العملية لأنها لم تُعتمد بعد، ولن يتغير المخزون.</p>
-            <textarea wire:model="cancellation_reason" placeholder="اكتب سبب الإلغاء..."></textarea>
+            <textarea wire:model="cancellation_reason" placeholder="اكتب سبب الإلغاء..." required minlength="3" maxlength="1000"></textarea>
             @error('cancellation_reason')<small class="is-error">{{ $message }}</small>@enderror
             <div><button type="button" x-on:click="cancelId = null; $wire.set('cancelPurchaseId', null)" class="wg-inv-modal-cancel">رجوع</button><button type="submit" wire:loading.attr="disabled" wire:target="cancel" class="wg-danger-action">تأكيد الإلغاء</button></div>
         </form>

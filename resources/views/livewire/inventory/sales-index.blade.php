@@ -287,6 +287,6 @@
     </article>
 
     @if($cancelSaleId)
-    <div class="wg-inv-modal-backdrop" wire:click.self="$set('cancelSaleId', null)"><form wire:submit="cancel" class="wg-inv-confirm-modal"><button type="button" wire:click="$set('cancelSaleId', null)">×</button><i class="is-red">!</i><h3>إلغاء عملية البيع؟</h3><p>سيتم إرجاع كل الكميات إلى المخزون، وتبقى الفاتورة محفوظة بحالة «ملغي».</p><textarea wire:model="cancellation_reason" placeholder="اكتب سبب الإلغاء..."></textarea>@error('cancellation_reason')<small class="is-error">{{ $message }}</small>@enderror<div><button type="button" wire:click="$set('cancelSaleId', null)" class="wg-inv-modal-cancel">رجوع</button><button type="submit" class="wg-danger-action">تأكيد الإلغاء</button></div></form></div>
+    <div class="wg-inv-modal-backdrop" wire:click.self="$set('cancelSaleId', null)"><form wire:submit="cancel" class="wg-inv-confirm-modal"><button type="button" wire:click="$set('cancelSaleId', null)">×</button><i class="is-red">!</i><h3>إلغاء عملية البيع؟</h3><p>سيتم إرجاع كل الكميات إلى المخزون، وتبقى الفاتورة محفوظة بحالة «ملغي».</p><textarea wire:model="cancellation_reason" placeholder="اكتب سبب الإلغاء..." required minlength="3" maxlength="1000"></textarea>@error('cancellation_reason')<small class="is-error">{{ $message }}</small>@enderror<div><button type="button" wire:click="$set('cancelSaleId', null)" class="wg-inv-modal-cancel">رجوع</button><button type="submit" class="wg-danger-action">تأكيد الإلغاء</button></div></form></div>
     @endif
 </div>

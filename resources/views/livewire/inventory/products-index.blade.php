@@ -162,12 +162,12 @@
             <div class="fin-form-grid">
                 <div class="fin-form-group">
                     <label class="fin-label">اسم المنتج <span class="fin-required">*</span></label>
-                    <input class="fin-field" wire:model="name" type="text" placeholder="مثال: مياه معدنية 500 مل" autocomplete="off" required>
+                    <input class="fin-field" wire:model="name" type="text" placeholder="مثال: مياه معدنية 500 مل" autocomplete="off" required minlength="2" maxlength="255">
                 </div>
 
                 <div class="fin-form-group">
                     <label class="fin-label">الباركود (اختياري)</label>
-                    <input class="fin-field" wire:model="barcode" type="text" placeholder="امسح أو اكتب الباركود" autocomplete="off">
+                    <input class="fin-field" wire:model="barcode" type="text" placeholder="امسح أو اكتب الباركود" autocomplete="off" maxlength="100">
                 </div>
 
                 <div class="fin-form-group full fin-category-builder wg-product-fin-category">
@@ -212,7 +212,7 @@
 
                 <div class="fin-form-group">
                     <label class="fin-label">حد تنبيه المخزون <span class="fin-required">*</span></label>
-                    <input class="fin-field" wire:model="minimum_quantity" type="number" min="0" placeholder="0" required>
+                    <input class="fin-field" wire:model="minimum_quantity" type="number" min="0" step="1" placeholder="0" required>
                     <div class="wg-product-fin-help">يظهر تنبيه عندما تصل الكمية لهذا الحد أو أقل.</div>
                 </div>
 
@@ -231,7 +231,7 @@
                 @if(!$showEditModal)
                     <div class="fin-form-group full wg-product-opening-balance">
                         <label class="fin-label">الكمية الموجودة حالياً (اختياري)</label>
-                        <input class="fin-field" wire:model="opening_quantity" type="number" min="0" placeholder="0">
+                        <input class="fin-field" wire:model="opening_quantity" type="number" min="0" step="1" placeholder="0">
                         <div class="wg-product-fin-help">استخدمها للرصيد الافتتاحي فقط؛ أي بضاعة جديدة بعد ذلك تُسجّل من المشتريات.</div>
                     </div>
                 @endif
@@ -256,7 +256,7 @@
 
                 <div class="fin-form-group full">
                     <label class="fin-label">معلومات إضافية (اختياري)</label>
-                    <textarea class="fin-field fin-textarea" wire:model="notes" placeholder="الحجم، النكهة، المورد، أو أي معلومة تساعد في إدارة المنتج..."></textarea>
+                    <textarea class="fin-field fin-textarea" wire:model="notes" maxlength="2000" placeholder="الحجم، النكهة، المورد، أو أي معلومة تساعد في إدارة المنتج..."></textarea>
                 </div>
             </div>
 
