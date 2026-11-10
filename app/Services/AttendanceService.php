@@ -10,6 +10,7 @@ use App\Models\Subscription;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -124,7 +125,14 @@ class AttendanceService
     private function insidePeriod(string $period, CarbonImmutable $now): bool
     {
         $key = $period === 'women' ? 'working_hours.women' : 'working_hours.men';
-        $hours = Setting::where('key', $key)->value('value');
+        $cached = Cache::remember(
+            'winner-gym:setting:'.$key,
+            now()->addMinutes(60),
+            static fn () => [
+                'val' => Setting::where('key', $key)->value('value'),
+            ]
+        );
+        $hours = $cached['val'] ?? null;
 
         if (! is_array($hours) || empty($hours['start']) || empty($hours['end'])) {
             return true;

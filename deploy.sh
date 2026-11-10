@@ -28,16 +28,19 @@ docker compose run --rm app npm run build
 echo "🗄️ Running database migrations..."
 docker compose run --rm app php artisan migrate --force
 
-# 5. تحسين وتوليد الكاش لسرعة استجابة النظام
-echo "⚡ Rebuilding production caches..."
+# 5. تحسين وتوليد الكاش لسرعة استجابة النظام وضبط وضع الإنتاج
+echo "⚡ Rebuilding production caches & tuning environment..."
+sed -i 's/^APP_DEBUG=true/APP_DEBUG=false/' .env.docker .env 2>/dev/null || true
+sed -i 's/^LOG_LEVEL=debug/LOG_LEVEL=error/' .env.docker .env 2>/dev/null || true
 docker compose run --rm app php artisan optimize:clear
 docker compose run --rm app php artisan config:cache
 docker compose run --rm app php artisan route:cache
 docker compose run --rm app php artisan view:cache
 docker compose run --rm app php artisan event:cache
 
-# 6. تصحيح الصلاحيات لضمان عمل الحاويات ومزامنة Git بسلاسة
-echo "🔒 Fixing storage & cache permissions..."
+# 6. تصحيح الصلاحيات وتفريغ السجلات الضخمة لضمان سرعة القرص ومزامنة Git
+echo "🔒 Fixing storage & cache permissions & rotating logs..."
+truncate -s 0 storage/logs/laravel.log 2>/dev/null || true
 docker compose exec -T app chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache || true
 chmod -R 777 storage bootstrap/cache 2>/dev/null || true
 

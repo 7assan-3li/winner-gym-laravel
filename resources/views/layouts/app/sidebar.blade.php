@@ -316,24 +316,33 @@
   function darkGradient(s){if(!s||s==='none')return false;const cs=[...s.matchAll(/rgba?\((\d+)[, ]+\s*(\d+)[, ]+\s*(\d+)/g)].map(m=>[+m[1],+m[2],+m[3],1]);return cs.length>1&&cs.every(c=>lum(c)<72)}
   window.wgHardenLightMode=function(){
     const light=root.classList.contains('wg-light')||root.dataset.wgTheme==='light';
-    document.querySelectorAll('.wg-light-auto-surface').forEach(el=>el.classList.remove('wg-light-auto-surface'));
-    if(!light)return;
+    if(!light){
+      const existing=document.querySelectorAll('.wg-light-auto-surface');
+      if(existing.length)existing.forEach(el=>el.classList.remove('wg-light-auto-surface'));
+      return;
+    }
+    const toAdd=[];
     document.querySelectorAll('.wg-main *, .wg-sidebar *').forEach(el=>{
-      if(el.matches('img,svg,path,circle,line,polyline,polygon,use,canvas,video')||el.matches(skipSelector)||el.closest('.wg-nav a.is-active'))return;
-      const cs=getComputedStyle(el), c=rgb(cs.backgroundColor), rect=el.getBoundingClientRect();
-      const surface=(c&&c[3]>.25&&lum(c)<68)||darkGradient(cs.backgroundImage);
-      if(!surface||rect.width<10||rect.height<10)return;
+      if(el.classList.contains('wg-light-auto-surface')||el.matches('img,svg,path,circle,line,polyline,polygon,use,canvas,video')||el.matches(skipSelector)||el.closest('.wg-nav a.is-active'))return;
       const interactive=/^(A|BUTTON|INPUT|SELECT|TEXTAREA|TD|TH|I|SPAN|DIV)$/.test(el.tagName);
-      const rounded=parseFloat(cs.borderRadius||'0')>0;
-      if(interactive||rounded)el.classList.add('wg-light-auto-surface');
+      if(!interactive)return;
+      const cs=getComputedStyle(el), c=rgb(cs.backgroundColor);
+      const surface=(c&&c[3]>.25&&lum(c)<68)||darkGradient(cs.backgroundImage);
+      if(surface)toAdd.push(el);
     });
+    for(let i=0;i<toAdd.length;i++)toAdd[i].classList.add('wg-light-auto-surface');
   };
   const base=window.wgApplyTheme;
   if(base)window.wgApplyTheme=function(t){base(t);requestAnimationFrame(()=>window.wgHardenLightMode())};
-  let timer; const schedule=()=>{clearTimeout(timer);timer=setTimeout(()=>window.wgHardenLightMode(),35)};
+  let timer;
+  const schedule=()=>{
+    const light=root.classList.contains('wg-light')||root.dataset.wgTheme==='light';
+    if(!light)return;
+    clearTimeout(timer);
+    timer=setTimeout(()=>window.wgHardenLightMode(),80);
+  };
   document.addEventListener('DOMContentLoaded',schedule,{once:true});
   document.addEventListener('livewire:navigated',schedule);
-  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 <script src="{{ asset('winner-gym/money-formatter.js') }}?v=20260903-1"></script>
