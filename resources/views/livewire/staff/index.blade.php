@@ -68,19 +68,54 @@
                 <div class="wg-modal-body">
                     @if($errors->any())<div class="wg-errors" style="margin-bottom:14px">@foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach</div>@endif
                     <div class="wg-two">
-                        <div><label class="wg-label">الاسم الكامل *</label><input wire:model="name" class="wg-field"></div>
-                        <div><label class="wg-label">اسم المستخدم *</label><input wire:model="username" class="wg-field" dir="ltr"></div>
-                        <div><label class="wg-label">البريد الإلكتروني</label><input wire:model="email" class="wg-field" dir="ltr"></div>
-                        @if(!$editingId)<div><label class="wg-label">كلمة مرور مؤقتة *</label><input wire:model="password" type="password" class="wg-field" dir="ltr"></div>@endif
-                        <div><label class="wg-label">الدور الوظيفي *</label><select wire:model.live="role" class="wg-select"><option value="manager">مدير</option><option value="reception">استقبال</option><option value="accountant">محاسب</option><option value="nutritionist">اختصاصي تغذية / طبيب</option></select></div>
+                        <div>
+                            <label class="wg-label">الاسم الكامل *</label>
+                            <input wire:model="name" class="wg-field">
+                            @error('name')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
+                        <div>
+                            <label class="wg-label">اسم المستخدم *</label>
+                            <input wire:model="username" class="wg-field" dir="ltr">
+                            @error('username')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
+                        <div>
+                            <label class="wg-label">البريد الإلكتروني</label>
+                            <input wire:model="email" class="wg-field" dir="ltr">
+                            @error('email')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
+                        @if(!$editingId)
+                        <div>
+                            <label class="wg-label">كلمة مرور مؤقتة *</label>
+                            <input wire:model="password" type="password" class="wg-field" dir="ltr">
+                            @error('password')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
+                        @endif
+                        <div>
+                            <label class="wg-label">الدور الوظيفي *</label>
+                            <select wire:model.live="role" class="wg-select"><option value="manager">مدير</option><option value="reception">استقبال</option><option value="accountant">محاسب</option><option value="nutritionist">اختصاصي تغذية / طبيب</option></select>
+                            @error('role')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
                         <div>
                             <label class="wg-label">اختصاص الطبيب / التخصص المهني @if($role === 'nutritionist')<span style="color:#60a5fa;font-weight:700">(مهم لاختصاصي التغذية)</span>@endif</label>
                             <input wire:model="specialization" class="wg-field" placeholder="مثال: استشاري تغذية علاجية، تغذية رياضية، سمنة ونحافة">
                             <div class="wg-muted" style="font-size:11.5px;margin-top:3px">يحدد مجال وخبرة الطبيب ويظهر للزبائن وعند حجز المواعيد.</div>
+                            @error('specialization')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
-                        <div><label class="wg-label">الفرع</label><select wire:model.live="branch_id" class="wg-select"><option value="">كل الفروع / الإدارة العامة</option>@foreach($branches as $branch)<option value="{{ $branch->id }}">{{ $branch->name }}</option>@endforeach</select></div>
-                        <div><label class="wg-label">الفترة المحددة</label><select wire:model="gym_period_id" class="wg-select"><option value="">بدون فترة محددة</option>@foreach($periods as $period)@if($branch_id === '' || (string)$period->branch_id === $branch_id)<option value="{{ $period->id }}">{{ $period->name }} — {{ $period->branch?->name }}</option>@endif @endforeach</select></div>
-                        <div><label class="wg-label">نطاق العمل عند عدم تحديد فترة</label><select wire:model="work_period" class="wg-select"><option value="both">مرن / رجال ونساء</option><option value="men">فترات الرجال</option><option value="women">فترات النساء</option></select></div>
+                        <div>
+                            <label class="wg-label">الفرع</label>
+                            <select wire:model.live="branch_id" class="wg-select"><option value="">كل الفروع / الإدارة العامة</option>@foreach($branches as $branch)<option value="{{ $branch->id }}">{{ $branch->name }}</option>@endforeach</select>
+                            @error('branch_id')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
+                        <div>
+                            <label class="wg-label">الفترة المحددة</label>
+                            <select wire:model="gym_period_id" class="wg-select"><option value="">بدون فترة محددة</option>@foreach($periods as $period)@if($branch_id === '' || (string)$period->branch_id === $branch_id)<option value="{{ $period->id }}">{{ $period->name }} — {{ $period->branch?->name }}</option>@endif @endforeach</select>
+                            @error('gym_period_id')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
+                        <div>
+                            <label class="wg-label">نطاق العمل عند عدم تحديد فترة</label>
+                            <select wire:model="work_period" class="wg-select"><option value="both">مرن / رجال ونساء</option><option value="men">فترات الرجال</option><option value="women">فترات النساء</option></select>
+                            @error('work_period')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
+                        </div>
                     </div>
                 </div>
                 <div class="wg-modal-foot"><button class="wg-btn wg-btn-primary">{{ $editingId ? 'حفظ التعديلات' : 'إنشاء الحساب' }}</button><button type="button" wire:click="closeEditor" class="wg-btn">إلغاء</button></div>

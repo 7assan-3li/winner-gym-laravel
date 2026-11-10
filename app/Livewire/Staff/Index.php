@@ -7,6 +7,7 @@ use App\Models\GymPeriod;
 use App\Models\User;
 use App\Services\StaffService;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -120,31 +121,81 @@ class Index extends Component
             'role' => ['required', Rule::in(['manager', 'reception', 'accountant', 'nutritionist'])],
             'specialization' => ['nullable', 'string', 'max:120'],
             'work_period' => ['required', Rule::in(['men', 'women', 'both'])],
-            'branch_id' => ['nullable', 'integer', 'exists:branches,id'],
-            'gym_period_id' => ['nullable', 'integer', 'exists:gym_periods,id'],
+            'branch_id' => ['nullable', Rule::when(filled($this->branch_id), ['integer', 'exists:branches,id'])],
+            'gym_period_id' => ['nullable', Rule::when(filled($this->gym_period_id), ['integer', 'exists:gym_periods,id'])],
         ];
         if (! $this->editingId) {
             $rules['password'] = ['required', 'string', 'min:8'];
         }
 
-        $data = $this->validate($rules);
-        $data['password'] = $this->password;
+        $messages = [
+            'name.required' => 'حقل الاسم الكامل مطلوب.',
+            'name.string' => 'الاسم يجب أن يكون نصًا صالحًا.',
+            'name.max' => 'الاسم يجب ألا يتجاوز 255 حرفًا.',
+            'username.required' => 'حقل اسم المستخدم مطلوب.',
+            'username.min' => 'اسم المستخدم يجب ألا يقل عن 3 أحرف.',
+            'username.max' => 'اسم المستخدم يجب ألا يتجاوز 60 حرفًا.',
+            'username.regex' => 'اسم المستخدم يقبل فقط الحروف الإنجليزية والأرقام والنقاط والشرطات.',
+            'username.unique' => 'اسم المستخدم هذا مستخدم مسبقًا.',
+            'email.email' => 'البريد الإلكتروني غير صالح.',
+            'email.unique' => 'البريد الإلكتروني هذا مستخدم مسبقًا.',
+            'password.required' => 'حقل كلمة المرور مطلوب.',
+            'password.min' => 'كلمة المرور يجب ألا تقل عن 8 أحرف.',
+            'role.required' => 'حقل الدور الوظيفي مطلوب.',
+            'role.in' => 'الدور الوظيفي المختار غير صالح.',
+            'work_period.required' => 'حقل نطاق العمل مطلوب.',
+            'work_period.in' => 'نطاق العمل المختار غير صالح.',
+            'branch_id.integer' => 'الفرع المختار غير صالح.',
+            'branch_id.exists' => 'الفرع المختار غير موجود في النظام.',
+            'gym_period_id.integer' => 'الفترة المختارة غير صالحة.',
+            'gym_period_id.exists' => 'الفترة المختارة غير موجودة في النظام.',
+        ];
 
-        if ($this->gym_period_id !== '') {
-            $period = GymPeriod::find($this->gym_period_id);
-            if ($period && $this->branch_id !== '' && (string) $period->branch_id !== $this->branch_id) {
+        try {
+            $data = $this->validate($rules, $messages);
+        } catch (ValidationException $e) {
+            foreach ($e->errors() as $key => $msgs) {
+                foreach ((array) $msgs as $msg) {
+                    $this->addError($key, $msg);
+                }
+            }
+
+            return;
+        }
+
+        $data['password'] = $this->password;
+        $data['branch_id'] = filled($this->branch_id) ? (int) $this->branch_id : null;
+        $data['gym_period_id'] = filled($this->gym_period_id) ? (int) $this->gym_period_id : null;
+
+        if ($data['gym_period_id']) {
+            $period = GymPeriod::find($data['gym_period_id']);
+            if ($period && $data['branch_id'] && (int) $period->branch_id !== (int) $data['branch_id']) {
                 $this->addError('gym_period_id', 'الفترة المختارة لا تتبع الفرع المحدد.');
 
                 return;
             }
         }
 
-        if ($this->editingId) {
-            $service->update(User::findOrFail($this->editingId), $data, auth()->user());
-            session()->flash('success', 'تم تحديث بيانات الموظف.');
-        } else {
-            $service->create($data, auth()->user());
-            session()->flash('success', 'تم إنشاء حساب الموظف.');
+        try {
+            if ($this->editingId) {
+                $service->update(User::findOrFail($this->editingId), $data, auth()->user());
+                session()->flash('success', 'تم تحديث بيانات الموظف بنجاح.');
+            } else {
+                $service->create($data, auth()->user());
+                session()->flash('success', 'تم إنشاء حساب الموظف بنجاح.');
+            }
+        } catch (ValidationException $e) {
+            foreach ($e->errors() as $key => $msgs) {
+                foreach ((array) $msgs as $msg) {
+                    $this->addError($key, $msg);
+                }
+            }
+
+            return;
+        } catch (\Throwable $e) {
+            $this->addError('name', 'حدث خطأ أثناء حفظ البيانات: '.$e->getMessage());
+
+            return;
         }
 
         $this->showEditor = false;
@@ -166,11 +217,29 @@ class Index extends Component
 
     public function resetPassword(StaffService $service): void
     {
-        $this->validate(['new_password' => ['required', 'string', 'min:8']]);
-        $service->resetPassword(User::findOrFail($this->passwordUserId), $this->new_password, auth()->user());
-        $this->showPassword = false;
-        $this->new_password = '';
-        session()->flash('success', 'تم تعيين كلمة مرور مؤقتة وسيطلب النظام تغييرها عند الدخول.');
+        try {
+            $this->validate(
+                ['new_password' => ['required', 'string', 'min:8']],
+                ['new_password.required' => 'حقل كلمة المرور مطلوب.', 'new_password.min' => 'كلمة المرور يجب ألا تقل عن 8 أحرف.']
+            );
+        } catch (ValidationException $e) {
+            foreach ($e->errors() as $key => $msgs) {
+                foreach ((array) $msgs as $msg) {
+                    $this->addError($key, $msg);
+                }
+            }
+
+            return;
+        }
+
+        try {
+            $service->resetPassword(User::findOrFail($this->passwordUserId), $this->new_password, auth()->user());
+            $this->showPassword = false;
+            $this->new_password = '';
+            session()->flash('success', 'تم تعيين كلمة مرور مؤقتة وسيطلب النظام تغييرها عند الدخول.');
+        } catch (\Throwable $e) {
+            $this->addError('new_password', 'تعذر إعادة تعيين كلمة المرور: '.$e->getMessage());
+        }
     }
 
     public function closeEditor(): void
