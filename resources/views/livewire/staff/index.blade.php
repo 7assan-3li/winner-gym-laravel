@@ -70,34 +70,39 @@
                     <div class="wg-two">
                         <div>
                             <label class="wg-label">الاسم الكامل *</label>
-                            <input wire:model="name" class="wg-field">
+                            <input wire:model="name" class="wg-field" required minlength="3" maxlength="255" placeholder="الاسم الكامل ثلاثياً أو رباعياً" autocomplete="name">
                             @error('name')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
                         <div>
                             <label class="wg-label">اسم المستخدم *</label>
-                            <input wire:model="username" class="wg-field" dir="ltr">
+                            <input wire:model="username" class="wg-field" dir="ltr" required minlength="3" maxlength="60" pattern="^[A-Za-z0-9._-]+$" placeholder="مثال: ahmed.ali" title="اسم المستخدم يجب أن يتكون من 3 أحرف على الأقل، ويقبل فقط الحروف الإنجليزية والأرقام والنقاط والشرطات" autocomplete="username" spellcheck="false">
                             @error('username')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
                         <div>
                             <label class="wg-label">البريد الإلكتروني</label>
-                            <input wire:model="email" class="wg-field" dir="ltr">
+                            <input wire:model="email" type="email" class="wg-field" dir="ltr" maxlength="255" placeholder="example@domain.com" autocomplete="email" spellcheck="false">
                             @error('email')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
                         @if(!$editingId)
                         <div>
                             <label class="wg-label">كلمة مرور مؤقتة *</label>
-                            <input wire:model="password" type="password" class="wg-field" dir="ltr">
+                            <input wire:model="password" type="password" class="wg-field" dir="ltr" required minlength="8" maxlength="100" placeholder="8 خانات على الأقل" autocomplete="new-password">
                             @error('password')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
                         @endif
                         <div>
                             <label class="wg-label">الدور الوظيفي *</label>
-                            <select wire:model.live="role" class="wg-select"><option value="manager">مدير</option><option value="reception">استقبال</option><option value="accountant">محاسب</option><option value="nutritionist">اختصاصي تغذية / طبيب</option></select>
+                            <select wire:model.live="role" class="wg-select" required>
+                                <option value="manager">مدير</option>
+                                <option value="reception">استقبال</option>
+                                <option value="accountant">محاسب</option>
+                                <option value="nutritionist">اختصاصي تغذية / طبيب</option>
+                            </select>
                             @error('role')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
                         <div>
                             <label class="wg-label">اختصاص الطبيب / التخصص المهني @if($role === 'nutritionist')<span style="color:#60a5fa;font-weight:700">(مهم لاختصاصي التغذية)</span>@endif</label>
-                            <input wire:model="specialization" class="wg-field" placeholder="مثال: استشاري تغذية علاجية، تغذية رياضية، سمنة ونحافة">
+                            <input wire:model="specialization" class="wg-field" maxlength="120" placeholder="مثال: استشاري تغذية علاجية، تغذية رياضية، سمنة ونحافة">
                             <div class="wg-muted" style="font-size:11.5px;margin-top:3px">يحدد مجال وخبرة الطبيب ويظهر للزبائن وعند حجز المواعيد.</div>
                             @error('specialization')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
@@ -113,7 +118,11 @@
                         </div>
                         <div>
                             <label class="wg-label">نطاق العمل عند عدم تحديد فترة</label>
-                            <select wire:model="work_period" class="wg-select"><option value="both">مرن / رجال ونساء</option><option value="men">فترات الرجال</option><option value="women">فترات النساء</option></select>
+                            <select wire:model="work_period" class="wg-select" required>
+                                <option value="both">مرن / رجال ونساء</option>
+                                <option value="men">فترات الرجال</option>
+                                <option value="women">فترات النساء</option>
+                            </select>
                             @error('work_period')<div class="wg-red" style="font-size:12px;margin-top:4px">{{ $message }}</div>@enderror
                         </div>
                     </div>
@@ -128,7 +137,18 @@
     <div class="wg-modal-backdrop">
         <div class="wg-modal" dir="rtl">
             <div class="wg-modal-head"><h2 class="wg-section-title">إعادة تعيين كلمة المرور</h2><button wire:click="$set('showPassword',false)" class="wg-modal-x">×</button></div>
-            <form wire:submit="resetPassword"><div class="wg-modal-body"><label class="wg-label">كلمة المرور المؤقتة الجديدة *</label><input wire:model="new_password" type="password" class="wg-field" dir="ltr"><div class="wg-muted" style="font-size:12px;margin-top:8px">سيطلب النظام من الموظف تغييرها بعد تسجيل الدخول.</div>@error('new_password')<div class="wg-red" style="font-size:12px;margin-top:6px">{{ $message }}</div>@enderror</div><div class="wg-modal-foot"><button class="wg-btn wg-btn-primary">حفظ كلمة المرور</button><button type="button" wire:click="$set('showPassword',false)" class="wg-btn">إلغاء</button></div></form>
+            <form wire:submit="resetPassword">
+                <div class="wg-modal-body">
+                    <label class="wg-label">كلمة المرور المؤقتة الجديدة *</label>
+                    <input wire:model="new_password" type="password" class="wg-field" dir="ltr" required minlength="8" maxlength="100" placeholder="8 خانات على الأقل" autocomplete="new-password">
+                    <div class="wg-muted" style="font-size:12px;margin-top:8px">سيطلب النظام من الموظف تغييرها بعد تسجيل الدخول.</div>
+                    @error('new_password')<div class="wg-red" style="font-size:12px;margin-top:6px">{{ $message }}</div>@enderror
+                </div>
+                <div class="wg-modal-foot">
+                    <button class="wg-btn wg-btn-primary">حفظ كلمة المرور</button>
+                    <button type="button" wire:click="$set('showPassword',false)" class="wg-btn">إلغاء</button>
+                </div>
+            </form>
         </div>
     </div>
     @endif

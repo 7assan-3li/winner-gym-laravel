@@ -18,6 +18,7 @@
                 :label="__('New password')"
                 type="password"
                 required
+                minlength="8"
                 autocomplete="new-password"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable
@@ -27,6 +28,7 @@
                 :label="__('Confirm password')"
                 type="password"
                 required
+                minlength="8"
                 autocomplete="new-password"
                 passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
                 viewable
