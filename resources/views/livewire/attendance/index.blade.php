@@ -31,6 +31,9 @@
                             wire:model="identifier"
                             data-attendance-input
                             autocomplete="off"
+                            required
+                            minlength="2"
+                            maxlength="60"
                             autofocus
                             placeholder="امسح الكود أو اكتب كود العضوية / رقم الهاتف..."
                         >

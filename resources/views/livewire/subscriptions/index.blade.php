@@ -429,21 +429,21 @@
                         <div class="wg-two">
                             <div>
                                 <label class="wg-label">العضو *</label>
-                                <select x-model="memberId" x-on:change="setMember($event.target.value)" class="wg-select">
+                                <select x-model="memberId" x-on:change="setMember($event.target.value)" class="wg-select" required>
                                     <option value="">اختر العضو</option>
                                     @foreach($members as $m)<option value="{{ $m->id }}">{{ $m->full_name }} - {{ $m->membership_code }}</option>@endforeach
                                 </select>
                             </div>
                             <div>
                                 <label class="wg-label">الباقة *</label>
-                                <select x-model="packageId" x-on:change="setPackage($event.target.value)" class="wg-select">
+                                <select x-model="packageId" x-on:change="setPackage($event.target.value)" class="wg-select" required>
                                     <option value="">اختر الباقة</option>
                                     @foreach($packages as $p)<option value="{{ $p->id }}">{{ $p->name }}</option>@endforeach
                                 </select>
                             </div>
-                            <div><label class="wg-label">الفترة *</label><select x-model="period" x-on:change="$wire.$set('period',period,false)" class="wg-select"><option value="men">رجال</option><option value="women">نساء</option></select></div>
-                            <div><label class="wg-label">تاريخ البداية *</label><input x-model="startDate" x-on:change="$wire.$set('start_date',startDate,false)" type="date" class="wg-field"></div>
-                            <div><label class="wg-label">العملة *</label><select x-model="currency" x-on:change="setCurrency($event.target.value)" class="wg-select"><option value="YER">YER - ريال يمني</option><option value="SAR">SAR - ريال سعودي</option></select></div>
+                            <div><label class="wg-label">الفترة *</label><select x-model="period" x-on:change="$wire.$set('period',period,false)" class="wg-select" required><option value="men">رجال</option><option value="women">نساء</option></select></div>
+                            <div><label class="wg-label">تاريخ البداية *</label><input x-model="startDate" x-on:change="$wire.$set('start_date',startDate,false)" type="date" class="wg-field" required></div>
+                            <div><label class="wg-label">العملة *</label><select x-model="currency" x-on:change="setCurrency($event.target.value)" class="wg-select" required><option value="YER">YER - ريال يمني</option><option value="SAR">SAR - ريال سعودي</option></select></div>
                             <div class="wg-card wg-card-pad">
                                 <div class="wg-label">السعر من الباقة</div>
                                 <div class="wg-kpi-money" :class="basePrice()>0 ? 'wg-blue' : 'wg-muted'" x-text="money(basePrice())"></div>
@@ -585,7 +585,7 @@
                     <div class="wg-sub-collection-grid">
                         <label>
                             <span>مبلغ القسط *</span>
-                            <input type="text" inputmode="decimal" x-money wire:model="collectionAmount" class="wg-field wg-money-input" placeholder="0">
+                            <input type="text" inputmode="decimal" x-money wire:model="collectionAmount" class="wg-field wg-money-input" placeholder="0" required>
                             <small>يجب أن يطابق قيمة القسط المستحق.</small>
                             @error('collectionAmount')<b class="wg-sub-field-error">{{ $message }}</b>@enderror
                             @error('collectionInstallmentId')<b class="wg-sub-field-error">{{ $message }}</b>@enderror
@@ -597,7 +597,7 @@
                         </label>
                         <label class="wg-sub-collection-full">
                             <span>طريقة الدفع *</span>
-                            <select wire:model.live="collectionMethod" class="wg-select">
+                            <select wire:model.live="collectionMethod" class="wg-select" required>
                                 <option value="cash">نقدي</option>
                                 <option value="transfer">تحويل / صرافة</option>
                             </select>
@@ -607,12 +607,12 @@
                         @if($collectionMethod === 'transfer')
                             <label>
                                 <span>خدمة التحويل *</span>
-                                <input wire:model="collectionTransferService" class="wg-field" placeholder="اسم الصرافة أو الخدمة">
+                                <input wire:model="collectionTransferService" class="wg-field" placeholder="اسم الصرافة أو الخدمة" required>
                                 @error('collectionTransferService')<b class="wg-sub-field-error">{{ $message }}</b>@enderror
                             </label>
                             <label>
                                 <span>رقم المرجع @if($requireTransferReference)*@else (اختياري)@endif</span>
-                                <input wire:model="collectionTransferReference" class="wg-field" placeholder="رقم الحوالة أو المرجع">
+                                <input wire:model="collectionTransferReference" class="wg-field" placeholder="رقم الحوالة أو المرجع" @if($requireTransferReference) required @endif>
                                 @error('collectionTransferReference')<b class="wg-sub-field-error">{{ $message }}</b>@enderror
                             </label>
                                 <label class="wg-sub-collection-full"><span>سند التحويل @if($requirePaymentProof)*@else (اختياري)@endif</span><input wire:model="collectionPaymentProof" type="file" accept=".jpg,.jpeg,.png,.pdf" class="wg-field"><small wire:loading wire:target="collectionPaymentProof">جارٍ رفع السند...</small>@error('collectionPaymentProof')<b class="wg-sub-field-error">{{ $message }}</b>@enderror</label>

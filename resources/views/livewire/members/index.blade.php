@@ -375,16 +375,16 @@
                 </div>
                 <div class="wg-members-modal-body">
                     <div class="wg-members-form-grid">
-                        <label><span>الاسم الكامل <b>*</b></span><input wire:model="full_name" placeholder="أدخل الاسم الكامل"></label>
-                        <label><span>رقم الهاتف <b>*</b></span><input wire:model="phone" dir="ltr" placeholder="777123456"></label>
-                        <label><span>الجنس <b>*</b></span><select wire:model.live="gender"><option value="male">ذكر</option><option value="female">أنثى</option></select></label>
-                        <label><span>فترة العضو <b>*</b></span><select wire:model="assigned_period"><option value="men">فترة الرجال</option><option value="women">فترة النساء</option></select></label>
-                        <label><span>تاريخ الميلاد</span><input wire:model="birth_date" type="date"></label>
-                        <label><span>أو العمر</span><input wire:model="age" type="number" min="5" max="100" placeholder="العمر"></label>
-                        <label><span>العنوان (اختياري)</span><input wire:model="address" placeholder="العنوان"></label>
-                        <label><span>رقم الهوية (اختياري)</span><input wire:model="identity_number" placeholder="رقم الهوية"></label>
+                        <label><span>الاسم الكامل <b>*</b></span><input wire:model="full_name" required minlength="3" maxlength="255" placeholder="أدخل الاسم الكامل" autocomplete="name"></label>
+                        <label><span>رقم الهاتف <b>*</b></span><input wire:model="phone" type="tel" dir="ltr" required pattern="^[0-9+ ]{7,20}$" minlength="7" maxlength="30" placeholder="777123456" title="رقم الهاتف يجب أن يحتوي على أرقام فقط بين 7 و 20 رقماً" autocomplete="tel"></label>
+                        <label><span>الجنس <b>*</b></span><select wire:model.live="gender" required><option value="male">ذكر</option><option value="female">أنثى</option></select></label>
+                        <label><span>فترة العضو <b>*</b></span><select wire:model="assigned_period" required><option value="men">فترة الرجال</option><option value="women">فترة النساء</option></select></label>
+                        <label><span>تاريخ الميلاد</span><input wire:model="birth_date" type="date" max="{{ date('Y-m-d') }}"></label>
+                        <label><span>أو العمر</span><input wire:model="age" type="number" min="5" max="100" step="1" placeholder="العمر"></label>
+                        <label><span>العنوان (اختياري)</span><input wire:model="address" maxlength="255" placeholder="العنوان"></label>
+                        <label><span>رقم الهوية (اختياري)</span><input wire:model="identity_number" maxlength="100" placeholder="رقم الهوية"></label>
                     </div>
-                    <label class="wg-members-full-field"><span>ملاحظات (اختياري)</span><textarea wire:model="notes" placeholder="أي ملاحظات إضافية..."></textarea></label>
+                    <label class="wg-members-full-field"><span>ملاحظات (اختياري)</span><textarea wire:model="notes" maxlength="3000" placeholder="أي ملاحظات إضافية..."></textarea></label>
                     <div class="wg-members-info-strip">يجب إدخال تاريخ الميلاد أو العمر. حالة العضو تبدأ «نشط». الاشتراك سجل مستقل ويمكن إضافته مباشرة من قائمة المزيد أو من شاشة تفاصيل العضو بعد الحفظ.</div>
                 </div>
                 <div class="wg-members-modal-foot">
@@ -455,16 +455,16 @@
                 </div>
                 <div class="wg-members-modal-body">
                     <div class="wg-members-form-grid">
-                        <label><span>الاسم الكامل <b>*</b></span><input wire:model="edit_full_name"></label>
-                        <label><span>رقم الهاتف <b>*</b></span><input wire:model="edit_phone" dir="ltr"></label>
-                        <label><span>الجنس <b>*</b></span><select wire:model="edit_gender"><option value="male">ذكر</option><option value="female">أنثى</option></select></label>
-                        <label><span>الفترة <b>*</b></span><select wire:model="edit_assigned_period"><option value="men">فترة الرجال</option><option value="women">فترة النساء</option></select></label>
-                        <label><span>تاريخ الميلاد</span><input wire:model="edit_birth_date" type="date"></label>
-                        <label><span>أو العمر</span><input wire:model="edit_age" type="number" min="5" max="100"></label>
-                        <label><span>العنوان (اختياري)</span><input wire:model="edit_address"></label>
-                        <label><span>رقم الهوية (اختياري)</span><input wire:model="edit_identity_number"></label>
+                        <label><span>الاسم الكامل <b>*</b></span><input wire:model="edit_full_name" required minlength="3" maxlength="255" autocomplete="name"></label>
+                        <label><span>رقم الهاتف <b>*</b></span><input wire:model="edit_phone" type="tel" dir="ltr" required pattern="^[0-9+ ]{7,20}$" minlength="7" maxlength="30" title="رقم الهاتف يجب أن يحتوي على أرقام فقط بين 7 و 20 رقماً" autocomplete="tel"></label>
+                        <label><span>الجنس <b>*</b></span><select wire:model="edit_gender" required><option value="male">ذكر</option><option value="female">أنثى</option></select></label>
+                        <label><span>الفترة <b>*</b></span><select wire:model="edit_assigned_period" required><option value="men">فترة الرجال</option><option value="women">فترة النساء</option></select></label>
+                        <label><span>تاريخ الميلاد</span><input wire:model="edit_birth_date" type="date" max="{{ date('Y-m-d') }}"></label>
+                        <label><span>أو العمر</span><input wire:model="edit_age" type="number" min="5" max="100" step="1"></label>
+                        <label><span>العنوان (اختياري)</span><input wire:model="edit_address" maxlength="255"></label>
+                        <label><span>رقم الهوية (اختياري)</span><input wire:model="edit_identity_number" maxlength="100"></label>
                     </div>
-                    <label class="wg-members-full-field"><span>ملاحظات (اختياري)</span><textarea wire:model="edit_notes"></textarea></label>
+                    <label class="wg-members-full-field"><span>ملاحظات (اختياري)</span><textarea wire:model="edit_notes" maxlength="3000"></textarea></label>
                     <div class="wg-members-info-strip">حالة العضو لا تُعدّل من هذه النافذة؛ استخدم تعليق / إعادة تفعيل / أرشفة للحفاظ على سجل التدقيق.</div>
                 </div>
                 <div class="wg-members-modal-foot">
@@ -485,7 +485,7 @@
                 <p>سيتم منع العضو من تسجيل الدخول والحضور حتى يتم إلغاء التعليق.</p>
                 <div class="wg-members-confirm-member" x-show="selectedMember"><strong x-text="selectedMember?.full_name"></strong><span dir="ltr" x-text="selectedMember?.membership_code"></span></div>
                 <label class="wg-members-full-field"><span>سبب التعليق <b>*</b></span>
-                    <select wire:model="suspension_reason">
+                    <select wire:model="suspension_reason" required>
                         <option value="">اختر سبب التعليق</option>
                         <option value="طلب العضو">طلب العضو</option>
                         <option value="قرار إداري">قرار إداري</option>

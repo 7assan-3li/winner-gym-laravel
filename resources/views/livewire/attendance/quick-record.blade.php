@@ -44,6 +44,9 @@
                         wire:model="identifier"
                         data-wg-quick-attendance-input
                         autocomplete="off"
+                        required
+                        minlength="2"
+                        maxlength="60"
                         placeholder="امسح الكود أو اكتب بيانات العضو..."
                     >
                     <svg class="wg-quick-attendance-scan" viewBox="0 0 24 24"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M8 8h2v2H8zM14 8h2v2h-2zM8 14h2v2H8zM14 14h2v2h-2z"/></svg>
