@@ -8,9 +8,12 @@ echo "=========================================="
 # الانتقال لمجلد المشروع
 cd "$(dirname "$0")"
 
-# 1. سحب أحدث كود من GitHub
-echo "📥 Pulling latest changes from Git..."
-git pull origin main
+# 1. سحب أحدث كود من GitHub (في حالة التشغيل اليدوي)
+if [ -z "$CI" ] && [ -z "$GITHUB_ACTIONS" ]; then
+    echo "📥 Pulling latest changes from Git..."
+    git fetch origin main
+    git reset --hard origin/main
+fi
 
 # 2. تحديث حزم Composer للإنتاج
 echo "📦 Installing Composer dependencies..."
@@ -33,10 +36,10 @@ docker compose run --rm app php artisan route:cache
 docker compose run --rm app php artisan view:cache
 docker compose run --rm app php artisan event:cache
 
-# 6. تصحيح الصلاحيات بعد أوامر التثبيت والكاش
+# 6. تصحيح الصلاحيات لضمان عمل الحاويات ومزامنة Git بسلاسة
 echo "🔒 Fixing storage & cache permissions..."
-docker compose exec -T app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
-docker compose exec -T app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
+docker compose exec -T app chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache || true
+chmod -R 777 storage bootstrap/cache 2>/dev/null || true
 
 # 7. إعادة تشغيل الـ App و Queue Workers والمجدول
 echo "🔄 Restarting PHP-FPM, Queue Workers & Scheduler..."

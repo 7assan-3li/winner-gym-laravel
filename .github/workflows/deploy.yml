@@ -60,10 +60,11 @@ jobs:
           script_stop: true
           script: |
             cd /home/hasan/apps/winner-gym
+            docker compose exec -T app chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || docker run --rm -v /home/hasan/apps/winner-gym:/app alpine chmod -R 777 /app/storage /app/bootstrap/cache 2>/dev/null || true
             git fetch origin main
             git reset --hard origin/main
             chmod +x deploy.sh
-            ./deploy.sh
+            CI=true ./deploy.sh
 
       - name: Verify Application Health Check
         run: |
