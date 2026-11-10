@@ -505,7 +505,7 @@ class Index extends Component
         ]);
     }
 
-    /** @return list<array<string, mixed>> */
+    /** @return array<int, array<string, mixed>> */
     private function memberOptions(): array
     {
         return Cache::remember('winner-gym:subscriptions:member_options', now()->addMinutes(10), function (): array {
@@ -522,7 +522,7 @@ class Index extends Component
         });
     }
 
-    /** @return array{active: list<array<string, mixed>>, all: list<array<string, mixed>>} */
+    /** @return array{active: array<int, array<string, mixed>>, all: array<int, array<string, mixed>>} */
     private function packageOptions(): array
     {
         return Cache::remember('winner-gym:subscriptions:package_options', now()->addMinutes(30), function (): array {
