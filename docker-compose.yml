@@ -8,6 +8,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
+      - ./docker/php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro
     env_file:
       - .env.docker
     depends_on:
@@ -79,6 +80,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
+      - ./docker/php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro
     env_file:
       - .env.docker
     command: php artisan queue:work --sleep=1 --tries=3 --timeout=120
@@ -97,6 +99,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
+      - ./docker/php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro
     env_file:
       - .env.docker
     command: php artisan schedule:work

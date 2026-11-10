@@ -41,9 +41,10 @@ echo "🔒 Fixing storage & cache permissions..."
 docker compose exec -T app chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache || true
 chmod -R 777 storage bootstrap/cache 2>/dev/null || true
 
-# 7. إعادة تشغيل الـ App و Queue Workers والمجدول
-echo "🔄 Restarting PHP-FPM, Queue Workers & Scheduler..."
+# 7. تطبيق التغييرات وإعادة تشغيل PHP-FPM, Queue Workers والمجدول
+echo "🔄 Updating & Restarting PHP-FPM, Queue Workers & Scheduler..."
 docker compose exec -T app php artisan queue:restart || true
+docker compose up -d app queue scheduler
 docker compose restart app queue scheduler
 
 # 8. إعادة تحميل خادم Nginx بنعومة
