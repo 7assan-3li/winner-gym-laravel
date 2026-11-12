@@ -215,6 +215,12 @@ class Index extends Component
         $this->showPassword = true;
     }
 
+    public function generateRandomPassword(): void
+    {
+        $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $this->new_password = 'Win#'.substr(str_shuffle($chars), 0, 6);
+    }
+
     public function resetPassword(StaffService $service): void
     {
         try {

@@ -178,6 +178,10 @@
                         </div>
                         <div class="wg-user-menu-row"><span>فترة العمل</span><strong>{{ $u->gymPeriod?->name ?? ($u->work_period === 'both' ? 'مرن / كل الفترات' : ($u->work_period === 'men' ? 'فترات الرجال' : 'فترات النساء')) }}</strong></div>
                         <div class="wg-user-menu-row"><span>آخر دخول</span><strong>{{ $u->last_login_at ? $u->last_login_at->timezone('Asia/Aden')->format('h:i A') : 'اليوم' }}</strong></div>
+                        <button type="button" class="wg-user-menu-btn" onclick="window.dispatchEvent(new CustomEvent('wg-open-change-password')); this.closest('details')?.removeAttribute('open');" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;background:none;border:none;border-top:1px solid rgba(255,255,255,0.08);color:inherit;font-size:12px;font-weight:700;cursor:pointer;text-align:right;">
+                            <span style="font-size:14px;">🔑</span>
+                            <span>تغيير كلمة المرور</span>
+                        </button>
                         <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit"><span>↪</span> تسجيل الخروج</button></form>
                     </div>
                 </details>
@@ -346,6 +350,7 @@
 })();
 </script>
 <script src="{{ asset('winner-gym/money-formatter.js') }}?v=20260903-1"></script>
+<livewire:auth.change-password-modal />
 @livewireScripts
 @fluxScripts
 </body>

@@ -134,19 +134,38 @@
     @endif
 
     @if($showPassword)
-    <div class="wg-modal-backdrop">
-        <div class="wg-modal" dir="rtl">
-            <div class="wg-modal-head"><h2 class="wg-section-title">إعادة تعيين كلمة المرور</h2><button wire:click="$set('showPassword',false)" class="wg-modal-x">×</button></div>
-            <form wire:submit="resetPassword">
-                <div class="wg-modal-body">
-                    <label class="wg-label">كلمة المرور المؤقتة الجديدة *</label>
-                    <input wire:model="new_password" type="password" class="wg-field" dir="ltr" required minlength="8" maxlength="100" placeholder="8 خانات على الأقل" autocomplete="new-password">
-                    <div class="wg-muted" style="font-size:12px;margin-top:8px">سيطلب النظام من الموظف تغييرها بعد تسجيل الدخول.</div>
-                    @error('new_password')<div class="wg-red" style="font-size:12px;margin-top:6px">{{ $message }}</div>@enderror
+    <div class="wg-modal-backdrop" style="position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px;">
+        <div class="wg-modal" dir="rtl" x-data="{ showPw: true }" style="max-width:440px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.12);background:var(--wg-card-bg, #1e293b);border-radius:12px;overflow:hidden;">
+            <div class="wg-modal-head" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span>🔑</span>
+                    <h2 class="wg-section-title" style="margin:0;font-size:15px;font-weight:800;">إعادة تعيين كلمة المرور</h2>
                 </div>
-                <div class="wg-modal-foot">
-                    <button class="wg-btn wg-btn-primary">حفظ كلمة المرور</button>
+                <button type="button" wire:click="$set('showPassword',false)" class="wg-modal-x" style="background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;">×</button>
+            </div>
+            <form wire:submit="resetPassword">
+                <div class="wg-modal-body" style="padding:20px;display:grid;gap:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <label class="wg-label" style="font-size:12px;font-weight:700;">كلمة المرور المؤقتة الجديدة *</label>
+                        <button type="button" wire:click="generateRandomPassword" class="wg-btn" style="padding:3px 8px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">
+                            <span>🎲</span> توليد عشوائي
+                        </button>
+                    </div>
+                    <input wire:model="new_password" x-bind:type="showPw ? 'text' : 'password'" class="wg-field" dir="ltr" required minlength="8" maxlength="100" placeholder="8 خانات على الأقل" autocomplete="new-password">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px;">
+                        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#94a3b8;cursor:pointer;">
+                            <input type="checkbox" x-model="showPw">
+                            <span>إظهار كلمة المرور</span>
+                        </label>
+                    </div>
+                    <div class="wg-muted" style="font-size:11px;margin-top:4px;color:#f59e0b;background:rgba(245,158,11,0.08);padding:8px 12px;border-radius:6px;border:1px solid rgba(245,158,11,0.2);">
+                        ⚠️ سيطلب النظام من الموظف تعيين كلمة مرور جديدة فور تسجيل دخوله القادم.
+                    </div>
+                    @error('new_password')<div class="wg-red" style="font-size:12px;margin-top:4px;color:#f87171;">{{ $message }}</div>@enderror
+                </div>
+                <div class="wg-modal-foot" style="display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);">
                     <button type="button" wire:click="$set('showPassword',false)" class="wg-btn">إلغاء</button>
+                    <button type="submit" class="wg-btn wg-btn-primary">حفظ كلمة المرور</button>
                 </div>
             </form>
         </div>
