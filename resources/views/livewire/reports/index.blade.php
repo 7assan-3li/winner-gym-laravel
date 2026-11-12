@@ -299,16 +299,15 @@
                     .wg-print-table th { background: #f0f0f0 !important; }
                 }
             </style>
-            <div style="border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:16px;text-align:center">
-                <h2 style="font-size:20px;font-weight:900;margin:0">WINNER GYM — صالة وينر الرياضية</h2>
-                <h3 style="font-size:16px;font-weight:800;margin:6px 0 0">كشف تسوية وإقفال وردية الصندوق (Handover Summary)</h3>
-                <div style="font-size:12px;margin-top:4px">تاريخ التقرير: {{ $shiftDate }} | العملة: {{ $shiftCurrency }}</div>
-            </div>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;font-size:12.5px">
-                <div>المحاسب المسلّم: <strong>{{ $shiftData['cashier_name'] }}</strong></div>
-                <div>وقت الطباعة: <strong>{{ now('Asia/Aden')->format('Y-m-d h:i A') }}</strong></div>
-            </div>
+            @include('reports.partials.header', [
+                'title' => 'كشف تسوية وإقفال وردية الصندوق (Handover Summary)',
+                'subtitle' => 'تقرير تفصيلي بمقبوضات ومصروفات وصافي نقدية الدرج',
+                'meta' => [
+                    'تاريخ الوردية' => $shiftDate,
+                    'العملة' => $shiftCurrency,
+                    'المحاسب المسلّم' => $shiftData['cashier_name'] ?: 'الكل',
+                ]
+            ])
 
             <table class="wg-print-table">
                 <thead>
@@ -390,16 +389,10 @@
                 </tbody>
             </table>
 
-            <div style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:40px;text-align:center">
-                <div style="border-top:1px dashed #333;padding-top:8px">
-                    <div><strong>توقيع المحاسب المسلّم</strong></div>
-                    <div style="font-size:11px;color:#555;margin-top:4px">أقر بصحة البيانات وصافي النقد المسلم</div>
-                </div>
-                <div style="border-top:1px dashed #333;padding-top:8px">
-                    <div><strong>توقيع المحاسب / المدير المستلم</strong></div>
-                    <div style="font-size:11px;color:#555;margin-top:4px">أقر باستلام كامل صافي النقد الموضح أعلاه</div>
-                </div>
-            </div>
+            @include('reports.partials.footer', [
+                'signEmployee' => $shiftData['cashier_name'] ?: auth()->user()?->name,
+                'signManager' => 'إدارة الصالة / المشرف',
+            ])
         </div>
 
     {{-- TAB 2: OVERALL FINANCIAL SUMMARY --}}
