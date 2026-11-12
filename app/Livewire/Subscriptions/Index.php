@@ -315,6 +315,7 @@ class Index extends Component
         $this->installment_count = 1;
 
         $this->dispatch('subscription-created');
+        $this->dispatch('open-contract-print', url: route('subscriptions.contract', ['subscription' => $subscription->id, 'autoprint' => 1]));
         session()->flash('success', 'تم إنشاء الاشتراك وتسجيل الدفعة الأولى: #'.$subscription->id);
     }
 

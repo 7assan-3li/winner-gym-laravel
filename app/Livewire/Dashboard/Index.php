@@ -439,6 +439,7 @@ class Index extends Component
 
         $this->forgetDashboardCache();
         $this->created_subscription_id = $subscription->id;
+        $this->dispatch('open-contract-print', url: route('subscriptions.contract', ['subscription' => $subscription->id, 'autoprint' => 1]));
         $this->modal = 'subscription-success';
     }
 

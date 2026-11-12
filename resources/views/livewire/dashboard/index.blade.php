@@ -1,4 +1,4 @@
-<div class="wg-dashboard-ref" dir="rtl" x-data="{ subStep: 1 }" x-on:wg-open-global-search.window="$wire.$set('modal', 'search', false)" x-on:wg-open-notifications.window="$wire.$set('modal', 'notifications', false)">
+<div class="wg-dashboard-ref" dir="rtl" x-data="{ subStep: 1 }" x-on:wg-open-global-search.window="$wire.$set('modal', 'search', false)" x-on:wg-open-notifications.window="$wire.$set('modal', 'notifications', false)" x-on:open-contract-print.window="window.open($event.detail.url, '_blank')">
     @php
         $activePercent = $stats['total_members'] > 0
             ? round(($stats['active_members'] / $stats['total_members']) * 100, 1)
@@ -427,7 +427,14 @@
                         <div class="wg-action-grid wg-action-grid--3"><div class="wg-sub-price"><span>المبلغ المستلم الآن</span><strong class="is-green">{{ number_format($paidNow,0) }} {{ $createdSubscription->currency }}</strong></div><div class="wg-sub-price"><span>المتبقي</span><strong class="is-orange">{{ number_format(max(0,(float)$createdSubscription->final_price-$paidNow),0) }} {{ $createdSubscription->currency }}</strong></div><div class="wg-sub-price"><span>عدد الأقساط</span><strong>{{ $createdSubscription->installment_count }}</strong></div></div>
                         <div class="wg-action-info">تم تطبيق الاشتراك بنجاح ويمكنك الآن رؤيته داخل صفحة الاشتراكات.</div>
                     </div>
-                    <footer class="wg-action-foot"><button type="button" class="wg-action-btn" wire:click="finishSubscriptionSuccess">العودة للوحة التحكم</button><a class="wg-action-btn wg-action-btn--primary" href="{{ route('subscriptions.index') }}" wire:navigate>عرض الاشتراك</a></footer>
+                    <footer class="wg-action-foot">
+                        <button type="button" class="wg-action-btn" wire:click="finishSubscriptionSuccess">العودة للوحة التحكم</button>
+                        <a class="wg-action-btn wg-action-btn--primary" href="{{ route('subscriptions.contract', ['subscription' => $createdSubscription->id, 'autoprint' => 1]) }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                            <span>طباعة عقد الاشتراك (A4)</span>
+                        </a>
+                        <a class="wg-action-btn" href="{{ route('subscriptions.index') }}" wire:navigate>عرض في الاشتراكات</a>
+                    </footer>
                 </section>
             @endif
 

@@ -1,4 +1,5 @@
 <div class="wg-subscriptions-page" dir="rtl"
+    x-on:open-contract-print.window="window.open($event.detail.url, '_blank')"
     x-data="{
         createOpen:@js(request()->boolean('create') && (bool) $member_id), createStep:1,
         detailsOpen:false, selectedSubscription:null,
@@ -315,6 +316,9 @@
                                         <button type="button" title="عرض التفاصيل" x-on:click="openDetails(@js($subscriptionClient))">
                                             <svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>
                                         </button>
+                                        <a href="{{ route('subscriptions.contract', $s->id) }}" target="_blank" rel="noopener" title="طباعة عقد اشتراك المتدرب" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:#38bdf8;text-decoration:none;border:1px solid rgba(56,189,248,0.25);background:rgba(56,189,248,0.06);">
+                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                        </a>
                                         @if((auth()->user()->hasGymPermission('payments.create') || auth()->user()->role === 'owner') && $canReceivePayment)
                                             <button type="button" wire:click="openCollection({{ $s->id }})" wire:loading.attr="disabled" wire:target="openCollection({{ $s->id }})" title="استلام القسط المتبقي">
                                                 <svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18M7 15h3"/></svg>
@@ -689,6 +693,10 @@
                 </div>
             </div>
             <div class="wg-modal-foot">
+                <a x-bind:href="'/subscriptions/' + (selectedSubscription?.id || '') + '/contract'" target="_blank" rel="noopener" class="wg-btn" style="display:inline-flex;align-items:center;gap:6px">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>طباعة العقد (A4)</span>
+                </a>
                 @if(auth()->user()->hasGymPermission('payments.create') || auth()->user()->role === 'owner')
                     <button type="button" x-show="selectedSubscription?.can_receive_payment" class="wg-btn wg-btn-primary" x-on:click="detailsOpen=false; $wire.openCollection(selectedSubscription.id)">استلام القسط</button>
                 @endif

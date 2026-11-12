@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SubscriptionContractController;
 use App\Livewire\Attendance\Index as AttendanceIndex;
 use App\Livewire\Members\Index as MembersIndex;
 use App\Livewire\Packages\Index as PackagesIndex;
@@ -24,6 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/subscriptions', SubscriptionsIndex::class)
         ->middleware('gym.any:subscriptions.view,subscriptions.manage,subscriptions.create')
         ->name('subscriptions.index');
+
+    Route::get('/subscriptions/{subscription}/contract', [SubscriptionContractController::class, 'show'])
+        ->middleware('gym.any:subscriptions.view,subscriptions.manage,subscriptions.create,members.view')
+        ->name('subscriptions.contract');
 
     Route::get('/attendance', AttendanceIndex::class)
         ->middleware('gym.any:attendance.view,attendance.record')
