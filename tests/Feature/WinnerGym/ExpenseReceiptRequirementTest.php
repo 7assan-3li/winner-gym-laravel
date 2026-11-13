@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Services\ExpenseService;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class ExpenseReceiptRequirementTest extends TestCase
@@ -83,19 +82,20 @@ class ExpenseReceiptRequirementTest extends TestCase
         });
     }
 
-    public function test_expense_cannot_be_created_without_a_receipt(): void
+    public function test_expense_can_be_created_without_a_receipt(): void
     {
         $owner = $this->owner();
         $category = ExpenseCategory::query()->create(['name' => 'صيانة', 'is_active' => true]);
 
-        try {
-            app(ExpenseService::class)->create($this->expenseData($category->id), $owner);
-            $this->fail('The expense was created without a receipt.');
-        } catch (ValidationException $exception) {
-            $this->assertArrayHasKey('receipt', $exception->errors());
-        }
+        $expense = app(ExpenseService::class)->create($this->expenseData($category->id), $owner);
 
-        $this->assertDatabaseCount('expenses', 0);
+        $this->assertNull($expense->receipt_path);
+        $this->assertDatabaseHas('expenses', [
+            'id' => $expense->id,
+            'category_id' => $category->id,
+            'receipt_path' => null,
+            'status' => 'approved',
+        ]);
     }
 
     public function test_expense_is_saved_when_a_receipt_path_is_present(): void

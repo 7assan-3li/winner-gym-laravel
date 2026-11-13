@@ -49,7 +49,7 @@ class ExpenseService
                 'payment_method' => $data['payment_method'],
                 'transfer_service' => $data['transfer_service'] ?? null,
                 'transfer_reference' => $data['transfer_reference'] ?? null,
-                'receipt_path' => $data['receipt_path'],
+                'receipt_path' => $data['receipt_path'] ?? null,
                 'notes' => $data['notes'] ?? null,
                 'status' => 'approved',
                 'created_by' => $actor->id,
