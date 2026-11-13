@@ -23,6 +23,8 @@ class Index extends Component
 
     public string $currency = 'YER';
 
+    public ?int $summaryCashierId = null;
+
     public string $shiftDate = '';
 
     public ?int $shiftCashierId = null;
@@ -83,16 +85,17 @@ class Index extends Component
             'from' => ['required', 'date'],
             'to' => ['required', 'date', 'after_or_equal:from'],
             'gender' => ['required', 'in:all,male,female'],
-            'currency' => ['required', 'in:YER,SAR'],
+            'currency' => ['required', 'in:YER,SAR,ALL'],
+            'summaryCashierId' => ['nullable', 'integer', 'exists:users,id'],
             'shiftDate' => ['required', 'date'],
             'shiftCashierId' => ['nullable', 'integer', 'exists:users,id'],
-            'shiftCurrency' => ['required', 'in:YER,SAR'],
+            'shiftCurrency' => ['required', 'in:YER,SAR,ALL'],
         ]);
 
         $staffList = User::query()->where('is_active', true)->orderBy('name')->get();
 
         $data = $this->tab === 'summary'
-            ? $reports->summary($this->from, $this->to, $this->gender, $this->currency)
+            ? $reports->summary($this->from, $this->to, $this->gender, $this->currency, $this->summaryCashierId)
             : $this->emptySummaryData();
 
         $shiftData = $this->tab === 'shifts'
@@ -115,6 +118,7 @@ class Index extends Component
     private function emptySummaryData(): array
     {
         return [
+            'is_all_currencies' => $this->currency === 'ALL',
             'currency' => $this->currency,
             'subscription_gross_revenue' => 0.0,
             'subscription_refunds' => 0.0,
@@ -128,6 +132,8 @@ class Index extends Component
             'attendance_count' => 0,
             'appointments_count' => 0,
             'new_members_count' => 0,
+            'yer' => [],
+            'sar' => [],
         ];
     }
 
@@ -135,6 +141,7 @@ class Index extends Component
     private function emptyShiftData(): array
     {
         return [
+            'is_all_currencies' => $this->shiftCurrency === 'ALL',
             'currency' => $this->shiftCurrency,
             'date' => $this->shiftDate,
             'cashier_id' => $this->shiftCashierId,
@@ -150,13 +157,11 @@ class Index extends Component
             'total_transfer_in' => 0.0,
             'total_collected' => 0.0,
             'net_cash_handover' => 0.0,
+            'yer' => [],
+            'sar' => [],
             'transactions_count' => 0,
             'transactions' => [],
-            'comparison' => [
-                'cash_diff' => 0.0,
-                'transfer_diff' => 0.0,
-                'net_diff' => 0.0,
-            ],
+            'comparison' => [],
         ];
     }
 }

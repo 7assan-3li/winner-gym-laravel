@@ -144,7 +144,7 @@ class PurchasesIndex extends Component
             'payment_method' => ['required', Rule::in(['cash', 'transfer'])],
             'transfer_service' => ['nullable', Rule::requiredIf($this->payment_method === 'transfer'), Rule::in(['العمقي', 'الكريمي', 'البسيري'])],
             'transfer_reference' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->payment_method === 'transfer')],
-            'purchase_document' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
+            'purchase_document' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
             'notes' => ['nullable', 'string', 'max:3000'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
@@ -153,7 +153,6 @@ class PurchasesIndex extends Component
         ], [
             'supplier_name.required' => 'أدخل اسم المورد حتى يمكن تتبع عملية الشراء.',
             'supplier_invoice.required' => 'أدخل رقم فاتورة المورد.',
-            'purchase_document.required' => 'أرفق فاتورة المورد أو سند الشراء.',
             'transfer_reference.required' => 'أدخل رقم أو مرجع التحويل.',
             'items.*.product_id.required' => 'اختر المنتج في كل سطر.',
             'items.*.quantity.min' => 'كمية المنتج يجب أن تكون وحدة واحدة على الأقل.',
@@ -168,13 +167,17 @@ class PurchasesIndex extends Component
         $validated['transfer_reference'] = $validated['payment_method'] === 'transfer'
             ? trim((string) ($validated['transfer_reference'] ?? ''))
             : null;
-        $validated['proof_path'] = $this->purchase_document->store('purchase-documents', 'local');
+        $validated['proof_path'] = $this->purchase_document
+            ? $this->purchase_document->store('purchase-documents', 'local')
+            : null;
         unset($validated['purchase_document']);
 
         try {
             $purchase = $service->create($validated, auth()->user());
         } catch (\Throwable $exception) {
-            Storage::disk('local')->delete($validated['proof_path']);
+            if (! empty($validated['proof_path'])) {
+                Storage::disk('local')->delete($validated['proof_path']);
+            }
             throw $exception;
         }
         $this->showCreateModal = false;

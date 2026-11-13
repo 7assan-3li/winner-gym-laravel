@@ -27,12 +27,6 @@ class PurchaseService
             403
         );
 
-        if (blank($data['proof_path'] ?? null)) {
-            throw ValidationException::withMessages([
-                'purchase_document' => 'إرفاق فاتورة المورد أو سند الشراء مطلوب.',
-            ]);
-        }
-
         $this->paymentPolicy->validate($data);
         if ($data['payment_method'] === 'cash') {
             $data['transfer_service'] = null;

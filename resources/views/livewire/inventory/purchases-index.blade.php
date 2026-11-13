@@ -169,7 +169,7 @@
                     <div class="wg-purchase-bottom">
                         <div>
                             <label>
-                                <span>فاتورة المورد / سند الشراء <b>*</b></span>
+                                <span>فاتورة المورد / سند الشراء <small style="color:var(--wg-muted);font-weight:normal;">(اختياري)</small></span>
                                 <input type="file" wire:model="purchase_document" accept=".jpg,.jpeg,.png,.webp,.pdf">
                                 <small wire:loading wire:target="purchase_document" style="color:#38bdf8;font-weight:700;">⏳ جارٍ رفع المستند، يرجى الانتظار...</small>
                                 @if($purchase_document)

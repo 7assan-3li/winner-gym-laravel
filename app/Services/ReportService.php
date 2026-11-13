@@ -31,12 +31,36 @@ class ReportService
      *     new_members_count: int
      * }
      */
-    public function summary(string $from, string $to, string $gender = 'all', string $currency = 'YER'): array
+    public function summary(string $from, string $to, string $gender = 'all', string $currency = 'YER', ?int $cashierId = null): array
     {
         $currency = strtoupper($currency);
 
-        abort_unless(in_array($currency, ['YER', 'SAR'], true), 422);
+        abort_unless(in_array($currency, ['YER', 'SAR', 'ALL'], true), 422);
         abort_unless(in_array($gender, ['all', 'male', 'female'], true), 422);
+
+        if ($currency === 'ALL') {
+            $yer = $this->summary($from, $to, $gender, 'YER', $cashierId);
+            $sar = $this->summary($from, $to, $gender, 'SAR', $cashierId);
+
+            return [
+                'is_all_currencies' => true,
+                'currency' => 'ALL',
+                'yer' => $yer,
+                'sar' => $sar,
+                'subscription_gross_revenue' => 0.0,
+                'subscription_refunds' => 0.0,
+                'subscription_revenue' => 0.0,
+                'nutrition_revenue' => 0.0,
+                'product_revenue' => 0.0,
+                'product_cogs' => 0.0,
+                'product_profit' => 0.0,
+                'expenses' => 0.0,
+                'net' => 0.0,
+                'attendance_count' => $yer['attendance_count'],
+                'appointments_count' => $yer['appointments_count'],
+                'new_members_count' => $yer['new_members_count'],
+            ];
+        }
 
         $tz = config('app.timezone', 'Asia/Aden');
         $isSqlite = DB::connection()->getDriverName() === 'sqlite';
@@ -45,6 +69,9 @@ class ReportService
 
         $fromUtc = $isSqlite ? $fromDt->format('Y-m-d H:i:s') : $fromDt->utc();
         $toExclusiveUtc = $isSqlite ? $toExclusiveDt->format('Y-m-d H:i:s') : $toExclusiveDt->utc();
+
+        $staffAll = $cashierId ? 'specific' : 'all';
+        $staffId = $cashierId ?? 0;
 
         // The WINNER GYM schema is fixed by our migrations, so we avoid
         // Schema::hasTable / hasColumn checks on every page request.
@@ -62,6 +89,7 @@ class ReportService
                       and p.paid_at >= :sub_from
                       and p.paid_at < :sub_to
                       and (:sub_gender_all = 'all' or m.gender = :sub_gender)
+                      and (:sub_staff_all = 'all' or p.created_by = :sub_staff_id)
                 ), 0) as subscription_revenue,
 
                 coalesce((
@@ -74,6 +102,7 @@ class ReportService
                       and r.processed_at >= :refund_from
                       and r.processed_at < :refund_to
                       and (:refund_gender_all = 'all' or m.gender = :refund_gender)
+                      and (:refund_staff_all = 'all' or r.processed_by = :refund_staff_id)
                 ), 0) as subscription_refunds,
 
                 coalesce((
@@ -90,6 +119,7 @@ class ReportService
                           :nutrition_gender_all = 'all'
                           or coalesce(m.gender, nc.gender) = :nutrition_gender
                       )
+                      and (:nutrition_staff_all = 'all' or ap.created_by = :nutrition_staff_id)
                 ), 0) as nutrition_revenue,
 
                 coalesce((
@@ -101,6 +131,7 @@ class ReportService
                       and s.sold_at >= :sales_from
                       and s.sold_at < :sales_to
                       and (:sales_gender_all = 'all' or m.gender = :sales_gender)
+                      and (:sales_staff_all = 'all' or s.created_by = :sales_staff_id)
                 ), 0) as product_revenue,
 
                 coalesce((
@@ -113,6 +144,7 @@ class ReportService
                       and s.sold_at >= :cogs_from
                       and s.sold_at < :cogs_to
                       and (:cogs_gender_all = 'all' or m.gender = :cogs_gender)
+                      and (:cogs_staff_all = 'all' or s.created_by = :cogs_staff_id)
                 ), 0) as product_cogs,
 
                 coalesce((
@@ -121,6 +153,7 @@ class ReportService
                     where e.currency = :expense_currency
                       and e.status = 'approved'
                       and e.expense_date between :expense_from and :expense_to
+                      and (:expense_staff_all = 'all' or e.created_by = :expense_staff_id)
                 ), 0) as expenses,
 
                 (
@@ -157,34 +190,46 @@ class ReportService
                 'sub_to' => $toExclusiveUtc,
                 'sub_gender_all' => $gender,
                 'sub_gender' => $gender,
+                'sub_staff_all' => $staffAll,
+                'sub_staff_id' => $staffId,
 
                 'refund_currency' => $currency,
                 'refund_from' => $fromUtc,
                 'refund_to' => $toExclusiveUtc,
                 'refund_gender_all' => $gender,
                 'refund_gender' => $gender,
+                'refund_staff_all' => $staffAll,
+                'refund_staff_id' => $staffId,
 
                 'nutrition_currency' => $currency,
                 'nutrition_from' => $fromUtc,
                 'nutrition_to' => $toExclusiveUtc,
                 'nutrition_gender_all' => $gender,
                 'nutrition_gender' => $gender,
+                'nutrition_staff_all' => $staffAll,
+                'nutrition_staff_id' => $staffId,
 
                 'sales_currency' => $currency,
                 'sales_from' => $fromUtc,
                 'sales_to' => $toExclusiveUtc,
                 'sales_gender_all' => $gender,
                 'sales_gender' => $gender,
+                'sales_staff_all' => $staffAll,
+                'sales_staff_id' => $staffId,
 
                 'cogs_currency' => $currency,
                 'cogs_from' => $fromUtc,
                 'cogs_to' => $toExclusiveUtc,
                 'cogs_gender_all' => $gender,
                 'cogs_gender' => $gender,
+                'cogs_staff_all' => $staffAll,
+                'cogs_staff_id' => $staffId,
 
                 'expense_currency' => $currency,
                 'expense_from' => $from,
                 'expense_to' => $to,
+                'expense_staff_all' => $staffAll,
+                'expense_staff_id' => $staffId,
 
                 'attendance_from' => $from,
                 'attendance_to' => $to,
@@ -213,6 +258,7 @@ class ReportService
         $productProfit = round($productRevenue - $productCogs, 2);
 
         return [
+            'is_all_currencies' => false,
             'currency' => $currency,
             'subscription_gross_revenue' => round($subscriptionGrossRevenue, 2),
             'subscription_refunds' => round($subscriptionRefunds, 2),
@@ -256,7 +302,7 @@ class ReportService
     public function cashierShiftSummary(?int $cashierId, string $date, string $currency = 'YER'): array
     {
         $currency = strtoupper($currency);
-        abort_unless(in_array($currency, ['YER', 'SAR'], true), 422);
+        abort_unless(in_array($currency, ['YER', 'SAR', 'ALL'], true), 422);
 
         $tz = config('app.timezone', 'Asia/Aden');
         $isSqlite = DB::connection()->getDriverName() === 'sqlite';
@@ -267,12 +313,14 @@ class ReportService
         $toExclusiveUtc = $isSqlite ? $toExclusiveDt->format('Y-m-d H:i:s') : $toExclusiveDt->utc();
 
         $selectedUser = $cashierId ? User::find($cashierId) : null;
-        $cashierName = $selectedUser ? ($selectedUser->name ?: $selectedUser->username) : 'كل المحاسبين والكاشيرات';
+        $cashierName = $selectedUser ? ($selectedUser->name ?: $selectedUser->username) : 'كل المحاسبين والكاشيرات (إجمالي الصندوق)';
+
+        $currencies = $currency === 'ALL' ? ['YER', 'SAR'] : [$currency];
 
         // 1. Subscription Payments
         $subPayments = SubscriptionPayment::query()
             ->with(['creator', 'subscription.member'])
-            ->where('currency', $currency)
+            ->whereIn('currency', $currencies)
             ->where('status', 'completed')
             ->where('paid_at', '>=', $fromUtc)
             ->where('paid_at', '<', $toExclusiveUtc)
@@ -282,7 +330,7 @@ class ReportService
         // 2. Sales
         $sales = Sale::query()
             ->with(['creator', 'member'])
-            ->where('currency', $currency)
+            ->whereIn('currency', $currencies)
             ->where('status', 'completed')
             ->where('sold_at', '>=', $fromUtc)
             ->where('sold_at', '<', $toExclusiveUtc)
@@ -292,7 +340,7 @@ class ReportService
         // 3. Nutrition Payments
         $nutPayments = AppointmentPayment::query()
             ->with(['creator', 'appointment.member', 'appointment.nutritionClient'])
-            ->where('currency', $currency)
+            ->whereIn('currency', $currencies)
             ->where('status', 'paid')
             ->where('paid_at', '>=', $fromUtc)
             ->where('paid_at', '<', $toExclusiveUtc)
@@ -302,27 +350,49 @@ class ReportService
         // 4. Expenses
         $expenses = Expense::query()
             ->with(['creator', 'category'])
-            ->where('currency', $currency)
+            ->whereIn('currency', $currencies)
             ->where('status', 'approved')
             ->whereDate('expense_date', $date)
             ->when($cashierId, fn (Builder $q) => $q->where('created_by', $cashierId))
             ->get();
 
-        $subCash = round((float) $subPayments->where('payment_method', 'cash')->sum('amount'), 2);
-        $subTransfer = round((float) $subPayments->where('payment_method', 'transfer')->sum('amount'), 2);
+        $calcTotals = function (string $curr) use ($subPayments, $sales, $nutPayments, $expenses): array {
+            $subC = round((float) $subPayments->where('currency', $curr)->where('payment_method', 'cash')->sum('amount'), 2);
+            $subT = round((float) $subPayments->where('currency', $curr)->where('payment_method', 'transfer')->sum('amount'), 2);
 
-        $salesCash = round((float) $sales->where('payment_method', 'cash')->sum('total_amount'), 2);
-        $salesTransfer = round((float) $sales->where('payment_method', 'transfer')->sum('total_amount'), 2);
+            $salesC = round((float) $sales->where('currency', $curr)->where('payment_method', 'cash')->sum('total_amount'), 2);
+            $salesT = round((float) $sales->where('currency', $curr)->where('payment_method', 'transfer')->sum('total_amount'), 2);
 
-        $nutCash = round((float) $nutPayments->where('payment_method', 'cash')->sum('amount'), 2);
-        $nutTransfer = round((float) $nutPayments->where('payment_method', 'transfer')->sum('amount'), 2);
+            $nutC = round((float) $nutPayments->where('currency', $curr)->where('payment_method', 'cash')->sum('amount'), 2);
+            $nutT = round((float) $nutPayments->where('currency', $curr)->where('payment_method', 'transfer')->sum('amount'), 2);
 
-        $cashExpenses = round((float) $expenses->where('payment_method', 'cash')->sum('amount'), 2);
+            $cashExp = round((float) $expenses->where('currency', $curr)->where('payment_method', 'cash')->sum('amount'), 2);
 
-        $totalCashIn = round($subCash + $salesCash + $nutCash, 2);
-        $totalTransferIn = round($subTransfer + $salesTransfer + $nutTransfer, 2);
-        $totalCollected = round($totalCashIn + $totalTransferIn, 2);
-        $netCashHandover = round(max(0, $totalCashIn - $cashExpenses), 2);
+            $totalCIn = round($subC + $salesC + $nutC, 2);
+            $totalTIn = round($subT + $salesT + $nutT, 2);
+            $totalCol = round($totalCIn + $totalTIn, 2);
+            $netHand = round(max(0, $totalCIn - $cashExp), 2);
+
+            return [
+                'currency' => $curr,
+                'subscription_cash' => $subC,
+                'subscription_transfer' => $subT,
+                'sales_cash' => $salesC,
+                'sales_transfer' => $salesT,
+                'nutrition_cash' => $nutC,
+                'nutrition_transfer' => $nutT,
+                'cash_expenses' => $cashExp,
+                'total_cash_in' => $totalCIn,
+                'total_transfer_in' => $totalTIn,
+                'total_collected' => $totalCol,
+                'net_cash_handover' => $netHand,
+            ];
+        };
+
+        $yerTotals = $calcTotals('YER');
+        $sarTotals = $calcTotals('SAR');
+
+        $activeTotals = $currency === 'SAR' ? $sarTotals : $yerTotals;
 
         // Build chronological list of transactions
         $transactions = collect();
@@ -338,6 +408,7 @@ class ReportService
                 'client' => $p->subscription?->member->full_name ?? 'عضو نادي',
                 'cashier' => $p->creator ? ($p->creator->name ?: $p->creator->username) : '—',
                 'cashier_id' => $p->created_by,
+                'currency' => $p->currency,
                 'method' => $p->payment_method,
                 'method_label' => $p->payment_method === 'cash' ? 'نقدي' : 'تحويل بنكي',
                 'transfer_details' => $p->payment_method === 'transfer' ? trim(($p->transfer_service ?: '').' '.($p->transfer_reference ?: '')) : null,
@@ -357,6 +428,7 @@ class ReportService
                 'client' => $s->customer_name ?: ($s->member->full_name ?? 'زبون نقدي'),
                 'cashier' => $s->creator ? ($s->creator->name ?: $s->creator->username) : '—',
                 'cashier_id' => $s->created_by,
+                'currency' => $s->currency,
                 'method' => $s->payment_method,
                 'method_label' => $s->payment_method === 'cash' ? 'نقدي' : 'تحويل بنكي',
                 'transfer_details' => $s->payment_method === 'transfer' ? trim(($s->transfer_service ?: '').' '.($s->transfer_reference ?: '')) : null,
@@ -377,6 +449,7 @@ class ReportService
                 'client' => $cName,
                 'cashier' => $np->creator ? ($np->creator->name ?: $np->creator->username) : '—',
                 'cashier_id' => $np->created_by,
+                'currency' => $np->currency,
                 'method' => $np->payment_method,
                 'method_label' => $np->payment_method === 'cash' ? 'نقدي' : 'تحويل بنكي',
                 'transfer_details' => $np->payment_method === 'transfer' ? trim(($np->transfer_service ?: '').' '.($np->transfer_reference ?: '')) : null,
@@ -396,6 +469,7 @@ class ReportService
                 'client' => $e->title ?: ($e->category ? $e->category->name : 'مصروف تشغيلي'),
                 'cashier' => $e->creator ? ($e->creator->name ?: $e->creator->username) : '—',
                 'cashier_id' => $e->created_by,
+                'currency' => $e->currency,
                 'method' => $e->payment_method,
                 'method_label' => $e->payment_method === 'cash' ? 'صرف نقدي' : 'تحويل',
                 'transfer_details' => $e->transfer_service ? trim($e->transfer_service.' '.($e->transfer_reference ?: '')) : null,
@@ -411,53 +485,41 @@ class ReportService
         $activeStaff = User::query()->where('is_active', true)->orderBy('name')->get();
 
         foreach ($activeStaff as $staff) {
-            $sSubs = SubscriptionPayment::query()
-                ->where('currency', $currency)
-                ->where('status', 'completed')
-                ->where('paid_at', '>=', $fromUtc)
-                ->where('paid_at', '<', $toExclusiveUtc)
-                ->where('created_by', $staff->id)
-                ->get();
+            $sSubs = $subPayments->where('created_by', $staff->id);
+            $sSales = $sales->where('created_by', $staff->id);
+            $sNut = $nutPayments->where('created_by', $staff->id);
+            $sExp = $expenses->where('created_by', $staff->id);
 
-            $sSales = Sale::query()
-                ->where('currency', $currency)
-                ->where('status', 'completed')
-                ->where('sold_at', '>=', $fromUtc)
-                ->where('sold_at', '<', $toExclusiveUtc)
-                ->where('created_by', $staff->id)
-                ->get();
-
-            $sNut = AppointmentPayment::query()
-                ->where('currency', $currency)
-                ->where('status', 'paid')
-                ->where('paid_at', '>=', $fromUtc)
-                ->where('paid_at', '<', $toExclusiveUtc)
-                ->where('created_by', $staff->id)
-                ->get();
-
-            $sExp = Expense::query()
-                ->where('currency', $currency)
-                ->where('status', 'approved')
-                ->whereDate('expense_date', $date)
-                ->where('created_by', $staff->id)
-                ->get();
-
-            $sCashIn = round(
-                (float) $sSubs->where('payment_method', 'cash')->sum('amount') +
-                (float) $sSales->where('payment_method', 'cash')->sum('total_amount') +
-                (float) $sNut->where('payment_method', 'cash')->sum('amount'),
+            $sCashInYer = round(
+                (float) $sSubs->where('currency', 'YER')->where('payment_method', 'cash')->sum('amount') +
+                (float) $sSales->where('currency', 'YER')->where('payment_method', 'cash')->sum('total_amount') +
+                (float) $sNut->where('currency', 'YER')->where('payment_method', 'cash')->sum('amount'),
                 2
             );
-
-            $sTransferIn = round(
-                (float) $sSubs->where('payment_method', 'transfer')->sum('amount') +
-                (float) $sSales->where('payment_method', 'transfer')->sum('total_amount') +
-                (float) $sNut->where('payment_method', 'transfer')->sum('amount'),
+            $sTransferInYer = round(
+                (float) $sSubs->where('currency', 'YER')->where('payment_method', 'transfer')->sum('amount') +
+                (float) $sSales->where('currency', 'YER')->where('payment_method', 'transfer')->sum('total_amount') +
+                (float) $sNut->where('currency', 'YER')->where('payment_method', 'transfer')->sum('amount'),
                 2
             );
+            $sCashOutYer = round((float) $sExp->where('currency', 'YER')->where('payment_method', 'cash')->sum('amount'), 2);
+            $sNetHandoverYer = round(max(0, $sCashInYer - $sCashOutYer), 2);
 
-            $sCashOut = round((float) $sExp->where('payment_method', 'cash')->sum('amount'), 2);
-            $sNetHandover = round(max(0, $sCashIn - $sCashOut), 2);
+            $sCashInSar = round(
+                (float) $sSubs->where('currency', 'SAR')->where('payment_method', 'cash')->sum('amount') +
+                (float) $sSales->where('currency', 'SAR')->where('payment_method', 'cash')->sum('total_amount') +
+                (float) $sNut->where('currency', 'SAR')->where('payment_method', 'cash')->sum('amount'),
+                2
+            );
+            $sTransferInSar = round(
+                (float) $sSubs->where('currency', 'SAR')->where('payment_method', 'transfer')->sum('amount') +
+                (float) $sSales->where('currency', 'SAR')->where('payment_method', 'transfer')->sum('total_amount') +
+                (float) $sNut->where('currency', 'SAR')->where('payment_method', 'transfer')->sum('amount'),
+                2
+            );
+            $sCashOutSar = round((float) $sExp->where('currency', 'SAR')->where('payment_method', 'cash')->sum('amount'), 2);
+            $sNetHandoverSar = round(max(0, $sCashInSar - $sCashOutSar), 2);
+
             $sCount = $sSubs->count() + $sSales->count() + $sNut->count() + $sExp->count();
 
             if ($sCount > 0 || $staff->id === $cashierId) {
@@ -474,31 +536,42 @@ class ReportService
                         default => $staff->role,
                     },
                     'period' => $staff->gymPeriod ? $staff->gymPeriod->name : ($staff->work_period === 'both' ? 'الفترتان' : ($staff->work_period === 'women' ? 'نساء' : 'رجال')),
-                    'cash_in' => $sCashIn,
-                    'transfer_in' => $sTransferIn,
-                    'cash_out' => $sCashOut,
-                    'net_handover' => $sNetHandover,
+                    'cash_in' => $currency === 'SAR' ? $sCashInSar : $sCashInYer,
+                    'transfer_in' => $currency === 'SAR' ? $sTransferInSar : $sTransferInYer,
+                    'cash_out' => $currency === 'SAR' ? $sCashOutSar : $sCashOutYer,
+                    'net_handover' => $currency === 'SAR' ? $sNetHandoverSar : $sNetHandoverYer,
+                    'cash_in_yer' => $sCashInYer,
+                    'transfer_in_yer' => $sTransferInYer,
+                    'cash_out_yer' => $sCashOutYer,
+                    'net_handover_yer' => $sNetHandoverYer,
+                    'cash_in_sar' => $sCashInSar,
+                    'transfer_in_sar' => $sTransferInSar,
+                    'cash_out_sar' => $sCashOutSar,
+                    'net_handover_sar' => $sNetHandoverSar,
                     'transactions_count' => $sCount,
                 ];
             }
         }
 
         return [
+            'is_all_currencies' => $currency === 'ALL',
             'currency' => $currency,
             'date' => $date,
             'cashier_id' => $cashierId,
             'cashier_name' => $cashierName,
-            'subscription_cash' => $subCash,
-            'subscription_transfer' => $subTransfer,
-            'nutrition_cash' => $nutCash,
-            'nutrition_transfer' => $nutTransfer,
-            'sales_cash' => $salesCash,
-            'sales_transfer' => $salesTransfer,
-            'cash_expenses' => $cashExpenses,
-            'total_cash_in' => $totalCashIn,
-            'total_transfer_in' => $totalTransferIn,
-            'total_collected' => $totalCollected,
-            'net_cash_handover' => $netCashHandover,
+            'subscription_cash' => $activeTotals['subscription_cash'],
+            'subscription_transfer' => $activeTotals['subscription_transfer'],
+            'nutrition_cash' => $activeTotals['nutrition_cash'],
+            'nutrition_transfer' => $activeTotals['nutrition_transfer'],
+            'sales_cash' => $activeTotals['sales_cash'],
+            'sales_transfer' => $activeTotals['sales_transfer'],
+            'cash_expenses' => $activeTotals['cash_expenses'],
+            'total_cash_in' => $activeTotals['total_cash_in'],
+            'total_transfer_in' => $activeTotals['total_transfer_in'],
+            'total_collected' => $activeTotals['total_collected'],
+            'net_cash_handover' => $activeTotals['net_cash_handover'],
+            'yer' => $yerTotals,
+            'sar' => $sarTotals,
             'transactions_count' => count($sortedTransactions),
             'transactions' => $sortedTransactions,
             'comparison' => $comparison,

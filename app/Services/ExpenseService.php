@@ -20,15 +20,9 @@ class ExpenseService
     {
         abort_unless($this->permissions->allows($actor, 'expenses.manage'), 403);
 
-        if (blank($data['receipt_path'] ?? null)) {
-            throw ValidationException::withMessages([
-                'receipt' => 'إرفاق الفاتورة أو الإيصال مطلوب لحفظ المصروف.',
-            ]);
-        }
-
         $this->paymentPolicy->validate([
             ...$data,
-            'proof_path' => $data['receipt_path'],
+            'proof_path' => $data['receipt_path'] ?? null,
         ]);
 
         if (($data['payment_method'] ?? null) === 'cash') {

@@ -46,6 +46,13 @@
 </head>
 <body>
 
+    @php
+        $selectedStaff = !empty($filters['cashier_id']) ? \App\Models\User::find($filters['cashier_id']) : null;
+        $staffName = $selectedStaff ? ($selectedStaff->name ?: $selectedStaff->username) : 'كل الموظفين والمحاسبين';
+        $currLabel = ($filters['currency'] ?? '') === 'ALL' ? 'كل العملات (عزل كامل YER + SAR)' : ($filters['currency'] ?? 'YER');
+        $isAll = !empty($data['is_all_currencies']);
+    @endphp
+
     @include('reports.partials.header', [
         'title' => 'تقرير ملخص الإيرادات والعمليات المالي والتشغيلي',
         'subtitle' => 'ملخص شامل لكافة العمليات والإيرادات والمصروفات خلال الفترة المحددة',
@@ -53,53 +60,103 @@
             'من تاريخ' => $filters['from'],
             'إلى تاريخ' => $filters['to'],
             'الفئة' => $filters['gender'] === 'male' ? 'رجال فقط' : ($filters['gender'] === 'female' ? 'نساء فقط' : 'الكل'),
-            'العملة' => $filters['currency'],
-            'الموظف' => $user->name,
+            'العملة' => $currLabel,
+            'الموظف' => $staffName,
+            'المستخدم المستخرج' => $user->name,
         ],
         'isPdf' => true,
     ])
 
-    <table class="grid">
-        <thead>
-            <tr>
-                <th style="width:65%;">المؤشر / البيان المالي والتشغيلي</th>
-                <th style="width:35%;text-align:left;">القيمة والعملة</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach([
-                'إيراد الاشتراكات' => 'subscription_revenue',
-                'إيراد استشارات وخطط التغذية' => 'nutrition_revenue',
-                'إيراد مبيعات المتجر' => 'product_revenue',
-                'تكلفة البضاعة المباعة (COGS)' => 'product_cogs',
-                'مجمل أرباح مبيعات المتجر' => 'product_profit',
-                'إجمالي المصروفات المنصرفة' => 'expenses',
-            ] as $label => $key)
+    @if($isAll)
+        <table class="grid">
+            <thead>
                 <tr>
-                    <td>{{ $label }}</td>
-                    <td class="num">{{ \App\Support\NumberFormatter::money($data[$key]) }} {{ $data['currency'] }}</td>
+                    <th style="width:46%;">المؤشر / البيان المالي والتشغيلي</th>
+                    <th style="width:27%;text-align:left;">ريال يمني (YER)</th>
+                    <th style="width:27%;text-align:left;">ريال سعودي (SAR)</th>
                 </tr>
-            @endforeach
-            <tr class="total-row">
-                <td>صافي الأرباح التشغيلية</td>
-                <td class="num" style="color: {{ $data['net'] >= 0 ? '#166534' : '#991b1b' }};">
-                    {{ \App\Support\NumberFormatter::money($data['net']) }} {{ $data['currency'] }}
-                </td>
-            </tr>
-            <tr>
-                <td>إجمالي حركات الحضور المسجلة</td>
-                <td class="num">{{ number_format($data['attendance_count']) }} حضور</td>
-            </tr>
-            <tr>
-                <td>مواعيد وجلسات التغذية المنفذة</td>
-                <td class="num">{{ number_format($data['appointments_count']) }} موعد</td>
-            </tr>
-            <tr>
-                <td>الأعضاء الجدد المسجلين خلال الفترة</td>
-                <td class="num">{{ number_format($data['new_members_count']) }} عضو</td>
-            </tr>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach([
+                    'إيراد الاشتراكات (صافي بعد الاسترداد)' => 'subscription_revenue',
+                    'إيراد استشارات وخطط التغذية' => 'nutrition_revenue',
+                    'إيراد مبيعات المتجر' => 'product_revenue',
+                    'تكلفة البضاعة المباعة (COGS)' => 'product_cogs',
+                    'مجمل أرباح مبيعات المتجر' => 'product_profit',
+                    'إجمالي المصروفات المنصرفة' => 'expenses',
+                ] as $label => $key)
+                    <tr>
+                        <td>{{ $label }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($data['yer'][$key]) }} YER</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($data['sar'][$key]) }} SAR</td>
+                    </tr>
+                @endforeach
+                <tr class="total-row">
+                    <td>صافي الأرباح التشغيلية</td>
+                    <td class="num" style="color: {{ $data['yer']['net'] >= 0 ? '#166534' : '#991b1b' }};">
+                        {{ \App\Support\NumberFormatter::money($data['yer']['net']) }} YER
+                    </td>
+                    <td class="num" style="color: {{ $data['sar']['net'] >= 0 ? '#166534' : '#991b1b' }};">
+                        {{ \App\Support\NumberFormatter::money($data['sar']['net']) }} SAR
+                    </td>
+                </tr>
+                <tr>
+                    <td>إجمالي حركات الحضور المسجلة</td>
+                    <td class="num" colspan="2" style="text-align:center;">{{ number_format($data['attendance_count']) }} حضور</td>
+                </tr>
+                <tr>
+                    <td>مواعيد وجلسات التغذية المنفذة</td>
+                    <td class="num" colspan="2" style="text-align:center;">{{ number_format($data['appointments_count']) }} موعد</td>
+                </tr>
+                <tr>
+                    <td>الأعضاء الجدد المسجلين خلال الفترة</td>
+                    <td class="num" colspan="2" style="text-align:center;">{{ number_format($data['new_members_count']) }} عضو</td>
+                </tr>
+            </tbody>
+        </table>
+    @else
+        <table class="grid">
+            <thead>
+                <tr>
+                    <th style="width:65%;">المؤشر / البيان المالي والتشغيلي</th>
+                    <th style="width:35%;text-align:left;">القيمة والعملة</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach([
+                    'إيراد الاشتراكات (صافي بعد الاسترداد)' => 'subscription_revenue',
+                    'إيراد استشارات وخطط التغذية' => 'nutrition_revenue',
+                    'إيراد مبيعات المتجر' => 'product_revenue',
+                    'تكلفة البضاعة المباعة (COGS)' => 'product_cogs',
+                    'مجمل أرباح مبيعات المتجر' => 'product_profit',
+                    'إجمالي المصروفات المنصرفة' => 'expenses',
+                ] as $label => $key)
+                    <tr>
+                        <td>{{ $label }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($data[$key]) }} {{ $data['currency'] }}</td>
+                    </tr>
+                @endforeach
+                <tr class="total-row">
+                    <td>صافي الأرباح التشغيلية</td>
+                    <td class="num" style="color: {{ $data['net'] >= 0 ? '#166534' : '#991b1b' }};">
+                        {{ \App\Support\NumberFormatter::money($data['net']) }} {{ $data['currency'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>إجمالي حركات الحضور المسجلة</td>
+                    <td class="num">{{ number_format($data['attendance_count']) }} حضور</td>
+                </tr>
+                <tr>
+                    <td>مواعيد وجلسات التغذية المنفذة</td>
+                    <td class="num">{{ number_format($data['appointments_count']) }} موعد</td>
+                </tr>
+                <tr>
+                    <td>الأعضاء الجدد المسجلين خلال الفترة</td>
+                    <td class="num">{{ number_format($data['new_members_count']) }} عضو</td>
+                </tr>
+            </tbody>
+        </table>
+    @endif
 
     @include('reports.partials.footer', [
         'signEmployee' => $user->name,

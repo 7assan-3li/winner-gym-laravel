@@ -134,7 +134,7 @@
                                 <td>{{ $expense->payment_method === 'cash' ? 'نقدي' : 'تحويل / صرافة' }}@if($expense->transfer_service)<div class="fin-muted">{{ $expense->transfer_service }}</div>@endif</td>
                                 <td><strong style="color:#ffad29">{{ number_format((float)$expense->amount,0) }} {{ $expense->currency }}</strong></td>
                                 <td>{{ $expense->transfer_reference ?: '—' }}</td>
-                                <td>@if($expense->receipt_path)<a class="fin-receipt-link" href="{{ route('expenses.receipt', $expense) }}" target="_blank" rel="noopener">عرض الفاتورة</a>@else<span class="fin-muted">سجل قديم بلا فاتورة</span>@endif</td>
+                                <td>@if($expense->receipt_path)<a class="fin-receipt-link" href="{{ route('expenses.receipt', $expense) }}" target="_blank" rel="noopener">عرض الفاتورة</a>@else<span class="fin-muted">بدون مستند</span>@endif</td>
                                 <td><span class="fin-badge {{ $expense->status === 'approved' ? 'green' : 'red' }}">{{ $expense->status === 'approved' ? 'معتمد' : 'ملغي' }}</span></td>
                                 <td><div class="fin-table-actions">@if($canManage && $expense->status !== 'cancelled')<button type="button" class="fin-icon-btn danger" x-on:click="cancelModalOpen = true; $wire.confirmCancel({{ $expense->id }})" title="إلغاء المصروف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="m9 9 6 6M15 9l-6 6"/></svg></button>@else<span class="fin-muted">—</span>@endif</div></td>
                             </tr>
@@ -247,12 +247,12 @@
                     <textarea class="fin-field fin-textarea" wire:model="notes" maxlength="2000" placeholder="مثال: صيانة جهاز المشي رقم 3 وقطع الغيار المستخدمة..."></textarea>
                 </div>
                 <div class="fin-form-group full">
-                    <label class="fin-label">الفاتورة أو الإيصال <span class="fin-required">*</span></label>
-                    <div class="fin-receipt-required">لا يمكن حفظ المصروف بدون مستند يوضح الجهة والسبب.</div>
+                    <label class="fin-label">الفاتورة أو الإيصال <span style="font-size:11.5px;font-weight:normal;color:var(--wg-muted)">(اختياري)</span></label>
+                    <div class="fin-receipt-required" style="background:rgba(56,189,248,0.08);border-color:rgba(56,189,248,0.25);color:var(--wg-muted)">إرفاق الفاتورة أو الإيصال اختياري؛ يمكنك حفظ المصروف بدون إرفاق ملف.</div>
                     <div class="fin-file">
                         <div>
-                            <input type="file" wire:model="receipt" accept=".jpg,.jpeg,.png,.pdf" required>
-                            <small>إلزامي — JPG, PNG, PDF حتى 2MB • يُحفظ في التخزين الخاص</small>
+                            <input type="file" wire:model="receipt" accept=".jpg,.jpeg,.png,.pdf">
+                            <small>اختياري — JPG, PNG, PDF حتى 2MB • يُحفظ في التخزين الخاص</small>
                             <span class="fin-file-status" wire:loading wire:target="receipt">جاري رفع الفاتورة...</span>
                             @if($receipt)<span class="fin-file-ready">تم اختيار: {{ $receipt->getClientOriginalName() }}</span>@endif
                         </div>

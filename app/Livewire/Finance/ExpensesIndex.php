@@ -158,12 +158,11 @@ class ExpensesIndex extends Component
             'transfer_service' => ['nullable', Rule::requiredIf($this->payment_method === 'transfer'), Rule::in(['العمقي', 'الكريمي', 'البسيري'])],
             'transfer_reference' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->payment_method === 'transfer' && $paymentPolicy->requiresTransferReference())],
             'notes' => ['nullable', 'string', 'max:3000'],
-            'receipt' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
+            'receipt' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ], [
             'title.required' => 'اسم المصروف مطلوب.',
             'amount.required' => 'المبلغ مطلوب.',
             'amount.gt' => 'المبلغ يجب أن يكون أكبر من صفر.',
-            'receipt.required' => 'إرفاق الفاتورة أو الإيصال مطلوب لحفظ المصروف.',
             'receipt.mimes' => 'الإيصال يجب أن يكون JPG أو PNG أو PDF.',
             'receipt.max' => 'حجم الإيصال يجب ألا يتجاوز 2MB.',
         ]);
@@ -199,14 +198,18 @@ class ExpensesIndex extends Component
         $validated['transfer_reference'] = $validated['payment_method'] === 'transfer'
             ? trim((string) ($validated['transfer_reference'] ?? ''))
             : null;
-        $validated['receipt_path'] = $this->receipt->store('expenses/receipts', 'local');
+        $validated['receipt_path'] = $this->receipt
+            ? $this->receipt->store('expenses/receipts', 'local')
+            : null;
 
         unset($validated['receipt'], $validated['new_category_name']);
 
         try {
             $service->create($validated, auth()->user());
         } catch (\Throwable $exception) {
-            Storage::disk('local')->delete($validated['receipt_path']);
+            if (! empty($validated['receipt_path'])) {
+                Storage::disk('local')->delete($validated['receipt_path']);
+            }
             throw $exception;
         }
 

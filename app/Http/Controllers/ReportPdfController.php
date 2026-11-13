@@ -24,14 +24,16 @@ class ReportPdfController extends Controller
             'from' => ['required', 'date'],
             'to' => ['required', 'date', 'after_or_equal:from'],
             'gender' => ['required', 'in:all,male,female'],
-            'currency' => ['required', 'in:YER,SAR'],
+            'currency' => ['required', 'in:YER,SAR,ALL'],
+            'cashier_id' => ['nullable', 'integer', 'exists:users,id'],
         ]);
 
         $data = $reports->summary(
             $validated['from'],
             $validated['to'],
             $validated['gender'],
-            $validated['currency']
+            $validated['currency'],
+            $validated['cashier_id'] ?? null
         );
 
         $html = view('reports.summary-pdf', [
