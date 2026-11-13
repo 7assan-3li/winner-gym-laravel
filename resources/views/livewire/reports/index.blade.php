@@ -4,7 +4,7 @@
     }
 }">
     {{-- Page Head --}}
-    <div class="wg-page-head">
+    <div class="wg-page-head no-print">
         <div>
             <h1 class="wg-title">التقارير وتسوية الورديات</h1>
             <div class="wg-subtitle">متابعة إيرادات الصالة، كشف حركة الكاشير، وتسوية وإقفال الصندوق لكل وردية</div>
@@ -25,7 +25,7 @@
     </div>
 
     {{-- Tabs --}}
-    <div class="wg-toolbar" style="padding:0;border:0;background:transparent;margin-bottom:14px;display:flex;gap:8px">
+    <div class="wg-toolbar no-print" style="padding:0;border:0;background:transparent;margin-bottom:14px;display:flex;gap:8px">
         <button type="button" wire:click="setTab('shifts')" class="wg-btn {{ $tab === 'shifts' ? 'wg-btn-primary' : '' }}" style="min-height:42px;font-weight:800">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
             <span>تسوية ورديات المحاسبين والصندوق (إقفال الوردية)</span>
@@ -37,13 +37,14 @@
     </div>
 
     @if (session('success'))
-        <div class="wg-flash" style="margin-bottom:14px">{{ session('success') }}</div>
+        <div class="wg-flash no-print" style="margin-bottom:14px">{{ session('success') }}</div>
     @endif
 
     {{-- TAB 1: CASHIER SHIFTS & RECONCILIATION --}}
     @if($tab === 'shifts')
-        {{-- Shift Toolbar --}}
-        <div class="wg-card" style="margin-bottom:14px;padding:14px">
+        <div class="no-print">
+            {{-- Shift Toolbar --}}
+            <div class="wg-card" style="margin-bottom:14px;padding:14px">
             <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
                 <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:180px">
                     <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">تاريخ الوردية</label>
@@ -266,20 +267,75 @@
                 </table>
             </div>
         </div>
+        </div>
 
         {{-- Printable Shift Handover Document (Hidden on screen, Visible on print) --}}
-        <div id="wg-print-shift-receipt" class="wg-print-only" style="display:none">
+        <div id="wg-print-shift-receipt" class="wg-print-only">
             <style>
-                @media print {
-                    body * { visibility: hidden !important; }
-                    #wg-print-shift-receipt, #wg-print-shift-receipt * { visibility: visible !important; }
+                @media screen {
                     #wg-print-shift-receipt {
+                        display: none !important;
+                    }
+                }
+                @page {
+                    size: A4 portrait;
+                    margin: 12mm 15mm;
+                }
+                @media print {
+                    .no-print,
+                    .wg-sidebar,
+                    aside,
+                    nav,
+                    .wg-nav,
+                    header,
+                    .wg-topbar,
+                    .wg-sidebar-scrim,
+                    .wg-topbar-tools,
+                    .wg-search,
+                    .wg-user,
+                    .wg-user-menu,
+                    .wg-theme-toggle,
+                    .wg-mobile-menu-toggle,
+                    .wg-page-head,
+                    .wg-toolbar,
+                    .wg-card,
+                    .wg-grid-stats,
+                    .wg-table-wrap,
+                    .wg-flash,
+                    .wg-errors,
+                    button,
+                    .wg-btn {
+                        display: none !important;
+                        visibility: hidden !important;
+                        height: 0 !important;
+                        width: 0 !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        border: none !important;
+                        overflow: hidden !important;
                         position: absolute !important;
-                        left: 0 !important;
-                        top: 0 !important;
+                        top: -9999px !important;
+                        left: -9999px !important;
+                        opacity: 0 !important;
+                        pointer-events: none !important;
+                    }
+                    body, .wg-body, .wg-app, .wg-main, .wg-page {
+                        background: #ffffff !important;
+                        color: #000000 !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
                         width: 100% !important;
+                        max-width: 100% !important;
+                        position: static !important;
                         display: block !important;
-                        padding: 24px !important;
+                        overflow: visible !important;
+                    }
+                    #wg-print-shift-receipt {
+                        display: block !important;
+                        position: static !important;
+                        width: 100% !important;
+                        margin: 0 auto !important;
+                        padding: 0 !important;
                         background: #ffffff !important;
                         color: #000000 !important;
                         font-family: 'Cairo', Arial, sans-serif !important;
@@ -288,15 +344,22 @@
                     .wg-print-table {
                         width: 100% !important;
                         border-collapse: collapse !important;
-                        margin: 16px 0 !important;
+                        margin: 14px 0 !important;
                     }
                     .wg-print-table th, .wg-print-table td {
-                        border: 1px solid #333 !important;
-                        padding: 6px 8px !important;
+                        border: 1px solid #1e293b !important;
+                        padding: 6px 10px !important;
                         font-size: 11px !important;
+                    }
+                    .wg-print-table th {
+                        background: #f1f5f9 !important;
+                        color: #0f172a !important;
+                        font-weight: bold !important;
                         text-align: right !important;
                     }
-                    .wg-print-table th { background: #f0f0f0 !important; }
+                    .wg-print-table tr {
+                        page-break-inside: avoid !important;
+                    }
                 }
             </style>
             @include('reports.partials.header', [
@@ -312,78 +375,78 @@
             <table class="wg-print-table">
                 <thead>
                     <tr>
-                        <th>البيان</th>
-                        <th>المبلغ ({{ $shiftCurrency }})</th>
-                        <th>ملاحظات</th>
+                        <th style="width:52%;">البيان</th>
+                        <th style="width:28%;text-align:center;">المبلغ ({{ $shiftCurrency }})</th>
+                        <th style="width:20%;text-align:center;">ملاحظات</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>إجمالي مقبوضات الاشتراكات (كاش)</td>
-                        <td dir="ltr"><b>{{ number_format($shiftData['subscription_cash'], 2) }}</b></td>
-                        <td>صندوق</td>
+                        <td dir="ltr" style="text-align:center;"><b>{{ number_format($shiftData['subscription_cash'], 2) }}</b></td>
+                        <td style="text-align:center;">صندوق</td>
                     </tr>
                     <tr>
                         <td>إجمالي مبيعات المتجر (كاش)</td>
-                        <td dir="ltr"><b>{{ number_format($shiftData['sales_cash'], 2) }}</b></td>
-                        <td>صندوق</td>
+                        <td dir="ltr" style="text-align:center;"><b>{{ number_format($shiftData['sales_cash'], 2) }}</b></td>
+                        <td style="text-align:center;">صندوق</td>
                     </tr>
                     <tr>
                         <td>إجمالي جلسات التغذية (كاش)</td>
-                        <td dir="ltr"><b>{{ number_format($shiftData['nutrition_cash'], 2) }}</b></td>
-                        <td>صندوق</td>
+                        <td dir="ltr" style="text-align:center;"><b>{{ number_format($shiftData['nutrition_cash'], 2) }}</b></td>
+                        <td style="text-align:center;">صندوق</td>
                     </tr>
                     <tr style="background:#f9f9f9">
                         <td><strong>إجمالي الكاش المستلم بالصندوق</strong></td>
-                        <td dir="ltr"><strong>{{ number_format($shiftData['total_cash_in'], 2) }}</strong></td>
-                        <td><strong>مجموع المقبوضات النقدية</strong></td>
+                        <td dir="ltr" style="text-align:center;"><strong>{{ number_format($shiftData['total_cash_in'], 2) }}</strong></td>
+                        <td style="text-align:center;"><strong>مجموع المقبوضات النقدية</strong></td>
                     </tr>
                     <tr>
                         <td>مصروفات الصندوق المنصرفة</td>
-                        <td dir="ltr"><b>- {{ number_format($shiftData['cash_expenses'], 2) }}</b></td>
-                        <td>صرف نقدي من الدرج</td>
+                        <td dir="ltr" style="text-align:center;"><b>- {{ number_format($shiftData['cash_expenses'], 2) }}</b></td>
+                        <td style="text-align:center;">صرف نقدي من الدرج</td>
                     </tr>
                     <tr style="background:#e8f4ec">
-                        <td style="font-size:13px;font-weight:900">صافي النقد المسلّم (كاش الدرج الفعلي)</td>
-                        <td dir="ltr" style="font-size:14px;font-weight:900"><strong>{{ number_format($shiftData['net_cash_handover'], 2) }} {{ $shiftCurrency }}</strong></td>
-                        <td><strong>المبلغ الفعلي في الدرج</strong></td>
+                        <td style="font-size:12px;font-weight:900">صافي النقد المسلّم (كاش الدرج الفعلي)</td>
+                        <td dir="ltr" style="font-size:13px;font-weight:900;text-align:center;"><strong>{{ number_format($shiftData['net_cash_handover'], 2) }} {{ $shiftCurrency }}</strong></td>
+                        <td style="text-align:center;"><strong>المبلغ الفعلي في الدرج</strong></td>
                     </tr>
                     <tr>
                         <td>إجمالي التحويلات المصرفية (غير نقدية)</td>
-                        <td dir="ltr"><b>{{ number_format($shiftData['total_transfer_in'], 2) }}</b></td>
-                        <td>حسابات بنك / صرافة</td>
+                        <td dir="ltr" style="text-align:center;"><b>{{ number_format($shiftData['total_transfer_in'], 2) }}</b></td>
+                        <td style="text-align:center;">حسابات بنك / صرافة</td>
                     </tr>
                     <tr style="background:#f0f0f0">
                         <td><strong>إجمالي إيراد الوردية العام</strong></td>
-                        <td dir="ltr"><strong>{{ number_format($shiftData['total_collected'], 2) }} {{ $shiftCurrency }}</strong></td>
-                        <td>كاش + تحويلات</td>
+                        <td dir="ltr" style="text-align:center;"><strong>{{ number_format($shiftData['total_collected'], 2) }} {{ $shiftCurrency }}</strong></td>
+                        <td style="text-align:center;">كاش + تحويلات</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h4 style="font-size:13px;margin:16px 0 6px">تفاصيل الحركات المنفذة خلال الوردية:</h4>
+            <h4 style="font-size:12px;margin:16px 0 6px;color:#0f172a;font-weight:bold;">تفاصيل الحركات المنفذة خلال الوردية:</h4>
             <table class="wg-print-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>الوقت</th>
-                        <th>النوع</th>
-                        <th>المرجع</th>
-                        <th>العميل</th>
-                        <th>الطريقة</th>
-                        <th>المبلغ</th>
+                        <th style="width:5%;text-align:center;">#</th>
+                        <th style="width:13%;text-align:center;">الوقت</th>
+                        <th style="width:16%;">النوع</th>
+                        <th style="width:15%;">المرجع</th>
+                        <th style="width:23%;">العميل</th>
+                        <th style="width:14%;">الطريقة</th>
+                        <th style="width:14%;text-align:center;">المبلغ</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($shiftData['transactions'] as $idx => $t)
                         <tr>
-                            <td>{{ $idx + 1 }}</td>
-                            <td dir="ltr">{{ $t['time_formatted'] }}</td>
+                            <td style="text-align:center;">{{ $idx + 1 }}</td>
+                            <td dir="ltr" style="text-align:center;">{{ $t['time_formatted'] }}</td>
                             <td>{{ $t['type_label'] }}</td>
                             <td>{{ $t['reference'] }}</td>
                             <td>{{ $t['client'] }}</td>
                             <td>{{ $t['method_label'] }} {{ $t['transfer_details'] ? '('.$t['transfer_details'].')' : '' }}</td>
-                            <td dir="ltr">{{ $t['is_out'] ? '-' : '' }}{{ number_format($t['amount'], 0) }}</td>
+                            <td dir="ltr" style="text-align:center;">{{ $t['is_out'] ? '-' : '' }}{{ number_format($t['amount'], 0) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -397,69 +460,71 @@
 
     {{-- TAB 2: OVERALL FINANCIAL SUMMARY --}}
     @else
-        <div class="wg-card" style="margin-bottom:16px;padding:14px">
-            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
-                <div>
-                    <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">من تاريخ</label>
-                    <input wire:model.live="from" type="date" class="wg-field">
-                </div>
-                <div>
-                    <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">إلى تاريخ</label>
-                    <input wire:model.live="to" type="date" class="wg-field">
-                </div>
-                <div>
-                    <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">الفترة / الجنس</label>
-                    <select wire:model.live="gender" class="wg-select">
-                        <option value="all">كل الفترات (رجال ونساء)</option>
-                        <option value="male">رجال فقط</option>
-                        <option value="female">نساء فقط</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">العملة</label>
-                    <select wire:model.live="currency" class="wg-select">
-                        <option value="YER">ريال يمني (YER)</option>
-                        <option value="SAR">ريال سعودي (SAR)</option>
-                    </select>
+        <div class="no-print">
+            <div class="wg-card" style="margin-bottom:16px;padding:14px">
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+                    <div>
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">من تاريخ</label>
+                        <input wire:model.live="from" type="date" class="wg-field">
+                    </div>
+                    <div>
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">إلى تاريخ</label>
+                        <input wire:model.live="to" type="date" class="wg-field">
+                    </div>
+                    <div>
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">الفترة / الجنس</label>
+                        <select wire:model.live="gender" class="wg-select">
+                            <option value="all">كل الفترات (رجال ونساء)</option>
+                            <option value="male">رجال فقط</option>
+                            <option value="female">نساء فقط</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">العملة</label>
+                        <select wire:model.live="currency" class="wg-select">
+                            <option value="YER">ريال يمني (YER)</option>
+                            <option value="SAR">ريال سعودي (SAR)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="wg-grid-stats" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px">
-            <div class="wg-card wg-stat">
-                <small>إيراد الاشتراكات</small>
-                <strong class="wg-blue" dir="ltr">{{ number_format($data['subscription_revenue'], 0) }} {{ $currency }}</strong>
-                <div class="wg-stat-note">صافي بعد الاسترداد</div>
+            <div class="wg-grid-stats" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px">
+                <div class="wg-card wg-stat">
+                    <small>إيراد الاشتراكات</small>
+                    <strong class="wg-blue" dir="ltr">{{ number_format($data['subscription_revenue'], 0) }} {{ $currency }}</strong>
+                    <div class="wg-stat-note">صافي بعد الاسترداد</div>
+                </div>
+                <div class="wg-card wg-stat">
+                    <small>إيراد المتجر</small>
+                    <strong class="wg-green" dir="ltr">{{ number_format($data['product_revenue'], 0) }} {{ $currency }}</strong>
+                    <div class="wg-stat-note">ربح المنتجات: {{ number_format($data['product_profit'], 0) }} {{ $currency }}</div>
+                </div>
+                <div class="wg-card wg-stat">
+                    <small>إيراد التغذية</small>
+                    <strong class="wg-purple" dir="ltr">{{ number_format($data['nutrition_revenue'], 0) }} {{ $currency }}</strong>
+                    <div class="wg-stat-note">الجلسات المكتملة</div>
+                </div>
+                <div class="wg-card wg-stat" style="border:2px solid var(--wg-primary);background:linear-gradient(145deg,rgba(37,99,235,0.06),transparent)">
+                    <small style="color:var(--wg-primary);font-weight:800">صافي الدخل العام</small>
+                    <strong style="color:#059669;font-size:26px" dir="ltr">{{ number_format($data['net'], 0) }} {{ $currency }}</strong>
+                    <div class="wg-stat-note" style="color:var(--wg-primary);font-weight:700">بعد خصم المصروفات ({{ number_format($data['expenses'], 0) }})</div>
+                </div>
             </div>
-            <div class="wg-card wg-stat">
-                <small>إيراد المتجر</small>
-                <strong class="wg-green" dir="ltr">{{ number_format($data['product_revenue'], 0) }} {{ $currency }}</strong>
-                <div class="wg-stat-note">ربح المنتجات: {{ number_format($data['product_profit'], 0) }} {{ $currency }}</div>
-            </div>
-            <div class="wg-card wg-stat">
-                <small>إيراد التغذية</small>
-                <strong class="wg-purple" dir="ltr">{{ number_format($data['nutrition_revenue'], 0) }} {{ $currency }}</strong>
-                <div class="wg-stat-note">الجلسات المكتملة</div>
-            </div>
-            <div class="wg-card wg-stat" style="border:2px solid var(--wg-primary);background:linear-gradient(145deg,rgba(37,99,235,0.06),transparent)">
-                <small style="color:var(--wg-primary);font-weight:800">صافي الدخل العام</small>
-                <strong style="color:#059669;font-size:26px" dir="ltr">{{ number_format($data['net'], 0) }} {{ $currency }}</strong>
-                <div class="wg-stat-note" style="color:var(--wg-primary);font-weight:700">بعد خصم المصروفات ({{ number_format($data['expenses'], 0) }})</div>
-            </div>
-        </div>
 
-        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
-            <div class="wg-card" style="padding:16px;text-align:center">
-                <div style="color:var(--wg-muted);font-size:13px">تسجيلات الحضور</div>
-                <div style="font-size:26px;font-weight:850;color:var(--wg-primary);margin-top:6px">{{ number_format($data['attendance_count']) }}</div>
-            </div>
-            <div class="wg-card" style="padding:16px;text-align:center">
-                <div style="color:var(--wg-muted);font-size:13px">مواعيد التغذية</div>
-                <div style="font-size:26px;font-weight:850;color:#7c3aed;margin-top:6px">{{ number_format($data['appointments_count']) }}</div>
-            </div>
-            <div class="wg-card" style="padding:16px;text-align:center">
-                <div style="color:var(--wg-muted);font-size:13px">الأعضاء الجدد</div>
-                <div style="font-size:26px;font-weight:850;color:#059669;margin-top:6px">{{ number_format($data['new_members_count']) }}</div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+                <div class="wg-card" style="padding:16px;text-align:center">
+                    <div style="color:var(--wg-muted);font-size:13px">تسجيلات الحضور</div>
+                    <div style="font-size:26px;font-weight:850;color:var(--wg-primary);margin-top:6px">{{ number_format($data['attendance_count']) }}</div>
+                </div>
+                <div class="wg-card" style="padding:16px;text-align:center">
+                    <div style="color:var(--wg-muted);font-size:13px">مواعيد التغذية</div>
+                    <div style="font-size:26px;font-weight:850;color:#7c3aed;margin-top:6px">{{ number_format($data['appointments_count']) }}</div>
+                </div>
+                <div class="wg-card" style="padding:16px;text-align:center">
+                    <div style="color:var(--wg-muted);font-size:13px">الأعضاء الجدد</div>
+                    <div style="font-size:26px;font-weight:850;color:#059669;margin-top:6px">{{ number_format($data['new_members_count']) }}</div>
+                </div>
             </div>
         </div>
     @endif

@@ -31,6 +31,59 @@
     <link rel="stylesheet" href="{{ asset('winner-gym/quick-actions-final.css') }}?v=20261026-5">
     <link rel="stylesheet" href="{{ asset('winner-gym/theme-system-final.css') }}?v=20261026-5">
     <link rel="stylesheet" href="{{ asset('winner-gym/light-theme-hardening-v3.css') }}?v=20261026-5">
+    <style>
+        @media print {
+            .wg-sidebar,
+            aside,
+            nav,
+            .wg-nav,
+            header,
+            .wg-topbar,
+            .wg-sidebar-scrim,
+            .wg-topbar-tools,
+            .wg-search,
+            .wg-user,
+            .wg-user-menu,
+            .wg-theme-toggle,
+            .wg-mobile-menu-toggle,
+            .wg-quick-cart,
+            .wg-quick-attendance-trigger,
+            .wg-quick-member,
+            .wg-modal-backdrop,
+            .wg-flash,
+            .wg-errors,
+            button,
+            .wg-btn,
+            .no-print {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                position: absolute !important;
+                top: -9999px !important;
+                left: -9999px !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+            body, .wg-body, .wg-app, .wg-main, .wg-content, .wg-page {
+                background: #ffffff !important;
+                color: #000000 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                position: static !important;
+                overflow: visible !important;
+            }
+            .wg-main {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
 </head>
 @php
     $wgBodyClass = match (true) {
