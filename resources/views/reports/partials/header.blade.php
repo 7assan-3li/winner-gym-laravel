@@ -18,9 +18,19 @@
     $resolveImg = function(?string $path) use ($isPdf) {
         if (! $path) return null;
         $fullPath = storage_path('app/public/' . $path);
-        if ($isPdf) {
-            return file_exists($fullPath) ? $fullPath : null;
+        if (! file_exists($fullPath)) {
+            $fullPath = public_path('storage/' . $path);
         }
+        if (! file_exists($fullPath)) {
+            return null;
+        }
+
+        if ($isPdf) {
+            $mime = @mime_content_type($fullPath) ?: 'image/png';
+            $data = @file_get_contents($fullPath);
+            return $data ? ('data:' . $mime . ';base64,' . base64_encode($data)) : null;
+        }
+
         return asset('storage/' . $path);
     };
 
@@ -28,73 +38,75 @@
     $logoSrc = $resolveImg($settings['logo'] ?? null);
 @endphp
 
-<header class="wg-report-header" style="width:100%;margin-bottom:14px;direction:rtl;font-family:inherit;">
+<div class="wg-report-header" style="width:100%;margin-bottom:14px;direction:rtl;">
     @if($headerMode === 'custom_image' && $headerImgSrc)
         {{-- النمط الثاني: صورة مروّسة كاملة جاهزة --}}
-        <div class="wg-report-banner" style="width:100%;text-align:center;margin-bottom:10px;">
-            <img src="{{ $headerImgSrc }}" alt="ترويسة التقرير" style="width:100%;max-height:160px;object-fit:contain;display:block;margin:0 auto;">
+        <div style="width:100%;text-align:center;margin-bottom:10px;">
+            <img src="{{ $headerImgSrc }}" alt="ترويسة التقرير" style="width:100%;max-height:160px;display:block;margin:0 auto;">
         </div>
     @else
-        {{-- النمط الأول: كليشة بيانات وشعار منظمة --}}
-        <div class="wg-report-structured" style="display:table;width:100%;border-bottom:2px solid #1e293b;padding-bottom:12px;margin-bottom:8px;">
-            {{-- الجانب الأيمن: بيانات المنشأة بالعربية --}}
-            <div style="display:table-cell;width:38%;vertical-align:middle;text-align:right;">
-                <div style="font-size:17px;font-weight:900;color:#0f172a;line-height:1.2;">{{ $settings['gym_name'] }}</div>
-                @if(!empty($settings['tagline']))
-                    <div style="font-size:10px;font-weight:700;color:#475569;margin-top:2px;">{{ $settings['tagline'] }}</div>
-                @endif
-                @if(!empty($settings['commercial_register']))
-                    <div style="font-size:9px;color:#64748b;margin-top:2px;">س.ت / ترخيص: {{ $settings['commercial_register'] }}</div>
-                @endif
-                @if(!empty($settings['location']))
-                    <div style="font-size:9px;color:#64748b;margin-top:1px;">{{ $settings['location'] }}</div>
-                @endif
-            </div>
+        {{-- النمط الأول: كليشة بيانات وشعار منظمة باستخدام جدول HTML القياسي المتوافق مع المتصفح و mPDF --}}
+        <table style="width:100%;border-collapse:collapse;border-bottom:2px solid #1e293b;padding-bottom:10px;margin-bottom:8px;">
+            <tr>
+                {{-- الجانب الأيمن: بيانات المنشأة بالعربية --}}
+                <td style="width:38%;vertical-align:middle;text-align:right;border:none;padding:4px 0;">
+                    <div style="font-size:16px;font-weight:bold;color:#0f172a;line-height:1.2;">{{ $settings['gym_name'] }}</div>
+                    @if(!empty($settings['tagline']))
+                        <div style="font-size:10px;font-weight:bold;color:#475569;margin-top:2px;">{{ $settings['tagline'] }}</div>
+                    @endif
+                    @if(!empty($settings['commercial_register']))
+                        <div style="font-size:9px;color:#64748b;margin-top:2px;">س.ت / ترخيص: {{ $settings['commercial_register'] }}</div>
+                    @endif
+                    @if(!empty($settings['location']))
+                        <div style="font-size:9px;color:#64748b;margin-top:1px;">{{ $settings['location'] }}</div>
+                    @endif
+                </td>
 
-            {{-- الوسط: شعار النادي --}}
-            <div style="display:table-cell;width:24%;vertical-align:middle;text-align:center;">
-                @if($logoSrc)
-                    <img src="{{ $logoSrc }}" alt="شعار النادي" style="max-height:65px;max-width:120px;object-fit:contain;display:inline-block;">
-                @else
-                    <div style="display:inline-block;padding:8px 14px;border:2px solid #0f172a;border-radius:8px;font-weight:900;font-size:13px;letter-spacing:1px;color:#0f172a;background:#f8fafc;">
-                        WINNER
-                    </div>
-                @endif
-            </div>
+                {{-- الوسط: شعار النادي --}}
+                <td style="width:24%;vertical-align:middle;text-align:center;border:none;padding:4px 0;">
+                    @if($logoSrc)
+                        <img src="{{ $logoSrc }}" alt="شعار النادي" style="max-height:60px;max-width:120px;display:inline-block;">
+                    @else
+                        <div style="display:inline-block;padding:6px 12px;border:2px solid #0f172a;border-radius:6px;font-weight:bold;font-size:12px;color:#0f172a;background:#f8fafc;">
+                            WINNER
+                        </div>
+                    @endif
+                </td>
 
-            {{-- الجانب الأيسر: بيانات المنشأة بالإنجليزية والتواصل --}}
-            <div style="display:table-cell;width:38%;vertical-align:middle;text-align:left;direction:ltr;">
-                <div style="font-size:15px;font-weight:900;color:#0f172a;letter-spacing:0.5px;line-height:1.2;">{{ $settings['gym_name_en'] ?: 'WINNER GYM' }}</div>
-                <div style="font-size:9px;font-weight:600;color:#475569;margin-top:2px;">SPORTS & FITNESS CLUB</div>
-                @if(!empty($settings['phone']))
-                    <div style="font-size:9px;color:#64748b;margin-top:2px;">Tel: {{ $settings['phone'] }}</div>
-                @endif
-            </div>
-        </div>
+                {{-- الجانب الأيسر: بيانات المنشأة بالإنجليزية والتواصل --}}
+                <td style="width:38%;vertical-align:middle;text-align:left;direction:ltr;border:none;padding:4px 0;">
+                    <div style="font-size:14px;font-weight:bold;color:#0f172a;line-height:1.2;">{{ $settings['gym_name_en'] ?: 'WINNER GYM' }}</div>
+                    <div style="font-size:9px;color:#475569;margin-top:2px;">SPORTS & FITNESS CLUB</div>
+                    @if(!empty($settings['phone']))
+                        <div style="font-size:9px;color:#64748b;margin-top:2px;">Tel: {{ $settings['phone'] }}</div>
+                    @endif
+                </td>
+            </tr>
+        </table>
     @endif
 
     {{-- عنوان التقرير وشريط البيانات الوصفية (إن وجد) --}}
     @if(!empty($title))
         <div style="margin-top:10px;text-align:center;">
-            <h2 style="margin:0;font-size:16px;font-weight:900;color:#0f172a;display:inline-block;padding-bottom:3px;border-bottom:2px solid #0284c7;">
+            <h2 style="margin:0;font-size:15px;font-weight:bold;color:#0f172a;display:inline-block;padding-bottom:3px;border-bottom:2px solid #0284c7;">
                 {{ $title }}
             </h2>
             @if(!empty($subtitle))
-                <div style="font-size:11px;color:#475569;margin-top:4px;">{{ $subtitle }}</div>
+                <div style="font-size:10px;color:#475569;margin-top:4px;">{{ $subtitle }}</div>
             @endif
         </div>
     @endif
 
     @if(!empty($meta) && is_array($meta))
-        <div style="display:table;width:100%;margin-top:10px;padding:6px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;font-size:10px;color:#334155;">
-            <div style="display:table-row;">
+        <table style="width:100%;border-collapse:collapse;margin-top:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;font-size:10px;color:#334155;">
+            <tr>
                 @foreach($meta as $label => $val)
-                    <div style="display:table-cell;padding:2px 8px;white-space:nowrap;">
-                        <span style="color:#64748b;font-weight:600;">{{ $label }}:</span>
+                    <td style="padding:5px 8px;border:none;white-space:nowrap;">
+                        <span style="color:#64748b;font-weight:bold;">{{ $label }}:</span>
                         <strong style="color:#0f172a;margin-right:3px;">{{ $val }}</strong>
-                    </div>
+                    </td>
                 @endforeach
-            </div>
-        </div>
+            </tr>
+        </table>
     @endif
-</header>
+</div>
