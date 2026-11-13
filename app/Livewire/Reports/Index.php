@@ -29,6 +29,30 @@ class Index extends Component
 
     public string $shiftCurrency = 'YER';
 
+    public bool $showShiftModal = false;
+
+    public ?int $modalCashierId = null;
+
+    public function openShiftDetails(int $cashierId): void
+    {
+        $this->modalCashierId = $cashierId;
+        $this->shiftCashierId = $cashierId;
+        $this->showShiftModal = true;
+    }
+
+    public function closeShiftDetails(): void
+    {
+        $this->showShiftModal = false;
+        $this->modalCashierId = null;
+    }
+
+    public function printCashierShift(int $cashierId): void
+    {
+        $this->shiftCashierId = $cashierId;
+        $this->showShiftModal = false;
+        $this->dispatch('trigger-print');
+    }
+
     public function mount(): void
     {
         $user = auth()->user();
@@ -75,9 +99,14 @@ class Index extends Component
             ? $reports->cashierShiftSummary($this->shiftCashierId, $this->shiftDate, $this->shiftCurrency)
             : $this->emptyShiftData();
 
+        $modalShiftData = ($this->showShiftModal && $this->modalCashierId)
+            ? $reports->cashierShiftSummary($this->modalCashierId, $this->shiftDate, $this->shiftCurrency)
+            : null;
+
         return view('livewire.reports.index', [
             'data' => $data,
             'shiftData' => $shiftData,
+            'modalShiftData' => $modalShiftData,
             'staffList' => $staffList,
         ]);
     }

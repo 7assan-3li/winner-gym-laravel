@@ -2,7 +2,7 @@
     printShift() {
         window.print();
     }
-}">
+}" x-on:trigger-print.window="setTimeout(() => window.print(), 250)">
     {{-- Page Head --}}
     <div class="wg-page-head no-print">
         <div>
@@ -192,8 +192,9 @@
                                     <td dir="ltr" style="font-weight:850;font-size:14px;color:#059669">{{ number_format($cRow['net_handover'], 0) }} {{ $shiftCurrency }}</td>
                                     <td><strong>{{ $cRow['transactions_count'] }}</strong></td>
                                     <td>
-                                        <button type="button" wire:click="$set('shiftCashierId', {{ $cRow['id'] }})" class="wg-btn wg-btn-sm" style="font-size:12px">
-                                            عرض تفاصيل ورديته
+                                        <button type="button" wire:click="openShiftDetails({{ $cRow['id'] }})" class="wg-btn wg-btn-sm" style="font-size:12px;display:inline-flex;align-items:center;gap:6px">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            <span>عرض تفاصيل ورديته</span>
                                         </button>
                                     </td>
                                 </tr>
@@ -525,6 +526,152 @@
                     <div style="color:var(--wg-muted);font-size:13px">الأعضاء الجدد</div>
                     <div style="font-size:26px;font-weight:850;color:#059669;margin-top:6px">{{ number_format($data['new_members_count']) }}</div>
                 </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Cashier Shift Details Modal --}}
+    @if($showShiftModal && $modalShiftData)
+        <div class="wg-modal-backdrop no-print" style="position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px;">
+            <div class="wg-modal" dir="rtl" style="max-width:860px;width:100%;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.12);background:var(--wg-card-bg, #0f172a);border-radius:14px;overflow:hidden;">
+                
+                {{-- Modal Head --}}
+                <div class="wg-modal-head" style="display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--wg-border,#1e293b);background:var(--wg-panel-2,#1e293b);">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:22px;">📋</span>
+                            <h3 style="margin:0;font-size:17px;font-weight:800;color:var(--wg-text,#f8fafc);">
+                                تفاصيل وردية المحاسب: {{ $modalShiftData['cashier_name'] }}
+                            </h3>
+                            <span class="wg-badge wg-badge-blue" style="font-size:11px;">
+                                {{ match(optional(collect($staffList)->firstWhere('id', $modalCashierId))->role){'owner'=>'مالك','manager'=>'مدير','reception'=>'استقبال','accountant'=>'محاسب','nutritionist'=>'تغذية',default=>'موظف'} }}
+                            </span>
+                        </div>
+                        <div style="font-size:12px;color:var(--wg-muted,#94a3b8);margin-top:4px;">
+                            تاريخ الوردية: <strong>{{ $shiftDate }}</strong> • العملة: <strong>{{ $shiftCurrency }}</strong>
+                        </div>
+                    </div>
+                    <button type="button" wire:click="closeShiftDetails" class="wg-modal-x" style="background:none;border:none;color:#94a3b8;font-size:24px;cursor:pointer;line-height:1;padding:4px 8px;">✕</button>
+                </div>
+
+                {{-- Modal Body --}}
+                <div class="wg-modal-body" style="padding:18px 22px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;">
+                    
+                    {{-- KPI Stat Grid --}}
+                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
+                        <div style="padding:12px;background:rgba(5,150,105,0.12);border:1px solid rgba(5,150,105,0.3);border-radius:10px;">
+                            <div style="font-size:11px;font-weight:750;color:#059669;">صافي كاش الدرج للتسليم</div>
+                            <div style="font-size:19px;font-weight:900;color:#059669;margin-top:4px;" dir="ltr">
+                                {{ number_format($modalShiftData['net_cash_handover'], 2) }} <span style="font-size:11px;">{{ $shiftCurrency }}</span>
+                            </div>
+                        </div>
+                        <div style="padding:12px;background:var(--wg-panel-2,#1e293b);border:1px solid var(--wg-border,#334155);border-radius:10px;">
+                            <div style="font-size:11px;font-weight:750;color:var(--wg-muted);">المقبوضات النقدية (كاش)</div>
+                            <div style="font-size:18px;font-weight:850;color:#10b981;margin-top:4px;" dir="ltr">
+                                {{ number_format($modalShiftData['total_cash_in'], 2) }}
+                            </div>
+                        </div>
+                        <div style="padding:12px;background:var(--wg-panel-2,#1e293b);border:1px solid var(--wg-border,#334155);border-radius:10px;">
+                            <div style="font-size:11px;font-weight:750;color:var(--wg-muted);">التحويلات المصرفية</div>
+                            <div style="font-size:18px;font-weight:850;color:#3b82f6;margin-top:4px;" dir="ltr">
+                                {{ number_format($modalShiftData['total_transfer_in'], 2) }}
+                            </div>
+                        </div>
+                        <div style="padding:12px;background:var(--wg-panel-2,#1e293b);border:1px solid var(--wg-border,#334155);border-radius:10px;">
+                            <div style="font-size:11px;font-weight:750;color:var(--wg-muted);">مصروفات الصندوق</div>
+                            <div style="font-size:18px;font-weight:850;color:#ef4444;margin-top:4px;" dir="ltr">
+                                {{ number_format($modalShiftData['cash_expenses'], 2) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Channel Breakdown --}}
+                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+                        <div style="padding:10px 12px;background:var(--wg-panel-2,#1e293b);border:1px solid var(--wg-border,#334155);border-radius:8px;">
+                            <div style="font-size:12px;font-weight:800;color:var(--wg-primary,#38bdf8);margin-bottom:6px;">الاشتراكات والأقساط</div>
+                            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--wg-muted);">
+                                <span>كاش:</span> <strong dir="ltr">{{ number_format($modalShiftData['subscription_cash'], 2) }}</strong>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--wg-muted);margin-top:2px;">
+                                <span>تحويل:</span> <strong dir="ltr">{{ number_format($modalShiftData['subscription_transfer'], 2) }}</strong>
+                            </div>
+                        </div>
+                        <div style="padding:10px 12px;background:var(--wg-panel-2,#1e293b);border:1px solid var(--wg-border,#334155);border-radius:8px;">
+                            <div style="font-size:12px;font-weight:800;color:#0284c7;margin-bottom:6px;">مبيعات المتجر</div>
+                            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--wg-muted);">
+                                <span>كاش:</span> <strong dir="ltr">{{ number_format($modalShiftData['sales_cash'], 2) }}</strong>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--wg-muted);margin-top:2px;">
+                                <span>تحويل:</span> <strong dir="ltr">{{ number_format($modalShiftData['sales_transfer'], 2) }}</strong>
+                            </div>
+                        </div>
+                        <div style="padding:10px 12px;background:var(--wg-panel-2,#1e293b);border:1px solid var(--wg-border,#334155);border-radius:8px;">
+                            <div style="font-size:12px;font-weight:800;color:#a855f7;margin-bottom:6px;">جلسات التغذية</div>
+                            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--wg-muted);">
+                                <span>كاش:</span> <strong dir="ltr">{{ number_format($modalShiftData['nutrition_cash'], 2) }}</strong>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--wg-muted);margin-top:2px;">
+                                <span>تحويل:</span> <strong dir="ltr">{{ number_format($modalShiftData['nutrition_transfer'], 2) }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Transactions Table --}}
+                    <div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                            <h4 style="font-size:13px;font-weight:800;margin:0;color:var(--wg-text,#f8fafc);">
+                                الحركات والعمليات المنفذة في هذه الوردية ({{ count($modalShiftData['transactions']) }} عملية)
+                            </h4>
+                        </div>
+                        <div style="max-height:240px;overflow-y:auto;border:1px solid var(--wg-border,#334155);border-radius:8px;">
+                            <table class="wg-table" style="font-size:12px;margin:0;">
+                                <thead style="position:sticky;top:0;background:var(--wg-panel-2,#1e293b);z-index:1;">
+                                    <tr>
+                                        <th style="padding:7px 10px;">الوقت</th>
+                                        <th style="padding:7px 10px;">النوع</th>
+                                        <th style="padding:7px 10px;">المرجع</th>
+                                        <th style="padding:7px 10px;">العميل / البيان</th>
+                                        <th style="padding:7px 10px;">طريقة الدفع</th>
+                                        <th style="padding:7px 10px;text-align:center;">المبلغ ({{ $shiftCurrency }})</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($modalShiftData['transactions'] as $tx)
+                                        <tr>
+                                            <td dir="ltr" style="font-size:11px;">{{ $tx['time_formatted'] }}</td>
+                                            <td><span class="wg-badge {{ match($tx['type']){'subscription'=>'wg-badge-blue','sale'=>'wg-badge-green','nutrition'=>'wg-badge-purple',default=>'wg-badge-red'} }}">{{ $tx['type_label'] }}</span></td>
+                                            <td><strong>{{ $tx['reference'] }}</strong></td>
+                                            <td>{{ $tx['client'] }}</td>
+                                            <td>{{ $tx['method_label'] }} {{ $tx['transfer_details'] ? '('.$tx['transfer_details'].')' : '' }}</td>
+                                            <td dir="ltr" style="text-align:center;font-weight:800;color:{{ $tx['is_out'] ? '#ef4444' : '#10b981' }};">
+                                                {{ $tx['is_out'] ? '-' : '+' }}{{ number_format($tx['amount'], 2) }}
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" style="text-align:center;padding:24px;color:var(--wg-muted);">
+                                                لا توجد حركات مالية مسجلة لهذا المحاسب في هذا اليوم.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                {{-- Modal Foot --}}
+                <div class="wg-modal-foot" style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px;border-top:1px solid var(--wg-border,#1e293b);background:var(--wg-panel-2,#1e293b);">
+                    <button type="button" wire:click="closeShiftDetails" class="wg-btn" style="padding:8px 20px;">
+                        إغلاق
+                    </button>
+                    <button type="button" wire:click="printCashierShift({{ $modalCashierId }})" class="wg-btn wg-btn-primary" style="display:inline-flex;align-items:center;gap:6px;padding:8px 20px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                        <span>طباعة كشف تسليم الوردية للمحاسب</span>
+                    </button>
+                </div>
+
             </div>
         </div>
     @endif
