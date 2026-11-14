@@ -6,6 +6,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($result) ? 'بطاقة عضوية: ' . $result['member']['name'] : 'استعلام الاشتراكات | WINNER GYM' }}</title>
     
+    {{-- WINNER GYM Favicon Suite with Cache-Buster --}}
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v=20261114" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=20261114">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v=20261114">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v=20261114">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=20261114">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}?v=20261114">
+    <meta name="theme-color" content="#020813">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">

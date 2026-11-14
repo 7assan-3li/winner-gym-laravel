@@ -38,7 +38,6 @@ class Index extends Component
     public function openShiftDetails(int $cashierId): void
     {
         $this->modalCashierId = $cashierId;
-        $this->shiftCashierId = $cashierId;
         $this->showShiftModal = true;
     }
 
