@@ -24,6 +24,14 @@ class SubscriptionContractController extends Controller
         $managerName = (string) $settings->get('gym.manager_name', 'إدارة النادي');
         $commercialRegister = (string) $settings->get('gym.commercial_register', '—');
 
+        $logoSetting = (string) $settings->get('report.logo_path', '');
+        $gymLogo = null;
+        if ($logoSetting && (file_exists(storage_path('app/public/'.$logoSetting)) || file_exists(public_path('storage/'.$logoSetting)))) {
+            $gymLogo = asset('storage/'.$logoSetting);
+        } else {
+            $gymLogo = asset('winner-gym/logo-light.png');
+        }
+
         $durationUnit = $subscription->duration_unit_snapshot ?: 'month';
         $durationValue = (int) ($subscription->duration_value_snapshot ?: 1);
 
@@ -57,6 +65,7 @@ class SubscriptionContractController extends Controller
             'gymPhone' => $gymPhone,
             'managerName' => $managerName,
             'commercialRegister' => $commercialRegister,
+            'gymLogo' => $gymLogo,
             'durationText' => $durationText,
             'durationUnitText' => $durationUnitText,
             'periodLabel' => $periodLabel,
