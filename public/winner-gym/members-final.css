@@ -109,6 +109,17 @@ body.wg-body-members .wg-members-filter-panel .wg-members-select-control select{
 .wg-members-detail-actions{justify-content:flex-start!important;flex-wrap:wrap!important}
 .wg-members-detail-actions .wg-members-primary,.wg-members-detail-actions .wg-members-secondary{min-width:150px!important;min-height:45px!important}
 
+/* Native select/option contrast fix in dark & light themes + print modal checkboxes */
+.wg-body-members select{color-scheme:dark}
+.wg-body-members select option{background:#07131f;color:#f5f8ff}
+html.wg-light .wg-body-members select{color-scheme:light}
+html.wg-light .wg-body-members select option{background:#fff;color:#1b2d45}
+.wg-members-print-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.wg-members-check-item{display:flex!important;flex-direction:row!important;align-items:center!important;gap:9px!important;padding:10px 12px!important;border:1px solid #1a3048!important;border-radius:9px!important;background:#06111d!important;color:#dce6f4!important;font-size:12.5px!important;font-weight:750!important;cursor:pointer!important}
+.wg-members-check-item input[type="checkbox"]{width:16px!important;height:16px!important;margin:0!important;accent-color:#1681f7;cursor:pointer}
+html.wg-light .wg-members-check-item{background:#f8fbff!important;border-color:#ccdaea!important;color:#1b2d45!important}
+@media(max-width:640px){.wg-members-print-checks{grid-template-columns:1fr}}
+
 /* Light / blue mode — member screen */
 html.wg-light .wg-body-members{--mem-panel:#fff;--mem-panel-2:#f7fbff;--mem-border:#d5e3f3;--mem-muted:#6f839b;--mem-text:#172a43;background:#eef5ff!important;color:#172a43!important}
 html.wg-light .wg-topbar-members-final{background:#fff!important;border-bottom-color:#d8e4f2!important;box-shadow:0 6px 22px rgba(37,79,129,.05)!important}

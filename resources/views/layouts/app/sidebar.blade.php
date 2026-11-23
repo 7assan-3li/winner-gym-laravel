@@ -19,7 +19,7 @@
     {{-- Load the accepted module styles on EVERY authenticated request.
          This prevents Livewire/browser-cache differences between owner and newly-created staff accounts. --}}
     <link rel="stylesheet" href="{{ asset('winner-gym/dashboard-final-polish.css') }}?v=20261026-5">
-    <link rel="stylesheet" href="{{ asset('winner-gym/members-final.css') }}?v=20261026-5">
+    <link rel="stylesheet" href="{{ asset('winner-gym/members-final.css') }}?v=20261123-1">
     <link rel="stylesheet" href="{{ asset('winner-gym/subscriptions-final.css') }}?v=20261026-5">
     <link rel="stylesheet" href="{{ asset('winner-gym/attendance-final.css') }}?v=20261026-5">
     <link rel="stylesheet" href="{{ asset('winner-gym/finance-final.css') }}?v=20261026-5">

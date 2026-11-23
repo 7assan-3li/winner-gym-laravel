@@ -583,106 +583,111 @@
 
     {{-- Print Members & Subscriptions Filter Modal --}}
     <div class="wg-modal-backdrop" x-cloak x-show="printModalOpen" x-transition.opacity>
-        <div class="wg-members-modal" x-on:click.outside="printModalOpen=false">
+        <div class="wg-members-modal wg-members-modal-form" x-on:click.outside="printModalOpen=false">
             <div class="wg-members-modal-head">
                 <div>
+                    <span class="wg-members-modal-kicker">طباعة وتصدير</span>
                     <h3>طباعة كشف الأعضاء والاشتراكات</h3>
                     <p>حدّد معايير الفلترة وخيارات العرض قبل فتح نسخة الطباعة A4</p>
                 </div>
                 <button type="button" x-on:click="printModalOpen=false">×</button>
             </div>
-            <div class="wg-members-modal-form">
-                <label class="wg-members-full-field">
-                    <span>بحث بالاسم أو الهاتف أو الكود (اختياري)</span>
-                    <input type="text" x-model="printFilters.search" placeholder="اتركه فارغًا لطباعة جميع النتائج المطابقة...">
-                </label>
+            <div class="wg-members-modal-body">
+                <div class="wg-members-form-grid">
+                    <label style="grid-column:1 / -1">
+                        <span>بحث بالاسم أو الهاتف أو الكود (اختياري)</span>
+                        <input type="text" x-model="printFilters.search" placeholder="اتركه فارغًا لطباعة جميع النتائج المطابقة...">
+                    </label>
 
-                <label>
-                    <span>حالة العضو</span>
-                    <select x-model="printFilters.status">
-                        <option value="all">الكل</option>
-                        <option value="active">نشط</option>
-                        <option value="suspended">موقوف</option>
-                        <option value="archived">مؤرشف</option>
-                    </select>
-                </label>
+                    <label>
+                        <span>حالة العضو</span>
+                        <select x-model="printFilters.status">
+                            <option value="all">الكل</option>
+                            <option value="active">نشط</option>
+                            <option value="suspended">موقوف</option>
+                            <option value="archived">مؤرشف</option>
+                        </select>
+                    </label>
 
-                <label>
-                    <span>حالة الاشتراك</span>
-                    <select x-model="printFilters.subscription_status">
-                        <option value="all">الكل</option>
-                        <option value="active">نشط</option>
-                        <option value="expiring_soon">ينتهي قريبًا</option>
-                        <option value="financial_overdue">متأخر ماليًا</option>
-                        <option value="upcoming">قادم</option>
-                        <option value="expired">منتهي</option>
-                        <option value="cancelled">ملغي</option>
-                        <option value="refunded">مسترد</option>
-                        <option value="none">بدون اشتراك</option>
-                    </select>
-                </label>
+                    <label>
+                        <span>حالة الاشتراك</span>
+                        <select x-model="printFilters.subscription_status">
+                            <option value="all">الكل</option>
+                            <option value="active">نشط</option>
+                            <option value="expiring_soon">ينتهي قريبًا</option>
+                            <option value="financial_overdue">متأخر ماليًا</option>
+                            <option value="upcoming">قادم</option>
+                            <option value="expired">منتهي</option>
+                            <option value="cancelled">ملغي</option>
+                            <option value="refunded">مسترد</option>
+                            <option value="none">بدون اشتراك</option>
+                        </select>
+                    </label>
 
-                <label>
-                    <span>نوع الاشتراك (الباقة)</span>
-                    <select x-model="printFilters.package_id">
-                        <option value="all">الكل</option>
-                        @foreach($packages as $package)
-                            <option value="{{ $package->id }}">{{ $package->name }}</option>
-                        @endforeach
-                    </select>
-                </label>
+                    <label>
+                        <span>نوع الاشتراك (الباقة)</span>
+                        <select x-model="printFilters.package_id">
+                            <option value="all">الكل</option>
+                            @foreach($packages as $package)
+                                <option value="{{ $package->id }}">{{ $package->name }}</option>
+                            @endforeach
+                        </select>
+                    </label>
 
-                <label>
-                    <span>الفترة (رجال / نساء)</span>
-                    <select x-model="printFilters.period">
-                        <option value="all">الكل</option>
-                        <option value="men">فترة الرجال</option>
-                        <option value="women">فترة النساء</option>
-                    </select>
-                </label>
+                    <label>
+                        <span>الفترة (رجال / نساء)</span>
+                        <select x-model="printFilters.period">
+                            <option value="all">الكل</option>
+                            <option value="men">فترة الرجال</option>
+                            <option value="women">فترة النساء</option>
+                        </select>
+                    </label>
 
-                <label>
-                    <span>ترتيب الكشف</span>
-                    <select x-model="printFilters.sort">
-                        <option value="latest">الأحدث تسجيلاً</option>
-                        <option value="name">أبجدي حسب الاسم</option>
-                        <option value="end_date">الأقرب لانتهاء الاشتراك</option>
-                    </select>
-                </label>
+                    <label>
+                        <span>ترتيب الكشف</span>
+                        <select x-model="printFilters.sort">
+                            <option value="latest">الأحدث تسجيلاً</option>
+                            <option value="name">أبجدي حسب الاسم</option>
+                            <option value="end_date">الأقرب لانتهاء الاشتراك</option>
+                        </select>
+                    </label>
 
-                <label>
-                    <span>اتجاه الورقة (A4)</span>
-                    <select x-model="printFilters.orientation">
-                        <option value="landscape">أفقي (موصى به للتفاصيل الكاملة)</option>
-                        <option value="portrait">عمودي</option>
-                    </select>
-                </label>
+                    <label>
+                        <span>اتجاه الورقة (A4)</span>
+                        <select x-model="printFilters.orientation">
+                            <option value="landscape">أفقي (موصى به للتفاصيل الكاملة)</option>
+                            <option value="portrait">عمودي</option>
+                        </select>
+                    </label>
+                </div>
 
-                <div class="wg-members-full-field" style="display:flex;gap:16px;flex-wrap:wrap;padding-top:6px;">
-                    <label style="display:inline-flex;align-items:center;gap:6px;flex-direction:row;cursor:pointer;">
-                        <input type="checkbox" x-model="printFilters.show_phone" style="width:16px;height:16px;">
+                <div class="wg-members-print-checks">
+                    <label class="wg-members-check-item">
+                        <input type="checkbox" x-model="printFilters.show_phone">
                         <span>إظهار رقم الهاتف</span>
                     </label>
-                    <label style="display:inline-flex;align-items:center;gap:6px;flex-direction:row;cursor:pointer;">
-                        <input type="checkbox" x-model="printFilters.show_dates" style="width:16px;height:16px;">
+                    <label class="wg-members-check-item">
+                        <input type="checkbox" x-model="printFilters.show_dates">
                         <span>إظهار تواريخ الاشتراك</span>
                     </label>
-                    <label style="display:inline-flex;align-items:center;gap:6px;flex-direction:row;cursor:pointer;">
-                        <input type="checkbox" x-model="printFilters.show_financial" style="width:16px;height:16px;">
+                    <label class="wg-members-check-item">
+                        <input type="checkbox" x-model="printFilters.show_financial">
                         <span>إظهار قيمة الباقة</span>
                     </label>
-                    <label style="display:inline-flex;align-items:center;gap:6px;flex-direction:row;cursor:pointer;">
-                        <input type="checkbox" x-model="printFilters.autoprint" style="width:16px;height:16px;">
+                    <label class="wg-members-check-item">
+                        <input type="checkbox" x-model="printFilters.autoprint">
                         <span>فتح نافذة الطباعة تلقائياً</span>
                     </label>
                 </div>
 
-                <div class="wg-members-modal-actions">
-                    <a class="wg-members-primary" :href="printMembersUrl()" target="_blank" rel="noopener" x-on:click="printModalOpen=false" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
-                        <span>معاينة وطباعة الكشف</span>
-                    </a>
-                    <button class="wg-members-secondary" type="button" x-on:click="printModalOpen=false">إلغاء</button>
-                </div>
+                <div class="wg-members-info-strip">يتم توريث الفلاتر الحالية من شاشة الأعضاء تلقائياً، ويمكنك تعديلها هنا للطباعة دون تغيير عرض الجدول الرئيسي.</div>
+            </div>
+            <div class="wg-members-modal-foot">
+                <a class="wg-members-primary" :href="printMembersUrl()" target="_blank" rel="noopener" x-on:click="printModalOpen=false" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:190px;">
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+                    <span>معاينة وطباعة الكشف</span>
+                </a>
+                <button class="wg-members-secondary" type="button" x-on:click="printModalOpen=false">إلغاء</button>
             </div>
         </div>
     </div>
