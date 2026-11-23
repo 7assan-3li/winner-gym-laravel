@@ -42,7 +42,10 @@ class ReportService
             SQL
         );
 
-        $dynamic = array_map(static fn (object $r): string => trim((string) $r->transfer_service), $rows);
+        $dynamic = array_map(
+            static fn (object $r): string => trim((string) (((array) $r)['transfer_service'] ?? '')),
+            $rows
+        );
 
         return array_values(array_unique(array_filter(array_merge(self::STANDARD_TRANSFER_SERVICES, $dynamic))));
     }
@@ -588,8 +591,9 @@ class ReportService
         }
 
         foreach ($rows as $r) {
-            $type = (string) $r->channel_type;
-            $name = trim((string) $r->channel_name);
+            $row = (array) $r;
+            $type = (string) ($row['channel_type'] ?? 'cash');
+            $name = trim((string) ($row['channel_name'] ?? 'غير محدد'));
             $key = $type === 'cash' ? 'cash' : 'service:'.$name;
 
             if (! isset($map[$key])) {
@@ -604,10 +608,10 @@ class ReportService
                 ];
             }
 
-            $map[$key]['in_amount'] = round($map[$key]['in_amount'] + (float) $r->total_in, 2);
-            $map[$key]['out_amount'] = round($map[$key]['out_amount'] + (float) $r->total_out, 2);
+            $map[$key]['in_amount'] = round($map[$key]['in_amount'] + (float) ($row['total_in'] ?? 0), 2);
+            $map[$key]['out_amount'] = round($map[$key]['out_amount'] + (float) ($row['total_out'] ?? 0), 2);
             $map[$key]['net_amount'] = round($map[$key]['in_amount'] - $map[$key]['out_amount'], 2);
-            $map[$key]['transactions_count'] += (int) $r->total_count;
+            $map[$key]['transactions_count'] += (int) ($row['total_count'] ?? 0);
         }
 
         return array_values(array_filter($map, static function (array $item) use ($channelMode, $channelService): bool {
