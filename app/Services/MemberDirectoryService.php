@@ -274,7 +274,7 @@ class MemberDirectoryService
                 return false;
             }
 
-            if ($packageId !== 'all' && (int) ($primary?->package_id ?? 0) !== (int) $packageId) {
+            if ($packageId !== 'all' && (int) ($primary->package_id ?? 0) !== (int) $packageId) {
                 return false;
             }
 
