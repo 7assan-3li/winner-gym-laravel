@@ -301,6 +301,7 @@ class Index extends Component
 
         $subscription = $service->create($d, auth()->user());
         Cache::forget('winner-gym:subscriptions:member_options');
+        Cache::forget('winner-gym:subscriptions:member_options:v2');
         $this->loadDashboardData();
 
         $this->reset([
@@ -509,15 +510,16 @@ class Index extends Component
     /** @return array<int, array<string, mixed>> */
     private function memberOptions(): array
     {
-        return Cache::remember('winner-gym:subscriptions:member_options', now()->addMinutes(10), function (): array {
+        return Cache::remember('winner-gym:subscriptions:member_options:v2', now()->addMinutes(10), function (): array {
             return Member::query()
                 ->where('status', 'active')
                 ->orderBy('full_name')
-                ->get(['id', 'full_name', 'membership_code', 'assigned_period'])
+                ->get(['id', 'full_name', 'membership_code', 'phone', 'assigned_period'])
                 ->map(fn (Member $member) => [
                     'id' => $member->id,
                     'full_name' => $member->full_name,
                     'membership_code' => $member->membership_code,
+                    'phone' => $member->phone,
                     'assigned_period' => $member->assigned_period,
                 ])->all();
         });

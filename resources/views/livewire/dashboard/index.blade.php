@@ -324,7 +324,83 @@
 
                             <div x-show="subStep===1" class="wg-sub-step-panel">
                                 <div class="wg-action-grid wg-action-grid--2">
-                                    <label><span>العضو <b>*</b></span><select wire:model.live="sub_member_id"><option value="">اختر العضو</option>@foreach($members as $m)<option value="{{ $m->id }}">{{ $m->full_name }} — {{ $m->membership_code }}</option>@endforeach</select></label>
+                                    <div
+                                        x-data="{
+                                            q: '',
+                                            open: false,
+                                            hi: 0,
+                                            list: @js($members->map(fn($m) => ['id' => $m->id, 'name' => $m->full_name, 'code' => $m->membership_code, 'phone' => $m->phone ?? '', 'period' => $m->assigned_period ?? 'men'])->values()),
+                                            current() { return this.list.find(m => String(m.id) === String($wire.sub_member_id)) || null; },
+                                            filtered() {
+                                                const s = (this.q || '').trim().toLowerCase();
+                                                if (!s) return this.list.slice(0, 25);
+                                                return this.list.filter(m =>
+                                                    (m.name && m.name.toLowerCase().includes(s)) ||
+                                                    (m.phone && String(m.phone).toLowerCase().includes(s)) ||
+                                                    (m.code && m.code.toLowerCase().includes(s))
+                                                ).slice(0, 25);
+                                            },
+                                            pick(item) {
+                                                if (!item) return;
+                                                $wire.set('sub_member_id', item.id);
+                                                this.q = '';
+                                                this.open = false;
+                                            },
+                                            clear() {
+                                                $wire.set('sub_member_id', null);
+                                                this.q = '';
+                                                this.open = true;
+                                            }
+                                        }"
+                                        class="wg-member-combobox"
+                                        x-on:click.outside="open = false"
+                                    >
+                                        <span style="display:block;margin-bottom:6px;color:#c8d2df;font-size:12.5px;font-weight:750">العضو <b style="color:#ff5261">*</b></span>
+                                        <template x-if="current()">
+                                            <div class="wg-member-selected-pill">
+                                                <div class="wg-member-selected-info" x-on:click="clear()" title="انقر لتغيير العضو">
+                                                    <strong x-text="current()?.name"></strong>
+                                                    <div class="wg-member-selected-meta">
+                                                        <span class="wg-member-code-tag" dir="ltr" x-text="current()?.code"></span>
+                                                        <span x-show="current()?.phone" dir="ltr" x-text="current()?.phone"></span>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="wg-member-clear-btn" x-on:click="clear()">×</button>
+                                            </div>
+                                        </template>
+                                        <div x-show="!current()" class="wg-member-search-input-wrap">
+                                            <svg class="wg-member-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+                                            <input
+                                                type="text"
+                                                x-model="q"
+                                                x-on:focus="open = true; hi = 0"
+                                                x-on:input="open = true; hi = 0"
+                                                x-on:keydown.arrow-down.prevent="if(filtered().length){open=true;hi=(hi+1)%filtered().length}"
+                                                x-on:keydown.arrow-up.prevent="if(filtered().length){open=true;hi=(hi-1+filtered().length)%filtered().length}"
+                                                x-on:keydown.enter.prevent="if(open && filtered()[hi]) pick(filtered()[hi])"
+                                                x-on:keydown.escape="open = false"
+                                                class="wg-member-search-input"
+                                                placeholder="ابحث بالاسم أو الهاتف أو الكود..."
+                                                autocomplete="off"
+                                            >
+                                        </div>
+                                        <div x-show="open && !current()" x-cloak class="wg-member-combobox-menu">
+                                            <template x-for="(item, idx) in filtered()" :key="item.id">
+                                                <button type="button" class="wg-member-combobox-option" :class="idx === hi ? 'is-highlighted' : ''" x-on:mouseenter="hi = idx" x-on:click="pick(item)">
+                                                    <div class="wg-member-option-main">
+                                                        <strong x-text="item.name"></strong>
+                                                        <small x-show="item.phone" dir="ltr" x-text="item.phone"></small>
+                                                    </div>
+                                                    <div class="wg-member-option-badges">
+                                                        <span class="wg-member-code-tag" dir="ltr" x-text="item.code"></span>
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <div x-show="filtered().length === 0" class="wg-member-combobox-empty">
+                                                <span>لا يوجد عضو نشط مطابق لبحثك</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <label><span>الباقة <b>*</b></span><select wire:model.live="sub_package_id" @disabled($packages->isEmpty())><option value="">{{ $packages->isEmpty() ? 'لا توجد باقات مفعّلة' : 'اختر الباقة' }}</option>@foreach($packages as $p)<option value="{{ $p->id }}">{{ $p->name }}</option>@endforeach</select></label>
                                     <label><span>تاريخ البداية المطلوب <b>*</b></span><input type="date" wire:model="sub_start_date"></label>
                                     <label><span>العملة <b>*</b></span><select wire:model.live="sub_currency"><option value="YER">🇾🇪 YER</option><option value="SAR">🇸🇦 SAR</option></select></label>
@@ -443,7 +519,83 @@
                     <form wire:submit="receivePayment">
                         <div class="wg-action-body">
                             @if($errors->any())<div class="wg-action-errors">@foreach($errors->all() as $e)<span>{{ $e }}</span>@endforeach</div>@endif
-                            <label><span>اختر العضو <b>*</b></span><select wire:model.live="payment_member_id"><option value="">ابحث واختر العضو...</option>@foreach($members as $m)<option value="{{ $m->id }}">{{ $m->full_name }} — {{ $m->membership_code }}</option>@endforeach</select></label>
+                            <div
+                                x-data="{
+                                    q: '',
+                                    open: false,
+                                    hi: 0,
+                                    list: @js($members->map(fn($m) => ['id' => $m->id, 'name' => $m->full_name, 'code' => $m->membership_code, 'phone' => $m->phone ?? ''])->values()),
+                                    current() { return this.list.find(m => String(m.id) === String($wire.payment_member_id)) || null; },
+                                    filtered() {
+                                        const s = (this.q || '').trim().toLowerCase();
+                                        if (!s) return this.list.slice(0, 25);
+                                        return this.list.filter(m =>
+                                            (m.name && m.name.toLowerCase().includes(s)) ||
+                                            (m.phone && String(m.phone).toLowerCase().includes(s)) ||
+                                            (m.code && m.code.toLowerCase().includes(s))
+                                        ).slice(0, 25);
+                                    },
+                                    pick(item) {
+                                        if (!item) return;
+                                        $wire.set('payment_member_id', item.id);
+                                        this.q = '';
+                                        this.open = false;
+                                    },
+                                    clear() {
+                                        $wire.set('payment_member_id', null);
+                                        this.q = '';
+                                        this.open = true;
+                                    }
+                                }"
+                                class="wg-member-combobox"
+                                x-on:click.outside="open = false"
+                            >
+                                <span style="display:block;margin-bottom:6px;color:#c8d2df;font-size:12.5px;font-weight:750">اختر العضو <b style="color:#ff5261">*</b></span>
+                                <template x-if="current()">
+                                    <div class="wg-member-selected-pill">
+                                        <div class="wg-member-selected-info" x-on:click="clear()" title="انقر لتغيير العضو">
+                                            <strong x-text="current()?.name"></strong>
+                                            <div class="wg-member-selected-meta">
+                                                <span class="wg-member-code-tag" dir="ltr" x-text="current()?.code"></span>
+                                                <span x-show="current()?.phone" dir="ltr" x-text="current()?.phone"></span>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="wg-member-clear-btn" x-on:click="clear()">×</button>
+                                    </div>
+                                </template>
+                                <div x-show="!current()" class="wg-member-search-input-wrap">
+                                    <svg class="wg-member-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+                                    <input
+                                        type="text"
+                                        x-model="q"
+                                        x-on:focus="open = true; hi = 0"
+                                        x-on:input="open = true; hi = 0"
+                                        x-on:keydown.arrow-down.prevent="if(filtered().length){open=true;hi=(hi+1)%filtered().length}"
+                                        x-on:keydown.arrow-up.prevent="if(filtered().length){open=true;hi=(hi-1+filtered().length)%filtered().length}"
+                                        x-on:keydown.enter.prevent="if(open && filtered()[hi]) pick(filtered()[hi])"
+                                        x-on:keydown.escape="open = false"
+                                        class="wg-member-search-input"
+                                        placeholder="ابحث عن العضو بالاسم أو الهاتف أو الكود..."
+                                        autocomplete="off"
+                                    >
+                                </div>
+                                <div x-show="open && !current()" x-cloak class="wg-member-combobox-menu">
+                                    <template x-for="(item, idx) in filtered()" :key="item.id">
+                                        <button type="button" class="wg-member-combobox-option" :class="idx === hi ? 'is-highlighted' : ''" x-on:mouseenter="hi = idx" x-on:click="pick(item)">
+                                            <div class="wg-member-option-main">
+                                                <strong x-text="item.name"></strong>
+                                                <small x-show="item.phone" dir="ltr" x-text="item.phone"></small>
+                                            </div>
+                                            <div class="wg-member-option-badges">
+                                                <span class="wg-member-code-tag" dir="ltr" x-text="item.code"></span>
+                                            </div>
+                                        </button>
+                                    </template>
+                                    <div x-show="filtered().length === 0" class="wg-member-combobox-empty">
+                                        <span>لا يوجد عضو نشط مطابق لبحثك</span>
+                                    </div>
+                                </div>
+                            </div>
                             @if($paymentSubscription && $paymentInstallment)
                                 <div class="wg-current-sub"><h3>الاشتراك الحالي</h3><div class="wg-action-grid wg-action-grid--4"><div><span>الباقة</span><strong>{{ $paymentSubscription->package_name_snapshot }}</strong></div><div><span>الاستحقاق</span><strong>{{ $paymentInstallment->due_date->format('Y-m-d') }}</strong></div><div><span>المبلغ المستحق</span><strong class="is-orange">{{ number_format((float)$paymentInstallment->amount,0) }} {{ $paymentSubscription->currency }}</strong></div><div><span>العملة</span><strong>{{ $paymentSubscription->currency }}</strong></div></div></div>
                                 <label><span>مبلغ الدفعة الحالية <b>*</b></span><div class="wg-input-with-unit"><input type="text" inputmode="decimal" x-money wire:model="payment_amount" placeholder="0"><i>{{ $payment_currency }}</i></div></label>

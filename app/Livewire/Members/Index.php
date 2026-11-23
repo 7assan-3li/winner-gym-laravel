@@ -529,5 +529,8 @@ class Index extends Component
         Cache::forget('winner-gym:members:counts:v3');
         Cache::forget('winner-gym:members:packages');
         Cache::forget('winner-gym:members:packages:v2');
+        Cache::forget('winner-gym:subscriptions:member_options');
+        Cache::forget('winner-gym:subscriptions:member_options:v2');
+        Cache::forget('winner-gym:dashboard:common:'.now('Asia/Aden')->toDateString());
     }
 }

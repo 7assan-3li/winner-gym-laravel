@@ -48,6 +48,7 @@ class MembershipService
             $member->update($data);
             $fresh = $member->fresh();
             $this->audit->log($actor, 'member', 'member.updated', $fresh, $old, $fresh->toArray());
+            $this->forgetMembersCounts();
 
             return $fresh;
         });
@@ -109,5 +110,8 @@ class MembershipService
         Cache::forget('winner-gym:members:counts');
         Cache::forget('winner-gym:members:counts:v2');
         Cache::forget('winner-gym:members:counts:v3');
+        Cache::forget('winner-gym:subscriptions:member_options');
+        Cache::forget('winner-gym:subscriptions:member_options:v2');
+        Cache::forget('winner-gym:dashboard:common:'.now('Asia/Aden')->toDateString());
     }
 }

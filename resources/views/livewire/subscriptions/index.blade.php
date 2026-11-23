@@ -9,10 +9,46 @@
         paymentPlan:@js($payment_plan), paymentMethod:@js($payment_method),
         installmentCount:Number(@js($installment_count)) || 1, dueDates:@js($installment_due_dates),
         firstPayment:@js($first_payment_amount), startDate:@js($start_date),
-        members:@js($members->mapWithKeys(fn($member) => [(string) $member->id => ['name' => $member->full_name, 'code' => $member->membership_code, 'period' => $member->assigned_period]])),
+        memberSearch:'', memberDropdownOpen:false, memberHighlightIndex:0,
+        members:@js($members->mapWithKeys(fn($member) => [(string) $member->id => ['id' => $member->id, 'name' => $member->full_name, 'code' => $member->membership_code, 'phone' => $member->phone ?? '', 'period' => $member->assigned_period]])),
         packages:@js($packages->mapWithKeys(fn($package) => [(string) $package->id => ['name' => $package->name, 'duration' => $package->duration_value.' '.$package->duration_unit, 'price_yer' => $package->price_yer, 'price_sar' => $package->price_sar]])),
         openDetails(subscription){ this.selectedSubscription=subscription; this.detailsOpen=true },
         selectedMember(){ return this.members[String(this.memberId)] || null },
+        filteredMembers(){
+            const q = (this.memberSearch || '').trim().toLowerCase();
+            const list = Object.values(this.members);
+            if (!q) return list.slice(0, 25);
+            return list.filter(m =>
+                (m.name && m.name.toLowerCase().includes(q)) ||
+                (m.phone && String(m.phone).toLowerCase().includes(q)) ||
+                (m.code && m.code.toLowerCase().includes(q))
+            ).slice(0, 25);
+        },
+        selectMemberFromSearch(item){
+            if (!item) return;
+            this.setMember(item.id);
+            this.memberSearch = '';
+            this.memberDropdownOpen = false;
+            this.memberHighlightIndex = 0;
+        },
+        clearMemberSelection(){
+            this.setMember(null);
+            this.memberSearch = '';
+            this.memberDropdownOpen = true;
+            this.memberHighlightIndex = 0;
+        },
+        moveMemberHighlight(delta){
+            const list = this.filteredMembers();
+            if (!list.length) return;
+            this.memberDropdownOpen = true;
+            this.memberHighlightIndex = (this.memberHighlightIndex + delta + list.length) % list.length;
+        },
+        confirmHighlightedMember(){
+            const list = this.filteredMembers();
+            if (this.memberDropdownOpen && list[this.memberHighlightIndex]) {
+                this.selectMemberFromSearch(list[this.memberHighlightIndex]);
+            }
+        },
         selectedPackage(){ return this.packages[String(this.packageId)] || null },
         basePrice(){ const item=this.selectedPackage(); return Number(this.currency==='SAR' ? item?.price_sar : item?.price_yer) || 0 },
         finalPrice(){ return Math.max(0, this.basePrice() - Math.max(0, Number(this.discount) || 0)) },
@@ -59,7 +95,7 @@
         setPaymentMethod(value){ this.paymentMethod=value; this.$wire.$set('payment_method',value,false) },
         choosePackage(value){ this.setPackage(value); this.createOpen=true; this.createStep=1 }
     }"
-    x-on:subscription-created.window="createOpen=false;createStep=1">
+    x-on:subscription-created.window="createOpen=false;createStep=1;memberReady=false;memberId=null;memberSearch='';memberDropdownOpen=false;packageReady=false;packageId=null">
 
     @php
         $selectedPackage = $package_id ? $packages->firstWhere('id', $package_id) : null;
@@ -433,10 +469,63 @@
                         <div class="wg-two">
                             <div>
                                 <label class="wg-label">العضو *</label>
-                                <select x-model="memberId" x-on:change="setMember($event.target.value)" class="wg-select" required>
-                                    <option value="">اختر العضو</option>
-                                    @foreach($members as $m)<option value="{{ $m->id }}">{{ $m->full_name }} - {{ $m->membership_code }}</option>@endforeach
-                                </select>
+                                <div class="wg-member-combobox" x-on:click.outside="memberDropdownOpen = false">
+                                    <template x-if="memberReady && selectedMember()">
+                                        <div class="wg-member-selected-pill">
+                                            <div class="wg-member-selected-info" x-on:click="clearMemberSelection()" title="انقر لتغيير العضو">
+                                                <strong x-text="selectedMember()?.name"></strong>
+                                                <div class="wg-member-selected-meta">
+                                                    <span class="wg-member-code-tag" dir="ltr" x-text="selectedMember()?.code"></span>
+                                                    <span x-show="selectedMember()?.phone" dir="ltr" x-text="selectedMember()?.phone"></span>
+                                                    <span class="wg-member-period-tag" x-text="selectedMember()?.period === 'women' ? 'نساء' : 'رجال'"></span>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="wg-member-clear-btn" x-on:click="clearMemberSelection()" title="إلغاء اختيار العضو والبحث من جديد">×</button>
+                                        </div>
+                                    </template>
+
+                                    <div x-show="!memberReady || !selectedMember()" class="wg-member-search-input-wrap">
+                                        <svg class="wg-member-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+                                        <input
+                                            type="text"
+                                            x-model="memberSearch"
+                                            x-on:focus="memberDropdownOpen = true; memberHighlightIndex = 0"
+                                            x-on:input="memberDropdownOpen = true; memberHighlightIndex = 0"
+                                            x-on:keydown.arrow-down.prevent="moveMemberHighlight(1)"
+                                            x-on:keydown.arrow-up.prevent="moveMemberHighlight(-1)"
+                                            x-on:keydown.enter.prevent="confirmHighlightedMember()"
+                                            x-on:keydown.escape="memberDropdownOpen = false"
+                                            class="wg-field wg-member-search-input"
+                                            placeholder="ابحث باسم العضو أو رقم الهاتف أو الكود (WG-...)..."
+                                            autocomplete="off"
+                                        >
+                                    </div>
+
+                                    <div x-show="memberDropdownOpen && (!memberReady || !selectedMember())" x-cloak class="wg-member-combobox-menu">
+                                        <template x-for="(item, idx) in filteredMembers()" :key="item.id">
+                                            <button
+                                                type="button"
+                                                class="wg-member-combobox-option"
+                                                :class="idx === memberHighlightIndex ? 'is-highlighted' : ''"
+                                                x-on:mouseenter="memberHighlightIndex = idx"
+                                                x-on:click="selectMemberFromSearch(item)"
+                                            >
+                                                <div class="wg-member-option-main">
+                                                    <strong x-text="item.name"></strong>
+                                                    <small x-show="item.phone" dir="ltr" x-text="item.phone"></small>
+                                                </div>
+                                                <div class="wg-member-option-badges">
+                                                    <span class="wg-member-code-tag" dir="ltr" x-text="item.code"></span>
+                                                    <span class="wg-member-period-tag" x-text="item.period === 'women' ? 'نساء' : 'رجال'"></span>
+                                                </div>
+                                            </button>
+                                        </template>
+                                        <div x-show="filteredMembers().length === 0" class="wg-member-combobox-empty">
+                                            <span>لا يوجد عضو نشط مطابق لبحثك</span>
+                                            <a href="{{ route('members.index', ['create' => 1]) }}" wire:navigate>+ إضافة عضو جديد</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <label class="wg-label">الباقة *</label>

@@ -358,3 +358,44 @@ html.wg-light .wg-body-subscriptions .wg-sub-filter-panel>.wg-sub-date-field inp
     .wg-body-subscriptions .wg-sub-aside-card,
     .wg-body-subscriptions .wg-sub-distribution-card{grid-column:auto!important;min-height:auto!important}
 }
+
+/* Searchable Member Combobox (Subscriptions & Dashboard Quick Modals) + Select contrast */
+.wg-body-subscriptions select{color-scheme:dark}
+.wg-body-subscriptions select option{background:#07131f;color:#f5f8ff}
+html.wg-light .wg-body-subscriptions select{color-scheme:light}
+html.wg-light .wg-body-subscriptions select option{background:#fff;color:#1b2d45}
+
+.wg-member-combobox{position:relative;width:100%}
+.wg-member-search-input-wrap{position:relative;display:flex;align-items:center;width:100%}
+.wg-member-search-icon{position:absolute;right:12px;width:16px;height:16px;color:#7d93ad;pointer-events:none;z-index:2}
+.wg-member-search-input{width:100%!important;height:42px!important;padding:0 36px 0 12px!important;border:1px solid #1f3652!important;border-radius:8px!important;background:#06111e!important;color:#f1f6fd!important;font-size:12.5px!important;outline:0!important;box-sizing:border-box!important}
+.wg-member-search-input:focus{border-color:#197ff7!important;box-shadow:0 0 0 2px rgba(25,127,247,.16)!important}
+.wg-member-selected-pill{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:42px;padding:5px 11px;border:1px solid #1e62b8;border-radius:8px;background:rgba(20,120,255,.12);color:#f5f9ff;box-sizing:border-box}
+.wg-member-selected-info{flex:1;min-width:0;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.wg-member-selected-info strong{font-size:12.5px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wg-member-selected-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:#a7bdd6}
+.wg-member-clear-btn{width:26px!important;height:26px!important;min-height:26px!important;border-radius:6px!important;border:1px solid rgba(255,255,255,.15)!important;background:rgba(15,23,42,.55)!important;color:#e2e8f0!important;font-size:16px!important;line-height:1!important;display:grid!important;place-items:center!important;cursor:pointer!important;padding:0!important;flex:0 0 26px!important}
+.wg-member-clear-btn:hover{background:#ef4444!important;border-color:#ef4444!important;color:#fff!important}
+.wg-member-combobox-menu{position:absolute;top:calc(100% + 5px);right:0;left:0;z-index:9999;max-height:255px;overflow-y:auto;border:1px solid #24405f;border-radius:10px;background:#071524;box-shadow:0 18px 45px rgba(0,0,0,.55);padding:5px;display:flex;flex-direction:column;gap:3px}
+.wg-member-combobox-option{width:100%;border:0;border-radius:7px;background:transparent;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:right;cursor:pointer;color:#e2ecf7;transition:background .12s ease}
+.wg-member-combobox-option:hover,.wg-member-combobox-option.is-highlighted{background:#0e2742;color:#fff}
+.wg-member-option-main{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:right}
+.wg-member-option-main strong{font-size:12.5px;font-weight:800;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wg-member-option-main small{font-size:11px;color:#8ba3be}
+.wg-member-option-badges{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.wg-member-code-tag{display:inline-block;padding:2px 6px;border-radius:5px;background:rgba(56,189,248,.14);border:1px solid rgba(56,189,248,.28);color:#7dd3fc;font-family:monospace;font-size:11px;font-weight:700}
+.wg-member-period-tag{display:inline-block;padding:2px 7px;border-radius:5px;background:rgba(148,163,184,.14);color:#cbd5e1;font-size:10.5px;font-weight:700}
+.wg-member-combobox-empty{padding:14px 10px;text-align:center;color:#8ea3bc;font-size:12px;display:flex;flex-direction:column;gap:6px}
+.wg-member-combobox-empty a{color:#38bdf8;font-weight:800;text-decoration:none}
+
+html.wg-light .wg-member-search-input{background:#f8fbff!important;border-color:#ccdaea!important;color:#172941!important}
+html.wg-light .wg-member-selected-pill{background:#edf6ff!important;border-color:#93c5fd!important;color:#172941!important}
+html.wg-light .wg-member-selected-info strong{color:#0f172a!important}
+html.wg-light .wg-member-selected-meta{color:#475569!important}
+html.wg-light .wg-member-clear-btn{background:#fff!important;border-color:#cbd5e1!important;color:#334155!important}
+html.wg-light .wg-member-combobox-menu{background:#fff!important;border-color:#cbd5e1!important;box-shadow:0 16px 38px rgba(15,23,42,.15)!important}
+html.wg-light .wg-member-combobox-option{color:#1e293b!important}
+html.wg-light .wg-member-combobox-option:hover,html.wg-light .wg-member-combobox-option.is-highlighted{background:#eff6ff!important;color:#0d66d8!important}
+html.wg-light .wg-member-option-main small{color:#64748b!important}
+html.wg-light .wg-member-code-tag{background:#e0f2fe!important;border-color:#bae6fd!important;color:#0369a1!important}
+html.wg-light .wg-member-period-tag{background:#f1f5f9!important;color:#475569!important}
