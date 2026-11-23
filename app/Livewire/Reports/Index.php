@@ -25,11 +25,19 @@ class Index extends Component
 
     public ?int $summaryCashierId = null;
 
+    public string $summaryPaymentChannel = 'all';
+
     public string $shiftDate = '';
 
     public ?int $shiftCashierId = null;
 
     public string $shiftCurrency = 'YER';
+
+    public string $shiftPaymentChannel = 'all';
+
+    public string $shiftTransactionType = 'all';
+
+    public string $shiftSearch = '';
 
     public bool $showShiftModal = false;
 
@@ -52,6 +60,34 @@ class Index extends Component
         $this->shiftCashierId = $cashierId;
         $this->showShiftModal = false;
         $this->dispatch('trigger-print');
+    }
+
+    public function resetShiftFilters(): void
+    {
+        $this->shiftPaymentChannel = 'all';
+        $this->shiftTransactionType = 'all';
+        $this->shiftSearch = '';
+        if (in_array(auth()->user()?->role, ['owner', 'manager'], true)) {
+            $this->shiftCashierId = null;
+        }
+    }
+
+    public function applyDatePreset(string $preset): void
+    {
+        $now = now('Asia/Aden');
+
+        match ($preset) {
+            'today' => [$this->from, $this->to] = [$now->toDateString(), $now->toDateString()],
+            'yesterday' => [$this->from, $this->to] = [$now->copy()->subDay()->toDateString(), $now->copy()->subDay()->toDateString()],
+            'this_week' => [$this->from, $this->to] = [$now->copy()->startOfWeek()->toDateString(), $now->toDateString()],
+            'this_month' => [$this->from, $this->to] = [$now->copy()->startOfMonth()->toDateString(), $now->toDateString()],
+            'last_month' => [$this->from, $this->to] = [
+                $now->copy()->subMonthNoOverflow()->startOfMonth()->toDateString(),
+                $now->copy()->subMonthNoOverflow()->endOfMonth()->toDateString(),
+            ],
+            'this_year' => [$this->from, $this->to] = [$now->copy()->startOfYear()->toDateString(), $now->toDateString()],
+            default => null,
+        };
     }
 
     public function mount(): void
@@ -86,23 +122,49 @@ class Index extends Component
             'gender' => ['required', 'in:all,male,female'],
             'currency' => ['required', 'in:YER,SAR,ALL'],
             'summaryCashierId' => ['nullable', 'integer', 'exists:users,id'],
+            'summaryPaymentChannel' => ['required', 'string', 'max:80'],
             'shiftDate' => ['required', 'date'],
             'shiftCashierId' => ['nullable', 'integer', 'exists:users,id'],
             'shiftCurrency' => ['required', 'in:YER,SAR,ALL'],
+            'shiftPaymentChannel' => ['required', 'string', 'max:80'],
+            'shiftTransactionType' => ['required', 'in:all,subscription,sale,nutrition,expense'],
+            'shiftSearch' => ['nullable', 'string', 'max:100'],
         ]);
 
         $staffList = User::query()->where('is_active', true)->orderBy('name')->get();
+        $transferServices = $reports->availableTransferServices();
 
         $data = $this->tab === 'summary'
-            ? $reports->summary($this->from, $this->to, $this->gender, $this->currency, $this->summaryCashierId)
+            ? $reports->summary(
+                $this->from,
+                $this->to,
+                $this->gender,
+                $this->currency,
+                $this->summaryCashierId,
+                $this->summaryPaymentChannel
+            )
             : $this->emptySummaryData();
 
         $shiftData = $this->tab === 'shifts'
-            ? $reports->cashierShiftSummary($this->shiftCashierId, $this->shiftDate, $this->shiftCurrency)
+            ? $reports->cashierShiftSummary(
+                $this->shiftCashierId,
+                $this->shiftDate,
+                $this->shiftCurrency,
+                $this->shiftPaymentChannel,
+                $this->shiftTransactionType,
+                $this->shiftSearch
+            )
             : $this->emptyShiftData();
 
         $modalShiftData = ($this->showShiftModal && $this->modalCashierId)
-            ? $reports->cashierShiftSummary($this->modalCashierId, $this->shiftDate, $this->shiftCurrency)
+            ? $reports->cashierShiftSummary(
+                $this->modalCashierId,
+                $this->shiftDate,
+                $this->shiftCurrency,
+                $this->shiftPaymentChannel,
+                $this->shiftTransactionType,
+                $this->shiftSearch
+            )
             : null;
 
         return view('livewire.reports.index', [
@@ -110,6 +172,7 @@ class Index extends Component
             'shiftData' => $shiftData,
             'modalShiftData' => $modalShiftData,
             'staffList' => $staffList,
+            'transferServices' => $transferServices,
         ]);
     }
 
@@ -119,6 +182,9 @@ class Index extends Component
         return [
             'is_all_currencies' => $this->currency === 'ALL',
             'currency' => $this->currency,
+            'payment_channel' => $this->summaryPaymentChannel,
+            'payment_channel_label' => 'الكل (نقدي + جميع الصرافات)',
+            'exchange_breakdown' => [],
             'subscription_gross_revenue' => 0.0,
             'subscription_refunds' => 0.0,
             'subscription_revenue' => 0.0,
@@ -145,6 +211,10 @@ class Index extends Component
             'date' => $this->shiftDate,
             'cashier_id' => $this->shiftCashierId,
             'cashier_name' => '',
+            'payment_channel' => $this->shiftPaymentChannel,
+            'payment_channel_label' => 'الكل (نقدي + جميع الصرافات)',
+            'transaction_type' => $this->shiftTransactionType,
+            'search' => $this->shiftSearch,
             'subscription_cash' => 0.0,
             'subscription_transfer' => 0.0,
             'nutrition_cash' => 0.0,
@@ -152,10 +222,12 @@ class Index extends Component
             'sales_cash' => 0.0,
             'sales_transfer' => 0.0,
             'cash_expenses' => 0.0,
+            'transfer_expenses' => 0.0,
             'total_cash_in' => 0.0,
             'total_transfer_in' => 0.0,
             'total_collected' => 0.0,
             'net_cash_handover' => 0.0,
+            'exchange_breakdown' => [],
             'yer' => [],
             'sar' => [],
             'transactions_count' => 0,

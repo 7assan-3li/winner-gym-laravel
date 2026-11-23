@@ -16,7 +16,7 @@
                     <span>طباعة كشف تسليم الوردية</span>
                 </button>
             @else
-                <a target="_blank" href="{{ route('reports.pdf', ['from'=>$from,'to'=>$to,'gender'=>$gender,'currency'=>$currency,'cashier_id'=>$summaryCashierId]) }}" class="wg-btn wg-btn-primary">
+                <a target="_blank" href="{{ route('reports.pdf', ['from'=>$from,'to'=>$to,'gender'=>$gender,'currency'=>$currency,'cashier_id'=>$summaryCashierId,'payment_channel'=>$summaryPaymentChannel]) }}" class="wg-btn wg-btn-primary">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
                     <span>تصدير PDF</span>
                 </a>
@@ -45,32 +45,62 @@
         <div class="no-print">
             {{-- Shift Toolbar --}}
             <div class="wg-card" style="margin-bottom:14px;padding:14px">
-            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-                <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:180px">
-                    <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">تاريخ الوردية</label>
-                    <input type="date" wire:model.live="shiftDate" class="wg-field">
-                </div>
-                <div style="display:flex;flex-direction:column;gap:5px;flex:1.5;min-width:220px">
-                    <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">المحاسب / الكاشير</label>
-                    <select wire:model.live="shiftCashierId" class="wg-select">
-                        @if(auth()->user()->role === 'owner' || auth()->user()->role === 'manager')
-                            <option value="">كل المحاسبين والكاشيرات (إجمالي الصندوق)</option>
-                        @endif
-                        @foreach($staffList as $staff)
-                            <option value="{{ $staff->id }}">{{ $staff->name ?: $staff->username }} ({{ match($staff->role){'owner'=>'مالك','manager'=>'مدير','reception'=>'استقبال','accountant'=>'محاسب','nutritionist'=>'تغذية',default=>$staff->role} }})</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:150px">
-                    <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">العملة (عزل كامل)</label>
-                    <select wire:model.live="shiftCurrency" class="wg-select">
-                        <option value="YER">ريال يمني (YER)</option>
-                        <option value="SAR">ريال سعودي (SAR)</option>
-                        <option value="ALL">كل العملات (عزل كامل YER + SAR)</option>
-                    </select>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;align-items:end">
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">تاريخ الوردية</label>
+                        <input type="date" wire:model.live="shiftDate" class="wg-field">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">المحاسب / الكاشير</label>
+                        <select wire:model.live="shiftCashierId" class="wg-select">
+                            @if(auth()->user()->role === 'owner' || auth()->user()->role === 'manager')
+                                <option value="">كل المحاسبين والكاشيرات (إجمالي الصندوق)</option>
+                            @endif
+                            @foreach($staffList as $staff)
+                                <option value="{{ $staff->id }}">{{ $staff->name ?: $staff->username }} ({{ match($staff->role){'owner'=>'مالك','manager'=>'مدير','reception'=>'استقبال','accountant'=>'محاسب','nutritionist'=>'تغذية',default=>$staff->role} }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">قناة الدفع / الصرافة</label>
+                        <select wire:model.live="shiftPaymentChannel" class="wg-select">
+                            <option value="all">الكل (نقدي + جميع الصرافات)</option>
+                            <option value="cash">نقدي فقط (كاش الصندوق)</option>
+                            <option value="transfer">جميع التحويلات المصرفية</option>
+                            @foreach($transferServices as $srv)
+                                <option value="service:{{ $srv }}">صرافة / تحويل: {{ $srv }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">نوع العملية / القسم</label>
+                        <select wire:model.live="shiftTransactionType" class="wg-select">
+                            <option value="all">كل العمليات والأقسام</option>
+                            <option value="subscription">الاشتراكات والأقساط فقط</option>
+                            <option value="sale">مبيعات المتجر (POS) فقط</option>
+                            <option value="nutrition">جلسات التغذية فقط</option>
+                            <option value="expense">مصروفات الصندوق فقط</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">العملة (عزل كامل)</label>
+                        <select wire:model.live="shiftCurrency" class="wg-select">
+                            <option value="YER">ريال يمني (YER)</option>
+                            <option value="SAR">ريال سعودي (SAR)</option>
+                            <option value="ALL">كل العملات (عزل كامل YER + SAR)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted)">بحث بالمرجع / الحوالة / العميل</label>
+                        <div style="display:flex;gap:6px">
+                            <input type="search" wire:model.live.debounce.400ms="shiftSearch" class="wg-field" placeholder="رقم الحوالة، الإيصال، أو الاسم...">
+                            @if($shiftPaymentChannel !== 'all' || $shiftTransactionType !== 'all' || $shiftSearch !== '' || $shiftCashierId)
+                                <button type="button" wire:click="resetShiftFilters" class="wg-btn" title="إعادة تعيين فلاتر الوردية" style="white-space:nowrap;padding:0 10px">↺</button>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
         {{-- Grand KPI Cards --}}
         <div class="wg-grid-stats" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px">
@@ -264,6 +294,70 @@
                         <strong>{{ $shiftData['transactions_count'] }} حركة</strong>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        {{-- Exchange & Payment Channel Breakdown Card --}}
+        <div class="wg-card" style="margin-bottom:16px">
+            <div class="wg-toolbar" style="border-bottom:1px solid var(--wg-border)">
+                <h3 class="wg-title" style="font-size:15px;margin:0">تفصيل المقبوضات والمصروفات حسب الصرافة / قناة الدفع</h3>
+                <span style="font-size:12px;color:var(--wg-muted)">لمطابقة كشف حساب كل صرافة (العمقي، الكريمي، البسيري) وكاش الصندوق بشكل مستقل</span>
+            </div>
+            <div class="wg-table-wrap" style="border:0">
+                <table class="wg-table">
+                    <thead>
+                        <tr>
+                            <th>قناة الدفع / الصرافة</th>
+                            <th>المقبوضات الواردة (+)</th>
+                            <th>المصروفات الصادرة (-)</th>
+                            <th>صافي الرصيد</th>
+                            <th>عدد الحركات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($shiftCurrency === 'ALL')
+                            @php
+                                $yerEx = collect($shiftData['yer']['exchange_breakdown'] ?? [])->keyBy('key');
+                                $sarEx = collect($shiftData['sar']['exchange_breakdown'] ?? [])->keyBy('key');
+                                $allKeys = $yerEx->keys()->merge($sarEx->keys())->unique();
+                            @endphp
+                            @foreach($allKeys as $exKey)
+                                @php
+                                    $yRow = $yerEx->get($exKey);
+                                    $sRow = $sarEx->get($exKey);
+                                    $label = $yRow['label'] ?? ($sRow['label'] ?? $exKey);
+                                    $count = ($yRow['transactions_count'] ?? 0) + ($sRow['transactions_count'] ?? 0);
+                                @endphp
+                                <tr>
+                                    <td><strong>{{ $label }}</strong></td>
+                                    <td>
+                                        <div dir="ltr" style="font-weight:750;color:#059669;font-size:12px">{{ number_format($yRow['in_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">YER</span></div>
+                                        <div dir="ltr" style="font-weight:750;color:#059669;font-size:12px">{{ number_format($sRow['in_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">SAR</span></div>
+                                    </td>
+                                    <td>
+                                        <div dir="ltr" style="font-weight:750;color:#dc2626;font-size:12px">{{ number_format($yRow['out_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">YER</span></div>
+                                        <div dir="ltr" style="font-weight:750;color:#dc2626;font-size:12px">{{ number_format($sRow['out_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">SAR</span></div>
+                                    </td>
+                                    <td>
+                                        <div dir="ltr" style="font-weight:850;color:#059669;font-size:13px">{{ number_format($yRow['net_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">YER</span></div>
+                                        <div dir="ltr" style="font-weight:850;color:#059669;font-size:13px">{{ number_format($sRow['net_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">SAR</span></div>
+                                    </td>
+                                    <td><strong>{{ $count }}</strong></td>
+                                </tr>
+                            @endforeach
+                        @else
+                            @foreach($shiftData['exchange_breakdown'] ?? [] as $exRow)
+                                <tr>
+                                    <td><strong>{{ $exRow['label'] }}</strong></td>
+                                    <td dir="ltr" style="font-weight:750;color:#059669">{{ number_format($exRow['in_amount'], 0) }} {{ $shiftCurrency }}</td>
+                                    <td dir="ltr" style="font-weight:750;color:#dc2626">{{ number_format($exRow['out_amount'], 0) }} {{ $shiftCurrency }}</td>
+                                    <td dir="ltr" style="font-weight:850;color:#059669">{{ number_format($exRow['net_amount'], 0) }} {{ $shiftCurrency }}</td>
+                                    <td><strong>{{ $exRow['transactions_count'] }}</strong></td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -500,10 +594,11 @@
             </style>
             @include('reports.partials.header', [
                 'title' => 'كشف تسوية وإقفال وردية الصندوق (Handover Summary)',
-                'subtitle' => 'تقرير تفصيلي بمقبوضات ومصروفات وصافي نقدية الدرج',
+                'subtitle' => 'تقرير تفصيلي بمقبوضات ومصروفات وصافي نقدية الدرج وحسابات الصرافات',
                 'meta' => [
                     'تاريخ الوردية' => $shiftDate,
                     'العملة' => $shiftCurrency === 'ALL' ? 'كل العملات (عزل كامل YER + SAR)' : $shiftCurrency,
+                    'قناة الدفع / الصرافة' => $shiftData['payment_channel_label'] ?? 'الكل',
                     'المحاسب المسلّم' => $shiftData['cashier_name'] ?: 'الكل',
                 ]
             ])
@@ -623,6 +718,67 @@
                 </table>
             @endif
 
+            <h4 style="font-size:12px;margin:16px 0 6px;color:#0f172a;font-weight:bold;">تفصيل الأرصدة حسب الصرافة / قناة الدفع:</h4>
+            @if($shiftCurrency === 'ALL')
+                @php
+                    $yerExP = collect($shiftData['yer']['exchange_breakdown'] ?? [])->keyBy('key');
+                    $sarExP = collect($shiftData['sar']['exchange_breakdown'] ?? [])->keyBy('key');
+                    $allKeysP = $yerExP->keys()->merge($sarExP->keys())->unique();
+                @endphp
+                <table class="wg-print-table">
+                    <thead>
+                        <tr>
+                            <th style="width:34%;">قناة الدفع / الصرافة</th>
+                            <th style="width:14%;text-align:center;">وارد (YER)</th>
+                            <th style="width:14%;text-align:center;">صادر (YER)</th>
+                            <th style="width:14%;text-align:center;">صافي (YER)</th>
+                            <th style="width:12%;text-align:center;">وارد (SAR)</th>
+                            <th style="width:12%;text-align:center;">صافي (SAR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($allKeysP as $exKey)
+                            @php
+                                $yR = $yerExP->get($exKey);
+                                $sR = $sarExP->get($exKey);
+                                $lbl = $yR['label'] ?? ($sR['label'] ?? $exKey);
+                            @endphp
+                            <tr>
+                                <td><strong>{{ $lbl }}</strong></td>
+                                <td dir="ltr" style="text-align:center;">{{ number_format($yR['in_amount'] ?? 0, 2) }}</td>
+                                <td dir="ltr" style="text-align:center;">{{ number_format($yR['out_amount'] ?? 0, 2) }}</td>
+                                <td dir="ltr" style="text-align:center;font-weight:bold;">{{ number_format($yR['net_amount'] ?? 0, 2) }}</td>
+                                <td dir="ltr" style="text-align:center;">{{ number_format($sR['in_amount'] ?? 0, 2) }}</td>
+                                <td dir="ltr" style="text-align:center;font-weight:bold;">{{ number_format($sR['net_amount'] ?? 0, 2) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <table class="wg-print-table">
+                    <thead>
+                        <tr>
+                            <th style="width:38%;">قناة الدفع / الصرافة</th>
+                            <th style="width:18%;text-align:center;">الوارد ({{ $shiftCurrency }})</th>
+                            <th style="width:18%;text-align:center;">الصادر ({{ $shiftCurrency }})</th>
+                            <th style="width:18%;text-align:center;">الصافي ({{ $shiftCurrency }})</th>
+                            <th style="width:8%;text-align:center;">الحركات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($shiftData['exchange_breakdown'] ?? [] as $exRow)
+                            <tr>
+                                <td><strong>{{ $exRow['label'] }}</strong></td>
+                                <td dir="ltr" style="text-align:center;">{{ number_format($exRow['in_amount'], 2) }}</td>
+                                <td dir="ltr" style="text-align:center;">{{ number_format($exRow['out_amount'], 2) }}</td>
+                                <td dir="ltr" style="text-align:center;font-weight:bold;">{{ number_format($exRow['net_amount'], 2) }}</td>
+                                <td style="text-align:center;">{{ $exRow['transactions_count'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+
             <h4 style="font-size:12px;margin:16px 0 6px;color:#0f172a;font-weight:bold;">تفاصيل الحركات المنفذة خلال الوردية:</h4>
             <table class="wg-print-table">
                 <thead>
@@ -661,7 +817,18 @@
     @else
         <div class="no-print">
             <div class="wg-card" style="margin-bottom:16px;padding:14px">
-                <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--wg-border)">
+                    <span style="font-size:12px;font-weight:800;color:var(--wg-muted)">اختصارات الفترات المحاسبية السريعة:</span>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                        <button type="button" wire:click="applyDatePreset('today')" class="wg-btn wg-btn-sm">اليوم</button>
+                        <button type="button" wire:click="applyDatePreset('yesterday')" class="wg-btn wg-btn-sm">أمس</button>
+                        <button type="button" wire:click="applyDatePreset('this_week')" class="wg-btn wg-btn-sm">هذا الأسبوع</button>
+                        <button type="button" wire:click="applyDatePreset('this_month')" class="wg-btn wg-btn-sm">هذا الشهر</button>
+                        <button type="button" wire:click="applyDatePreset('last_month')" class="wg-btn wg-btn-sm">الشهر الماضي</button>
+                        <button type="button" wire:click="applyDatePreset('this_year')" class="wg-btn wg-btn-sm">هذه السنة</button>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
                     <div>
                         <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">من تاريخ</label>
                         <input wire:model.live="from" type="date" class="wg-field">
@@ -684,6 +851,17 @@
                             <option value="">كل الموظفين والمحاسبين</option>
                             @foreach($staffList as $staff)
                                 <option value="{{ $staff->id }}">{{ $staff->name ?: $staff->username }} ({{ match($staff->role){'owner'=>'مالك','manager'=>'مدير','reception'=>'استقبال','accountant'=>'محاسب','nutritionist'=>'تغذية',default=>$staff->role} }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:12px;font-weight:750;color:var(--wg-muted);display:block;margin-bottom:4px">قناة الدفع / الصرافة</label>
+                        <select wire:model.live="summaryPaymentChannel" class="wg-select">
+                            <option value="all">الكل (نقدي + جميع الصرافات)</option>
+                            <option value="cash">نقدي فقط (كاش الصندوق)</option>
+                            <option value="transfer">جميع التحويلات المصرفية</option>
+                            @foreach($transferServices as $srv)
+                                <option value="service:{{ $srv }}">صرافة / تحويل: {{ $srv }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -765,6 +943,70 @@
                 <div class="wg-card" style="padding:16px;text-align:center">
                     <div style="color:var(--wg-muted);font-size:13px">الأعضاء الجدد</div>
                     <div style="font-size:26px;font-weight:850;color:#059669;margin-top:6px">{{ number_format($data['new_members_count']) }}</div>
+                </div>
+            </div>
+
+            {{-- Summary Exchange Breakdown Card --}}
+            <div class="wg-card" style="margin-top:16px">
+                <div class="wg-toolbar" style="border-bottom:1px solid var(--wg-border)">
+                    <h3 class="wg-title" style="font-size:15px;margin:0">تفصيل الحركات المالية حسب الصرافة / قناة الدفع خلال الفترة</h3>
+                    <span style="font-size:12px;color:var(--wg-muted)">يظهر أيضاً في التقرير المطبوع (PDF) لمطابقة حسابات الصرافات والصندوق</span>
+                </div>
+                <div class="wg-table-wrap" style="border:0">
+                    <table class="wg-table">
+                        <thead>
+                            <tr>
+                                <th>قناة الدفع / الصرافة</th>
+                                <th>إجمالي الوارد (+)</th>
+                                <th>إجمالي الصادر والرديات (-)</th>
+                                <th>صافي الحركة</th>
+                                <th>عدد العمليات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(!empty($data['is_all_currencies']))
+                                @php
+                                    $yerSumEx = collect($data['yer']['exchange_breakdown'] ?? [])->keyBy('key');
+                                    $sarSumEx = collect($data['sar']['exchange_breakdown'] ?? [])->keyBy('key');
+                                    $allSumKeys = $yerSumEx->keys()->merge($sarSumEx->keys())->unique();
+                                @endphp
+                                @foreach($allSumKeys as $exKey)
+                                    @php
+                                        $yRow = $yerSumEx->get($exKey);
+                                        $sRow = $sarSumEx->get($exKey);
+                                        $label = $yRow['label'] ?? ($sRow['label'] ?? $exKey);
+                                        $count = ($yRow['transactions_count'] ?? 0) + ($sRow['transactions_count'] ?? 0);
+                                    @endphp
+                                    <tr>
+                                        <td><strong>{{ $label }}</strong></td>
+                                        <td>
+                                            <div dir="ltr" style="font-weight:750;color:#059669;font-size:12px">{{ number_format($yRow['in_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">YER</span></div>
+                                            <div dir="ltr" style="font-weight:750;color:#059669;font-size:12px">{{ number_format($sRow['in_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">SAR</span></div>
+                                        </td>
+                                        <td>
+                                            <div dir="ltr" style="font-weight:750;color:#dc2626;font-size:12px">{{ number_format($yRow['out_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">YER</span></div>
+                                            <div dir="ltr" style="font-weight:750;color:#dc2626;font-size:12px">{{ number_format($sRow['out_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">SAR</span></div>
+                                        </td>
+                                        <td>
+                                            <div dir="ltr" style="font-weight:850;color:#059669;font-size:13px">{{ number_format($yRow['net_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">YER</span></div>
+                                            <div dir="ltr" style="font-weight:850;color:#059669;font-size:13px">{{ number_format($sRow['net_amount'] ?? 0, 0) }} <span style="font-size:10px;color:var(--wg-muted)">SAR</span></div>
+                                        </td>
+                                        <td><strong>{{ $count }}</strong></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                @foreach($data['exchange_breakdown'] ?? [] as $exRow)
+                                    <tr>
+                                        <td><strong>{{ $exRow['label'] }}</strong></td>
+                                        <td dir="ltr" style="font-weight:750;color:#059669">{{ number_format($exRow['in_amount'], 0) }} {{ $currency }}</td>
+                                        <td dir="ltr" style="font-weight:750;color:#dc2626">{{ number_format($exRow['out_amount'], 0) }} {{ $currency }}</td>
+                                        <td dir="ltr" style="font-weight:850;color:#059669">{{ number_format($exRow['net_amount'], 0) }} {{ $currency }}</td>
+                                        <td><strong>{{ $exRow['transactions_count'] }}</strong></td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

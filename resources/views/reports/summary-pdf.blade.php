@@ -55,12 +55,13 @@
 
     @include('reports.partials.header', [
         'title' => 'تقرير ملخص الإيرادات والعمليات المالي والتشغيلي',
-        'subtitle' => 'ملخص شامل لكافة العمليات والإيرادات والمصروفات خلال الفترة المحددة',
+        'subtitle' => 'ملخص شامل لكافة العمليات والإيرادات والمصروفات وتفصيل الصرافات خلال الفترة المحددة',
         'meta' => [
             'من تاريخ' => $filters['from'],
             'إلى تاريخ' => $filters['to'],
             'الفئة' => $filters['gender'] === 'male' ? 'رجال فقط' : ($filters['gender'] === 'female' ? 'نساء فقط' : 'الكل'),
             'العملة' => $currLabel,
+            'قناة الدفع / الصرافة' => $data['payment_channel_label'] ?? 'الكل',
             'الموظف' => $staffName,
             'المستخدم المستخرج' => $user->name,
         ],
@@ -154,6 +155,69 @@
                     <td>الأعضاء الجدد المسجلين خلال الفترة</td>
                     <td class="num">{{ number_format($data['new_members_count']) }} عضو</td>
                 </tr>
+            </tbody>
+        </table>
+    @endif
+
+    <h3 style="font-size:12px;font-weight:bold;color:#0f172a;margin:16px 0 6px;">تفصيل الحركات المالية حسب الصرافة / قناة الدفع:</h3>
+    @if($isAll)
+        @php
+            $yerPdfEx = collect($data['yer']['exchange_breakdown'] ?? [])->keyBy('key');
+            $sarPdfEx = collect($data['sar']['exchange_breakdown'] ?? [])->keyBy('key');
+            $allPdfKeys = $yerPdfEx->keys()->merge($sarPdfEx->keys())->unique();
+        @endphp
+        <table class="grid">
+            <thead>
+                <tr>
+                    <th style="width:28%;">قناة الدفع / الصرافة</th>
+                    <th style="width:12%;text-align:left;">وارد (YER)</th>
+                    <th style="width:12%;text-align:left;">صادر (YER)</th>
+                    <th style="width:12%;text-align:left;">صافي (YER)</th>
+                    <th style="width:12%;text-align:left;">وارد (SAR)</th>
+                    <th style="width:12%;text-align:left;">صادر (SAR)</th>
+                    <th style="width:12%;text-align:left;">صافي (SAR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($allPdfKeys as $exKey)
+                    @php
+                        $yR = $yerPdfEx->get($exKey);
+                        $sR = $sarPdfEx->get($exKey);
+                        $lbl = $yR['label'] ?? ($sR['label'] ?? $exKey);
+                    @endphp
+                    <tr>
+                        <td><strong>{{ $lbl }}</strong></td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($yR['in_amount'] ?? 0) }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($yR['out_amount'] ?? 0) }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($yR['net_amount'] ?? 0) }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($sR['in_amount'] ?? 0) }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($sR['out_amount'] ?? 0) }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($sR['net_amount'] ?? 0) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <table class="grid">
+            <thead>
+                <tr>
+                    <th style="width:36%;">قناة الدفع / الصرافة</th>
+                    <th style="width:18%;text-align:left;">إجمالي الوارد ({{ $data['currency'] }})</th>
+                    <th style="width:18%;text-align:left;">إجمالي الصادر ({{ $data['currency'] }})</th>
+                    <th style="width:18%;text-align:left;">صافي الرصيد ({{ $data['currency'] }})</th>
+                    <th style="width:10%;text-align:center;">العمليات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['exchange_breakdown'] ?? [] as $exRow)
+                    <tr>
+                        <td><strong>{{ $exRow['label'] }}</strong></td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($exRow['in_amount']) }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($exRow['out_amount']) }}</td>
+                        <td class="num">{{ \App\Support\NumberFormatter::money($exRow['net_amount']) }}</td>
+                        <td style="text-align:center;font-weight:bold;">{{ $exRow['transactions_count'] }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     @endif

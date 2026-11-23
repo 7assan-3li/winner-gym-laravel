@@ -26,19 +26,23 @@ class ReportPdfController extends Controller
             'gender' => ['required', 'in:all,male,female'],
             'currency' => ['required', 'in:YER,SAR,ALL'],
             'cashier_id' => ['nullable', 'integer', 'exists:users,id'],
+            'payment_channel' => ['nullable', 'string', 'max:80'],
         ]);
+
+        $paymentChannel = (string) ($validated['payment_channel'] ?? 'all');
 
         $data = $reports->summary(
             $validated['from'],
             $validated['to'],
             $validated['gender'],
             $validated['currency'],
-            $validated['cashier_id'] ?? null
+            $validated['cashier_id'] ?? null,
+            $paymentChannel
         );
 
         $html = view('reports.summary-pdf', [
             'data' => $data,
-            'filters' => $validated,
+            'filters' => array_merge($validated, ['payment_channel' => $paymentChannel]),
             'user' => $request->user(),
         ])->render();
 

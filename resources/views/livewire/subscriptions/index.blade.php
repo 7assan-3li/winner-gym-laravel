@@ -520,7 +520,7 @@
                                 <div class="wg-label">العملة</div>
                                 <div class="wg-kpi-money wg-blue" x-text="currency"></div>
                             </div>
-                            <div x-show="paymentMethod==='transfer'" x-cloak><label class="wg-label">خدمة التحويل / الصرافة *</label><input wire:model="transfer_service" class="wg-field" placeholder="اسم الخدمة"></div>
+                            <div x-show="paymentMethod==='transfer'" x-cloak><label class="wg-label">خدمة التحويل / الصرافة *</label><select wire:model="transfer_service" class="wg-select"><option value="">اختر الصرافة / الخدمة...</option><option value="العمقي">العمقي</option><option value="الكريمي">الكريمي</option><option value="البسيري">البسيري</option></select></div>
                             <div x-show="paymentMethod==='transfer'" x-cloak><label class="wg-label">رقم المرجع @if($requireTransferReference)*@else (اختياري)@endif</label><input wire:model="transfer_reference" class="wg-field" placeholder="مرجع التحويل"></div>
                             <div x-show="paymentMethod==='transfer'" x-cloak style="grid-column:1/-1">
                                 <label class="wg-label">صورة أو ملف سند التحويل @if($requirePaymentProof)*@else (اختياري)@endif</label>
@@ -611,7 +611,12 @@
                         @if($collectionMethod === 'transfer')
                             <label>
                                 <span>خدمة التحويل *</span>
-                                <input wire:model="collectionTransferService" class="wg-field" placeholder="اسم الصرافة أو الخدمة" required>
+                                <select wire:model="collectionTransferService" class="wg-select" required>
+                                    <option value="">اختر الصرافة / الخدمة...</option>
+                                    <option value="العمقي">العمقي</option>
+                                    <option value="الكريمي">الكريمي</option>
+                                    <option value="البسيري">البسيري</option>
+                                </select>
                                 @error('collectionTransferService')<b class="wg-sub-field-error">{{ $message }}</b>@enderror
                             </label>
                             <label>

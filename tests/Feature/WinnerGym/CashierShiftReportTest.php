@@ -131,5 +131,25 @@ class CashierShiftReportTest extends TestCase
         $this->assertSame(80000.0, $allSummary['total_cash_in']); // 50,000 + 30,000
         $this->assertSame(15000.0, $allSummary['total_transfer_in']);
         $this->assertSame(75000.0, $allSummary['net_cash_handover']); // 80,000 - 5,000
+
+        // 4. Filter by exchange service (صرافة العمقي فقط)
+        $omqiShift = $reports->cashierShiftSummary(null, $today, 'YER', 'service:العمقي');
+        $this->assertSame(0.0, $omqiShift['total_cash_in']);
+        $this->assertSame(15000.0, $omqiShift['total_transfer_in']);
+        $this->assertSame(1, $omqiShift['transactions_count']);
+
+        // 5. Filter by transaction type & reference search
+        $searchShift = $reports->cashierShiftSummary(null, $today, 'YER', 'all', 'sale', 'TX-998877');
+        $this->assertSame(1, $searchShift['transactions_count']);
+        $this->assertSame(15000.0, $searchShift['sales_transfer']);
+
+        // 6. Financial summary filtered by exchange service
+        $omqiSummary = $reports->summary($today, $today, 'all', 'YER', null, 'service:العمقي');
+        $this->assertSame(0.0, $omqiSummary['subscription_revenue']);
+        $this->assertSame(15000.0, $omqiSummary['product_revenue']);
+        $this->assertSame(0.0, $omqiSummary['expenses']);
+        $this->assertCount(1, $omqiSummary['exchange_breakdown']);
+        $this->assertSame('service:العمقي', $omqiSummary['exchange_breakdown'][0]['key']);
+        $this->assertSame(15000.0, $omqiSummary['exchange_breakdown'][0]['in_amount']);
     }
 }
