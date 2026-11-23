@@ -28,7 +28,7 @@ class MemberPrintTest extends TestCase
         $staff = User::factory()->create(['role' => 'reception', 'is_active' => true]);
         UserPermission::create([
             'user_id' => $staff->id,
-            'permission' => 'members.view',
+            'ability' => 'members.view',
             'allowed' => true,
         ]);
 
