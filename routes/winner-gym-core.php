@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MemberPrintController;
 use App\Http\Controllers\SubscriptionContractController;
 use App\Livewire\Attendance\Index as AttendanceIndex;
 use App\Livewire\Members\Index as MembersIndex;
@@ -17,6 +18,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/members', MembersIndex::class)
         ->middleware('gym.any:members.view,members.manage')
         ->name('members.index');
+
+    Route::get('/members/print', [MemberPrintController::class, 'index'])
+        ->middleware('gym.any:members.view,members.manage')
+        ->name('members.print');
 
     Route::get('/packages', PackagesIndex::class)
         ->middleware('gym.owner')
